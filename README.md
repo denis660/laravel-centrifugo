@@ -65,8 +65,8 @@ Open your config/broadcasting.php and add new connection like this:
 Also you should add these two lines to your .env file:
 
 ```
-CENTRIFUGO_SECRET=very-long-secret-key-from-centrifugo-config
-CENTRIFUGO_APIKEY=long-secret-apikey-from-centrifugo-config
+CENTRIFUGO_SECRET=token_hmac_secret_key-from-centrifugo-config
+CENTRIFUGO_APIKEY=api_key-from-centrifugo-config
 ```
 
 These lines are optional:
