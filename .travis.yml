@@ -1,0 +1,36 @@
+sudo: required
+
+language: php
+
+php:
+  - 7.3
+
+env:
+  - laravel_ver=5.6.* testbench_ver=3.7.* setup=basic
+  - laravel_ver=5.6.* testbench_ver=3.7.* setup=stable
+  - laravel_ver=5.8.* testbench_ver=3.8.* setup=basic
+  - laravel_ver=5.8.* testbench_ver=3.8.* setup=stablex
+  - laravel_ver=8.* testbench_ver=3.8.* setup=basic
+  - laravel_ver=8.* testbench_ver=3.8.* setup=stablex
+services:
+  - docker
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+before_install:
+  - docker pull centrifugo/centrifugo
+  - docker run -d --net=host --ulimit nofile=65536:65536 -v $TRAVIS_BUILD_DIR/tests:/centrifugo -p 8000:8000 centrifugo/centrifugo centrifugo -c config.json
+  - docker ps -a
+  - travis_retry composer self-update
+  - composer require "illuminate/broadcasting:${laravel_ver}" --no-update  
+  - composer require "laravel/framework:${laravel_ver}" --no-update
+  - composer require "orchestra/testbench:${testbench_ver}" --no-update
+  - composer require "phpunit/phpunit:7.*||8.*"
+
+install:
+  - if [[ $setup = 'basic' ]]; then travis_retry composer install --prefer-dist --no-interaction --no-suggest; fi
+  - if [[ $setup = 'stable' ]]; then travis_retry composer update --prefer-dist --no-interaction --no-suggest --prefer-stable; fi
+
+script: vendor/bin/phpunit
