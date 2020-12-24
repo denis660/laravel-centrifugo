@@ -5,7 +5,7 @@
 <a href="https://scrutinizer-ci.com/g/denis660/laracent/build-status/main"><img src="https://scrutinizer-ci.com/g/denis660/laracent/badges/build.png?b=master" alt="Build Status"></a>
 <a href="https://github.com/denis660/laracent/releases"><img src="https://img.shields.io/github/release/denis660/laracent.svg?style=flat-square" alt="Latest Version"></a>
 <a href="https://scrutinizer-ci.com/g/denis660/laracent"><img src="https://img.shields.io/scrutinizer/g/denis660/laracent.svg?style=flat-square" alt="Quality Score"></a>
-<a href="https://github.styleci.io/repos/319090345"><img src="https://github.styleci.io/repos/319090345/shield?branch=master" alt="StyleCI"></a>
+<a href="https://github.styleci.io/repos/324202212"><img src="https://github.styleci.io/repos/319090345/shield?branch=master" alt="StyleCI"></a>
 <a href="https://packagist.org/packages/denis660/laravel-centrifuge"><img src="https://img.shields.io/packagist/dt/denis660/laracent.svg?style=flat-square" alt="Total Downloads"></a>
 <a href="https://github.com/denis660/laracent/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Software License"></a>
 </p>
