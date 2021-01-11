@@ -23,7 +23,7 @@ Centrifugo broadcaster for laravel >= 8 is fork of [laracent](https://github.com
 
 - PHP >= 7.3
 - Laravel 5.6 - 8
-- Centrifugo Server 2.8.0 or newer (see [here](https://github.com/centrifugal/centrifugo))
+- Centrifugo Server 2.8.1 or newer (see [here](https://github.com/centrifugal/centrifugo))
 
 ## Dependencies
 
