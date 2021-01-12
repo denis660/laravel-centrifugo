@@ -1,7 +1,7 @@
 <h1 align="center">Laravel + Centrifugo</h1>
 <h2 align="center">Centrifugo broadcast driver for Laravel 5.6 - 8 </h2>
 
-<p align="center">https://scrutinizer-ci.com/g/denis660/laravel-centrifuge/badges/build.png?b=master
+<p align="center">
 <a href="https://scrutinizer-ci.com/g/denis660/laravel-centrifuge/build-status/master"><img src="https://scrutinizer-ci.com/g/denis660/laravel-centrifuge/badges/build.png?b=master" alt="Build Status"></a>
 <a href="https://github.com/denis660/laravel-centrifuge/releases"><img src="https://img.shields.io/github/release/denis660/laravel-centrifuge.svg?style=flat-square" alt="Latest Version"></a>
 <a href="https://scrutinizer-ci.com/g/denis660/laravel-centrifuge"><img src="https://scrutinizer-ci.com/g/denis660/laravel-centrifuge/badges/quality-score.png?b=master" alt="Quality Score"></a>
