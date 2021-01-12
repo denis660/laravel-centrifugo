@@ -1,4 +1,4 @@
-<p align="center">Документация <a href="https://github.com/denis660/laravel-centrifuge/blob/master/README.md">EN</a> | <b>>RU</b></p>
+<p align="center">Документация <a href="https://github.com/denis660/laravel-centrifuge/blob/master/README.md">EN</a> | <b>RU</b></p>
 
 <h1 align="center">Laravel + Centrifugo</h1>
 <h2 align="center">Centrifugo broadcast драйвер для Laravel 5.6 - 8 </h2>
@@ -18,14 +18,14 @@ Centrifugo broadcaster для laravel >= 8 это форк репозитори�
 - [centrifugal/phpcent](https://github.com/centrifugal/phpcent)
 
 ## Изменения
-- support Laravel 5.6 - 8
-- support guzzlehttp/guzzle 6-7
+- поддержка Laravel 5.6 - 8
+- поддержка guzzlehttp/guzzle 6-7
 
 ## Требования
 
 - PHP >= 7.3
-- Laravel 5.6 - 8
-- Centrifugo Сервер 2.8.1 или новее (see [here](https://github.com/centrifugal/centrifugo))
+- Framework Laravel 5.6 - 8
+- Centrifugo Сервер 2.8.1 или новее (см. [здесь](https://github.com/centrifugal/centrifugo))
 
 ## Зависимости
 
