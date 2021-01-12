@@ -1,12 +1,12 @@
 <?php
 
-namespace denis660\Laracent;
+namespace denis660\Centrifuge;
 
-use denis660\Laracent\Contracts\Centrifugo;
+use denis660\Centrifuge\Contracts\Centrifuge as CentrifugeContract;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ClientException;
 
-class Laracent implements Centrifugo
+class Centrifuge implements CentrifugeContract
 {
     const API_PATH = '/api';
 

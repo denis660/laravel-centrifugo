@@ -1,3 +1,5 @@
+<p align="center">Documentation <b>EN</b> | <a href="https://github.com/denis660/laravel-centrifuge/blob/master/README_RU.md">RU</a></p>
+
 <h1 align="center">Laravel + Centrifugo</h1>
 <h2 align="center">Centrifugo broadcast driver for Laravel 5.6 - 8 </h2>
 
@@ -7,11 +9,11 @@
 <a href="https://scrutinizer-ci.com/g/denis660/laravel-centrifuge"><img src="https://img.shields.io/scrutinizer/g/denis660/laravel-centrifuge.svg?style=flat-square" alt="Quality Score"></a>
 <a href="https://github.styleci.io/repos/324202212"><img src="https://github.styleci.io/repos/324202212/shield?branch=master" alt="StyleCI"></a>
 <a href="https://packagist.org/packages/denis660/laravel-centrifuge"><img src="https://img.shields.io/packagist/dt/denis660/laravel-centrifuge.svg?style=flat-square" alt="Total Downloads"></a>
-<a href="https://github.com/denis660/laracent/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Software License"></a>
+<a href="https://github.com/denis660/Centrifuge/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Software License"></a>
 </p>
 
 ## Introduction
-Centrifugo broadcaster for laravel >= 8 is fork of [laracent](https://github.com/AlexHnydiuk/laracent), based on:
+Centrifugo broadcaster for laravel >= 8 is fork of [Laracent](https://github.com/AlexHnydiuk/Laracent), based on:
 - [LaraComponents/centrifuge-broadcaster](https://github.com/LaraComponents/centrifuge-broadcaster)
 - [centrifugal/phpcent](https://github.com/centrifugal/phpcent)
 
@@ -42,7 +44,7 @@ Open your config/app.php and add the following to the providers array:
 ```php
 'providers' => [
     // ...
-    denis660\Laracent\LaracentServiceProvider::class,
+    denis660\Centrifuge\CentrifugeServiceProvider::class,
 
     // And uncomment BroadcastServiceProvider
     App\Providers\BroadcastServiceProvider::class,
@@ -95,19 +97,19 @@ A simple client usage example:
 
 namespace App\Http\Controllers;
 
-use denis660\Laracent\Laracent;
+use denis660\Centrifuge\Centrifuge;
 
 class ExampleController extends Controller
 {
-    public function home(Laracent $centrifugo)
+    public function home(Centrifuge $centrifuge)
     {
         // Send message into channel
-        $centrifugo->publish('channel-name', [
+        $centrifuge->publish('channel-name', [
             'key' => 'value'
         ]);
 
         // Generate connection token
-        $token = $centrifugo->generateConnectionToken('user id', 'timestamp', 'info');
+        $token = $centrifuge->generateConnectionToken('user id', 'timestamp', 'info');
 
         // Generate private channel token
         $apiSign = $centrifuge->generatePrivateChannelToken('client', 'channel', 'timestamp', 'info');

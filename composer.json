@@ -26,18 +26,18 @@
     },
     "autoload": {
         "psr-4": {
-            "denis660\\Laracent\\": "src/"
+            "denis660\\Centrifuge\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "denis660\\Laracent\\Test\\": "tests/"
+            "denis660\\Centrifuge\\Test\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "denis660\\Laracent\\LaracentServiceProvider"
+                "denis660\\Centrifuge\\CentrifugeServiceProvider"
             ]
         }
     },

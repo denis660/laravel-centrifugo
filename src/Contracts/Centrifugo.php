@@ -1,8 +1,8 @@
 <?php
 
-namespace denis660\Laracent\Contracts;
+namespace denis660\Centrifuge\Contracts;
 
-interface Centrifugo
+interface Centrifuge
 {
     /**
      * Send message into channel.

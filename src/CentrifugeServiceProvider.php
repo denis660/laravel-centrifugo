@@ -1,12 +1,12 @@
 <?php
 
-namespace denis660\Laracent;
+namespace denis660\Centrifuge;
 
 use GuzzleHttp\Client as HttpClient;
 use Illuminate\Broadcasting\BroadcastManager;
 use Illuminate\Support\ServiceProvider;
 
-class LaracentServiceProvider extends ServiceProvider
+class CentrifugeServiceProvider extends ServiceProvider
 {
     /**
      * Add centrifugo broadcaster.
@@ -16,7 +16,7 @@ class LaracentServiceProvider extends ServiceProvider
     public function boot(BroadcastManager $broadcastManager)
     {
         $broadcastManager->extend('centrifugo', function ($app) {
-            return new LaracentBroadcaster($app->make('centrifugo'));
+            return new CentrifugeBroadcaster($app->make('centrifugo'));
         });
     }
 
@@ -31,10 +31,10 @@ class LaracentServiceProvider extends ServiceProvider
             $config = $app->make('config')->get('broadcasting.connections.centrifugo');
             $http = new HttpClient();
 
-            return new Laracent($config, $http);
+            return new Centrifuge($config, $http);
         });
 
-        $this->app->alias('centrifugo', 'denis660\Laracent\Laracent');
-        $this->app->alias('centrifugo', 'denis660\Laracent\Contracts\Centrifugo');
+        $this->app->alias('centrifugo', 'denis660\Centrifuge\Centrifuge');
+        $this->app->alias('centrifugo', 'denis660\Centrifuge\Contracts\Centrifugo');
     }
 }
