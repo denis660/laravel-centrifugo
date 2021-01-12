@@ -108,11 +108,11 @@ class ExampleController extends Controller
             'key' => 'value'
         ]);
 
-        // Generate connection token
-        $token = $centrifuge->generateConnectionToken('user id', 'timestamp', 'info');
+        // Generate connection token  that will be valid for 5 minutes
+        $token = $centrifuge->generateConnectionToken('358', time() + 5*60, ['isSuperAdmin'=>true]);
 
-        // Generate private channel token
-        $apiSign = $centrifuge->generatePrivateChannelToken('client', 'channel', 'timestamp', 'info');
+        // Generate private channel token  that will be valid for 5 minutes
+        $apiSign = $centrifuge->generatePrivateChannelToken('client', 'channel', time() + 5*60,['isSuperAdmin'=>true]);
 
         // ...
     }

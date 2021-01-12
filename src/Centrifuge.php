@@ -62,7 +62,6 @@ class Centrifuge implements CentrifugeContract
      *
      * @param string $channel
      * @param array $data
-     * @param string $client
      * @return mixed
      */
     public function publish(string $channel, array $data)

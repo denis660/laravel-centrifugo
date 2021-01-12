@@ -108,10 +108,10 @@ class ExampleController extends Controller
         ]);
 
         // Генерация токена для подключения
-        $token = $centrifuge->generateConnectionToken('user id', 'timestamp', 'info');
+        $token = $centrifuge->generateConnectionToken('358', time() + 5*60, ['isSuperAdmin'=>true]);
 
         // Generate  приватного токена для подключения
-        $apiSign = $centrifuge->generatePrivateChannelToken('client', 'channel', 'timestamp', 'info');
+        $apiSign = $centrifuge->generatePrivateChannelToken('client', 'channel', time() + 5*60,['isSuperAdmin'=>true]);
 
         // ...
     }
