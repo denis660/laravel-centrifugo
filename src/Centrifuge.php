@@ -184,8 +184,9 @@ class Centrifuge implements CentrifugeInterface
      * @param string $userId
      * @param int $exp
      * @param array $info
-     * @return array
+     * @return string
      */
+
     public function generateConnectionToken(string $userId = '', int $exp = 0, array $info = [])
     {
         $header = ['typ' => 'JWT', 'alg' => 'HS256'];
