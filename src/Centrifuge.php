@@ -2,11 +2,11 @@
 
 namespace denis660\Centrifuge;
 
-use denis660\Centrifuge\Contracts\Centrifuge as CentrifugeContract;
+use denis660\Centrifuge\Contracts\CentrifugeInterface;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ClientException;
 
-class Centrifuge implements CentrifugeContract
+class Centrifuge implements CentrifugeInterface
 {
     const API_PATH = '/api';
 
@@ -184,7 +184,7 @@ class Centrifuge implements CentrifugeContract
      * @param string $userId
      * @param int $exp
      * @param array $info
-     * @return string
+     * @return array
      */
     public function generateConnectionToken(string $userId = '', int $exp = 0, array $info = [])
     {

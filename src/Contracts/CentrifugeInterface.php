@@ -2,7 +2,7 @@
 
 namespace denis660\Centrifuge\Contracts;
 
-interface Centrifuge
+interface CentrifugeInterface
 {
     /**
      * Send message into channel.
