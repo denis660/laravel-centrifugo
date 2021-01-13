@@ -2,7 +2,7 @@
 
 namespace denis660\Centrifuge;
 
-use denis660\Centrifuge\Contracts\Centrifuge;
+use denis660\Centrifuge\Contracts\CentrifugeInterface;
 use Exception;
 use Illuminate\Broadcasting\Broadcasters\Broadcaster;
 use Illuminate\Broadcasting\BroadcastException;
@@ -13,16 +13,16 @@ class CentrifugeBroadcaster extends Broadcaster
     /**
      * The Centrifugo SDK instance.
      *
-     * @var \denis660\Centrifuge\Contracts\Centrifuge
+     * @var \denis660\Centrifuge\Contracts\CentrifugeInterface
      */
     protected $centrifugo;
 
     /**
      * Create a new broadcaster instance.
      *
-     * @param  \denis660\Centrifuge\Contracts\Centrifuge  $centrifugo
+     * @param  \denis660\Centrifuge\Contracts\CentrifugeInterface  $centrifugo
      */
-    public function __construct(Centrifuge $centrifugo)
+    public function __construct(CentrifugeInterface $centrifugo)
     {
         $this->centrifugo = $centrifugo;
     }
