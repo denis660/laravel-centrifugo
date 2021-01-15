@@ -103,7 +103,7 @@ class Centrifuge implements CentrifugeInterface
      * @param string $channel
      * @return mixed
      */
-    public function presence_stats(string $channel)
+    public function presenceStats(string $channel)
     {
         return $this->send('presence_stats', ['channel' => $channel]);
     }
@@ -125,7 +125,7 @@ class Centrifuge implements CentrifugeInterface
      * @param string $channel
      * @return mixed
      */
-    public function history_remove(string $channel)
+    public function historyRemove(string $channel)
     {
         return $this->send('history_remove', [
             'channel' => $channel,

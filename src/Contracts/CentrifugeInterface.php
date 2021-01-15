@@ -36,7 +36,7 @@ interface CentrifugeInterface
      * @param string $channel
      * @return mixed
      */
-    public function presence_stats(string $channel);
+    public function presenceStats(string $channel);
 
     /**
      * Get channel history information (list of last messages sent into channel).
@@ -52,7 +52,7 @@ interface CentrifugeInterface
      * @param string $channel
      * @return mixed
      */
-    public function history_remove(string $channel);
+    public function historyRemove(string $channel);
 
     /**
      * Unsubscribe user from channel.
