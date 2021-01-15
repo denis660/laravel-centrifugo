@@ -69,11 +69,11 @@ Also you should add these two lines to your .env file:
 ```
 CENTRIFUGO_SECRET=token_hmac_secret_key-from-centrifugo-config
 CENTRIFUGO_APIKEY=api_key-from-centrifugo-config
+CENTRIFUGO_URL=http://localhost:8000
 ```
 
 These lines are optional:
 ```
-CENTRIFUGO_URL=http://localhost:8000
 CENTRIFUGO_SSL_KEY=/etc/ssl/some.pem
 CENTRIFUGO_VERIFY=false
 ```
@@ -94,27 +94,24 @@ A simple client usage example:
 
 ```php
 <?php
+declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace App\Services;
 
 use denis660\Centrifuge\Centrifuge;
 
-class ExampleController extends Controller
+class NotificationService
 {
-    public function home(Centrifuge $centrifuge)
+    private $centrifuge;
+
+    public function __construct(Centrifuge $centrifuge)
     {
-        // Send message into channel
-        $centrifuge->publish('channel-name', [
-            'key' => 'value'
-        ]);
+        $this->centrifuge = $centrifuge;
+    }
 
-        // Generate connection token  that will be valid for 5 minutes
-        $token = $centrifuge->generateConnectionToken('358', time() + 5*60, ['isSuperAdmin'=>true]);
-
-        // Generate private channel token  that will be valid for 5 minutes
-        $apiSign = $centrifuge->generatePrivateChannelToken('client', 'channel', time() + 5*60,['isSuperAdmin'=>true]);
-
-        // ...
+    public function example(): void
+    {
+        $this->centrifuge->publish('news', ['message' => 'Hello world']);
     }
 }
 ```
