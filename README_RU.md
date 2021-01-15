@@ -36,7 +36,7 @@ Centrifugo broadcaster для laravel >= 8 это форк репозитори�
 Установить через composer, выполнив команду в консоле:
 
 ```bash
-composer require denis660/laravel-centrifuge
+composer req denis660/laravel-centrifuge
 ```
 
 Откройте ваш config/app.php и добавьте соелубщее в раздел providers:

@@ -36,7 +36,7 @@ Centrifugo broadcaster for laravel >= 8 is fork of [Laracent](https://github.com
 Require this package with composer:
 
 ```bash
-composer require denis660/laravel-centrifuge
+composer req denis660/laravel-centrifuge
 ```
 
 Open your config/app.php and add the following to the providers array:
