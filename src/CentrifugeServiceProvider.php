@@ -30,7 +30,7 @@ class CentrifugeServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('Centrifuge', function ($app) {
-            $config = $app->make('config')->get('broadcasting.connections.Centrifuge');
+            $config = $app->make('config')->get('broadcasting.connections.centrifugo');
             $http = new HttpClient();
 
             return new Centrifuge($config, $http);
