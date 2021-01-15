@@ -93,27 +93,24 @@ BROADCAST_DRIVER=centrifugo
 
 ```php
 <?php
+declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace App\Services;
 
-use denis660\Centrifuge\Centrifuge;
+use denis660\Centrifugo\Centrifugo;
 
-class ExampleController extends Controller
+class NotificationService
 {
-    public function home(Centrifuge $centrifuge)
+    private $centrifugo;
+
+    public function __construct(Centrifugo $centrifugo)
     {
-        // Отправить сообщение в канал
-        $centrifuge->publish('channel-name', [
-            'key' => 'value'
-        ]);
+        $this->centrifugo = $centrifugo;
+    }
 
-        // Генерация токена для подключения
-        $token = $centrifuge->generateConnectionToken('358', time() + 5*60, ['isSuperAdmin'=>true]);
-
-        // Generate  приватного токена для подключения
-        $apiSign = $centrifuge->generatePrivateChannelToken('client', 'channel', time() + 5*60,['isSuperAdmin'=>true]);
-
-        // ...
+    public function example(): void
+    {
+        $this->centrifugo->publish('news', ['message' => 'Hello world']);
     }
 }
 ```

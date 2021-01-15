@@ -98,20 +98,20 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use denis660\Centrifuge\Centrifuge;
+use denis660\Centrifugo\Centrifugo;
 
 class NotificationService
 {
-    private $centrifuge;
+    private $centrifugo;
 
-    public function __construct(Centrifuge $centrifuge)
+    public function __construct(Centrifugo $centrifugo)
     {
-        $this->centrifuge = $centrifuge;
+        $this->centrifugo = $centrifugo;
     }
 
     public function example(): void
     {
-        $this->centrifuge->publish('news', ['message' => 'Hello world']);
+        $this->centrifugo->publish('news', ['message' => 'Hello world']);
     }
 }
 ```
