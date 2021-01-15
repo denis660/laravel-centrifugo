@@ -192,7 +192,7 @@ class Centrifugo implements CentrifugoInterface
     {
         $header = ['typ' => 'JWT', 'alg' => 'HS256'];
         $payload = ['sub' => $userId];
-        if (!empty($info)) {
+        if (! empty($info)) {
             $payload['info'] = $info;
         }
         if ($exp) {
@@ -221,7 +221,7 @@ class Centrifugo implements CentrifugoInterface
     {
         $header = ['typ' => 'JWT', 'alg' => 'HS256'];
         $payload = ['channel' => $channel, 'client' => $client];
-        if (!empty($info)) {
+        if (! empty($info)) {
             $payload['info'] = $info;
         }
         if ($exp) {
