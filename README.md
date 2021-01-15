@@ -44,7 +44,7 @@ Open your config/app.php and add the following to the providers array:
 ```php
 'providers' => [
     // ...
-    denis660\Centrifugo\CentrifugoServiceProvider::class,
+    denis660\Centrifuge\CentrifugeServiceProvider::class,
 
     // And uncomment BroadcastServiceProvider
     App\Providers\BroadcastServiceProvider::class,

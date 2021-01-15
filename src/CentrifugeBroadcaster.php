@@ -2,31 +2,31 @@
 
 declare(strict_types=1);
 
-namespace denis660\Centrifugo;
+namespace denis660\Centrifuge;
 
-use denis660\Centrifugo\Contracts\CentrifugoInterface;
+use denis660\Centrifuge\Contracts\CentrifugeInterface;
 use Exception;
 use Illuminate\Broadcasting\Broadcasters\Broadcaster;
 use Illuminate\Broadcasting\BroadcastException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class CentrifugoBroadcaster extends Broadcaster
+class CentrifugeBroadcaster extends Broadcaster
 {
     /**
-     * The Centrifugo SDK instance.
+     * The Centrifuge SDK instance.
      *
-     * @var \denis660\Centrifugo\Contracts\CentrifugoInterface
+     * @var \denis660\Centrifuge\Contracts\CentrifugeInterface
      */
-    protected $centrifugo;
+    protected $Centrifuge;
 
     /**
      * Create a new broadcaster instance.
      *
-     * @param \denis660\Centrifugo\Contracts\CentrifugoInterface $centrifugo
+     * @param \denis660\Centrifuge\Contracts\CentrifugeInterface $Centrifuge
      */
-    public function __construct(CentrifugoInterface $centrifugo)
+    public function __construct(CentrifugeInterface $Centrifuge)
     {
-        $this->centrifugo = $centrifugo;
+        $this->Centrifuge = $Centrifuge;
     }
 
     /**
@@ -84,7 +84,7 @@ class CentrifugoBroadcaster extends Broadcaster
     {
         $payload['event'] = $event;
 
-        $response = $this->centrifugo->broadcast($this->formatChannels($channels), $payload);
+        $response = $this->Centrifuge->broadcast($this->formatChannels($channels), $payload);
 
         if (is_array($response) && ! isset($response['error'])) {
             return;
@@ -142,7 +142,7 @@ class CentrifugoBroadcaster extends Broadcaster
         $info = [];
 
         return $access_granted ? [
-            'sign' => $this->centrifugo->generateConnectionToken($client, 0, $info),
+            'sign' => $this->Centrifuge->generateConnectionToken($client, 0, $info),
             'info' => $info,
         ] : [
             'status' => 403,

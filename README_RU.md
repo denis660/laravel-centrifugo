@@ -44,7 +44,7 @@ composer req denis660/laravel-centrifuge
 ```php
 'providers' => [
     // ...
-    denis660\Centrifugo\CentrifugoServiceProvider::class,
+    denis660\Centrifugo\CentrifugeServiceProvider::class,
 
     // Раскомментируйте эту строчку BroadcastServiceProvider
     App\Providers\BroadcastServiceProvider::class,

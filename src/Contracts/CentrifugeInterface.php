@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace denis660\Centrifugo\Contracts;
+namespace denis660\Centrifuge\Contracts;
 
-interface CentrifugoInterface
+interface CentrifugeInterface
 {
     /**
      * Send message into channel.
