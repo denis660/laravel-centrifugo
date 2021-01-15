@@ -100,7 +100,7 @@ namespace App\Services;
 
 use denis660\Centrifuge\Centrifuge;
 
-class MessageService
+class NotificationService
 {
     private $centrifuge;
 
