@@ -1,12 +1,13 @@
 <?php
+declare(strict_types=1);
 
-namespace denis660\Centrifuge;
+namespace denis660\Centrifugo;
 
 use GuzzleHttp\Client as HttpClient;
 use Illuminate\Broadcasting\BroadcastManager;
 use Illuminate\Support\ServiceProvider;
 
-class CentrifugeServiceProvider extends ServiceProvider
+class CentrifugoServiceProvider extends ServiceProvider
 {
     /**
      * Add centrifugo broadcaster.
@@ -16,7 +17,7 @@ class CentrifugeServiceProvider extends ServiceProvider
     public function boot(BroadcastManager $broadcastManager)
     {
         $broadcastManager->extend('centrifugo', function ($app) {
-            return new CentrifugeBroadcaster($app->make('centrifugo'));
+            return new CentrifugoBroadcaster($app->make('centrifugo'));
         });
     }
 
@@ -31,10 +32,10 @@ class CentrifugeServiceProvider extends ServiceProvider
             $config = $app->make('config')->get('broadcasting.connections.centrifugo');
             $http = new HttpClient();
 
-            return new Centrifuge($config, $http);
+            return new Centrifugo($config, $http);
         });
 
-        $this->app->alias('centrifugo', 'denis660\Centrifuge\Centrifuge');
-        $this->app->alias('centrifugo', 'denis660\Centrifuge\Contracts\Centrifugo');
+        $this->app->alias('centrifugo', 'denis660\Centrifugo\Centrifugo');
+        $this->app->alias('centrifugo', 'denis660\Centrifugo\Contracts\Centrifugo');
     }
 }

@@ -1,12 +1,13 @@
 <?php
+declare(strict_types=1);
 
-namespace denis660\Centrifuge;
+namespace denis660\Centrifugo;
 
-use denis660\Centrifuge\Contracts\CentrifugeInterface;
+use denis660\Centrifugo\Contracts\CentrifugoInterface;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ClientException;
 
-class Centrifuge implements CentrifugeInterface
+class Centrifugo implements CentrifugoInterface
 {
     const API_PATH = '/api';
 
@@ -35,17 +36,17 @@ class Centrifuge implements CentrifugeInterface
     /**
      * Init centrifugo configuration.
      *
-     * @param  array $config
+     * @param array $config
      * @return array
      */
     protected function initConfiguration(array $config)
     {
         $defaults = [
-            'url'              => 'http://localhost:8000',
-            'secret'           => null,
-            'apikey'           => null,
-            'ssl_key'          => null,
-            'verify'           => true,
+            'url'     => 'http://localhost:8000',
+            'secret'  => null,
+            'apikey'  => null,
+            'ssl_key' => null,
+            'verify'  => true,
         ];
 
         foreach ($config as $key => $value) {
@@ -68,7 +69,7 @@ class Centrifuge implements CentrifugeInterface
     {
         return $this->send('publish', [
             'channel' => $channel,
-            'data' => $data,
+            'data'    => $data,
         ]);
     }
 
@@ -143,7 +144,7 @@ class Centrifuge implements CentrifugeInterface
     {
         return $this->send('unsubscribe', [
             'channel' => $channel,
-            'user' => $user,
+            'user'    => $user,
         ]);
     }
 
@@ -155,7 +156,7 @@ class Centrifuge implements CentrifugeInterface
      */
     public function disconnect(string $user_id)
     {
-        return $this->send('disconnect', ['user' => (string) $user_id]);
+        return $this->send('disconnect', ['user' => (string)$user_id]);
     }
 
     /**
@@ -186,11 +187,11 @@ class Centrifuge implements CentrifugeInterface
      * @param array $info
      * @return string
      */
-    public function generateConnectionToken(string $userId = '', int $exp = 0, array $info = [])
+    public function generateConnectionToken(string $userId = '', int $exp = 0, array $info = []): string
     {
         $header = ['typ' => 'JWT', 'alg' => 'HS256'];
         $payload = ['sub' => $userId];
-        if (! empty($info)) {
+        if (!empty($info)) {
             $payload['info'] = $info;
         }
         if ($exp) {
@@ -215,11 +216,11 @@ class Centrifuge implements CentrifugeInterface
      * @param array $info
      * @return string
      */
-    public function generatePrivateChannelToken(string $client, string $channel, int $exp = 0, array $info = [])
+    public function generatePrivateChannelToken(string $client, string $channel, int $exp = 0, array $info = []): string
     {
         $header = ['typ' => 'JWT', 'alg' => 'HS256'];
         $payload = ['channel' => $channel, 'client' => $client];
-        if (! empty($info)) {
+        if (!empty($info)) {
             $payload['info'] = $info;
         }
         if ($exp) {
@@ -248,8 +249,8 @@ class Centrifuge implements CentrifugeInterface
     /**
      * Send message to centrifugo server.
      *
-     * @param  string $method
-     * @param  array $params
+     * @param string $method
+     * @param array $params
      * @return mixed
      */
     protected function send($method, array $params = [])
@@ -258,7 +259,7 @@ class Centrifuge implements CentrifugeInterface
 
         $headers = [
             'Content-type'  => 'application/json',
-            'Authorization' => 'apikey '.$this->config['apikey'],
+            'Authorization' => 'apikey ' . $this->config['apikey'],
         ];
 
         try {
@@ -280,7 +281,7 @@ class Centrifuge implements CentrifugeInterface
 
             $response = $this->httpClient->post($this->prepareUrl(), $config->toArray());
 
-            $result = json_decode((string) $response->getBody(), true);
+            $result = json_decode((string)$response->getBody(), true);
         } catch (ClientException $e) {
             $result = [
                 'method' => $method,

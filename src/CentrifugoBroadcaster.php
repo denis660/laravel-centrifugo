@@ -1,28 +1,29 @@
 <?php
+declare(strict_types=1);
 
-namespace denis660\Centrifuge;
+namespace denis660\Centrifugo;
 
-use denis660\Centrifuge\Contracts\CentrifugeInterface;
+use denis660\Centrifugo\Contracts\CentrifugoInterface;
 use Exception;
 use Illuminate\Broadcasting\Broadcasters\Broadcaster;
 use Illuminate\Broadcasting\BroadcastException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class CentrifugeBroadcaster extends Broadcaster
+class CentrifugoBroadcaster extends Broadcaster
 {
     /**
      * The Centrifugo SDK instance.
      *
-     * @var \denis660\Centrifuge\Contracts\CentrifugeInterface
+     * @var \denis660\Centrifugo\Contracts\CentrifugoInterface
      */
     protected $centrifugo;
 
     /**
      * Create a new broadcaster instance.
      *
-     * @param  \denis660\Centrifuge\Contracts\CentrifugeInterface  $centrifugo
+     * @param \denis660\Centrifugo\Contracts\CentrifugoInterface $centrifugo
      */
-    public function __construct(CentrifugeInterface $centrifugo)
+    public function __construct(CentrifugoInterface $centrifugo)
     {
         $this->centrifugo = $centrifugo;
     }
@@ -30,7 +31,7 @@ class CentrifugeBroadcaster extends Broadcaster
     /**
      * Authenticate the incoming request for a given channel.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return mixed
      */
     public function auth($request)
@@ -61,8 +62,8 @@ class CentrifugeBroadcaster extends Broadcaster
     /**
      * Return the valid authentication response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  mixed  $result
+     * @param \Illuminate\Http\Request $request
+     * @param mixed $result
      * @return mixed
      */
     public function validAuthenticationResponse($request, $result)
@@ -73,9 +74,9 @@ class CentrifugeBroadcaster extends Broadcaster
     /**
      * Broadcast the given event.
      *
-     * @param  array  $channels
-     * @param  string  $event
-     * @param  array  $payload
+     * @param array $channels
+     * @param string $event
+     * @param array $payload
      * @return void
      */
     public function broadcast(array $channels, $event, array $payload = [])
@@ -84,7 +85,7 @@ class CentrifugeBroadcaster extends Broadcaster
 
         $response = $this->centrifugo->broadcast($this->formatChannels($channels), $payload);
 
-        if (is_array($response) && ! isset($response['error'])) {
+        if (is_array($response) && !isset($response['error'])) {
             return;
         }
 
@@ -96,7 +97,7 @@ class CentrifugeBroadcaster extends Broadcaster
     /**
      * Get client from request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return string
      */
     private function getClientFromRequest($request)
@@ -107,7 +108,7 @@ class CentrifugeBroadcaster extends Broadcaster
     /**
      * Get channels from request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array
      */
     private function getChannelsFromRequest($request)
@@ -120,7 +121,7 @@ class CentrifugeBroadcaster extends Broadcaster
     /**
      * Get channel name without $ symbol (if present).
      *
-     * @param  string  $channel
+     * @param string $channel
      * @return string
      */
     private function getChannelName(string $channel)
@@ -131,8 +132,8 @@ class CentrifugeBroadcaster extends Broadcaster
     /**
      * Make response for client, based on access rights.
      *
-     * @param  bool  $access_granted
-     * @param  string $client
+     * @param bool $access_granted
+     * @param string $client
      * @return array
      */
     private function makeResponseForClient(bool $access_granted, string $client)

@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
-namespace denis660\Centrifuge\Contracts;
+namespace denis660\Centrifugo\Contracts;
 
-interface CentrifugeInterface
+interface CentrifugoInterface
 {
     /**
      * Send message into channel.
@@ -93,7 +94,7 @@ interface CentrifugeInterface
      * @param array $info
      * @return string
      */
-    public function generateConnectionToken(string $userId = '', int $exp = 0, array $info = []);
+    public function generateConnectionToken(string $userId = '', int $exp = 0, array $info = []): string;
 
     /**
      * Generate private channel token.
@@ -104,5 +105,5 @@ interface CentrifugeInterface
      * @param array $info
      * @return string
      */
-    public function generatePrivateChannelToken(string $client, string $channel, int $exp = 0, array $info = []);
+    public function generatePrivateChannelToken(string $client, string $channel, int $exp = 0, array $info = []): string;
 }
