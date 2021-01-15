@@ -37,7 +37,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "CentrifugeServiceProvider"
+                "denis660\\Centrifuge\\CentrifugeServiceProvider"
             ]
         }
     },
