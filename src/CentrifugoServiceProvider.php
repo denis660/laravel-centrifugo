@@ -17,8 +17,8 @@ class CentrifugoServiceProvider extends ServiceProvider
      */
     public function boot(BroadcastManager $broadcastManager)
     {
-        $broadcastManager->extend('centrifuge', function ($app) {
-            return new CentrifugoBroadcaster($app->make('centrifuge'));
+        $broadcastManager->extend('centrifugo', function ($app) {
+            return new CentrifugoBroadcaster($app->make('centrifugo'));
         });
     }
 
@@ -29,14 +29,14 @@ class CentrifugoServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('centrifuge', function ($app) {
-            $config = $app->make('config')->get('broadcasting.connections.centrifuge');
+        $this->app->singleton('centrifugo', function ($app) {
+            $config = $app->make('config')->get('broadcasting.connections.centrifugo');
             $http = new HttpClient();
 
             return new Centrifugo($config, $http);
         });
 
-        $this->app->alias('centrifuge', 'denis660\Centrifuge\Centrifugo');
-        $this->app->alias('centrifuge', 'denis660\Centrifuge\Contracts\Centrifuge');
+        $this->app->alias('centrifugo', 'denis660\Centrifugo\Centrifugo');
+        $this->app->alias('centrifugo', 'denis660\Centrifugo\Contracts\Centrifugo');
     }
 }

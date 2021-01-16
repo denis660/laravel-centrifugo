@@ -35,7 +35,7 @@ class Centrifugo implements CentrifugoInterface
     }
 
     /**
-     * Init centrifuge configuration.
+     * Init centrifugo configuration.
      *
      * @param array $config
      * @return array
@@ -248,7 +248,7 @@ class Centrifugo implements CentrifugoInterface
     }
 
     /**
-     * Send message to centrifuge server.
+     * Send message to centrifugo server.
      *
      * @param string $method
      * @param array $params

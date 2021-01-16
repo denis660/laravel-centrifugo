@@ -16,16 +16,16 @@ class CentrifugoBroadcaster extends Broadcaster
      *
      * @var Contracts\CentrifugoInterface
      */
-    protected $centrifuge;
+    protected $centrifugo;
 
     /**
      * Create a new broadcaster instance.
      *
-     * @param Centrifugo $centrifuge
+     * @param Centrifugo $centrifugo
      */
-    public function __construct(Centrifugo $centrifuge)
+    public function __construct(Centrifugo $centrifugo)
     {
-        $this->centrifuge = $centrifuge;
+        $this->centrifugo = $centrifugo;
     }
 
     /**
@@ -83,7 +83,7 @@ class CentrifugoBroadcaster extends Broadcaster
     {
         $payload['event'] = $event;
 
-        $response = $this->centrifuge->broadcast($this->formatChannels($channels), $payload);
+        $response = $this->centrifugo->broadcast($this->formatChannels($channels), $payload);
 
         if (is_array($response) && ! isset($response['error'])) {
             return;
@@ -141,7 +141,7 @@ class CentrifugoBroadcaster extends Broadcaster
         $info = [];
 
         return $access_granted ? [
-            'sign' => $this->centrifuge->generateConnectionToken($client, 0, $info),
+            'sign' => $this->centrifugo->generateConnectionToken($client, 0, $info),
             'info' => $info,
         ] : [
             'status' => 403,
