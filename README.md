@@ -5,10 +5,10 @@
 
 <p align="center">
 <a href="https://scrutinizer-ci.com/g/denis660/laravel-centrifuge"><img src="https://scrutinizer-ci.com/g/denis660/laravel-centrifuge/badges/build.png?b=master" alt="Build Status"></a>
-<a href="https://github.com/denis660/laravel-centrifuge/releases"><img src="https://img.shields.io/github/release/denis660/laravel-centrifuge.svg?style=flat-square" alt="Latest Version"></a>
-<a href="https://scrutinizer-ci.com/g/denis660/laravel-centrifuge"><img src="https://img.shields.io/scrutinizer/g/denis660/laravel-centrifuge.svg?style=flat-square" alt="Quality Score"></a>
+<a href="https://github.com/denis660/laravel-centrifugo/releases"><img src="https://img.shields.io/github/release/denis660/laravel-centrifugo.svg?style=flat-square" alt="Latest Version"></a>
+<a href="https://scrutinizer-ci.com/g/denis660/laravel-centrifugo"><img src="https://img.shields.io/scrutinizer/g/denis660/laravel-centrifugo.svg?style=flat-square" alt="Quality Score"></a>
 <a href="https://github.styleci.io/repos/324202212"><img src="https://github.styleci.io/repos/324202212/shield?branch=master" alt="StyleCI"></a>
-<a href="https://packagist.org/packages/denis660/laravel-centrifuge"><img src="https://img.shields.io/packagist/dt/denis660/laravel-centrifuge.svg?style=flat-square" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/denis660/laravel-centrifugo"><img src="https://img.shields.io/packagist/dt/denis660/laravel-centrifugo.svg?style=flat-square" alt="Total Downloads"></a>
 <a href="https://github.com/denis660/Centrifuge/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Software License"></a>
 </p>
 
@@ -36,7 +36,7 @@ Centrifugo broadcaster for laravel >= 8 is fork of [Laracent](https://github.com
 Require this package with composer:
 
 ```bash
-composer require denis660/laravel-centrifuge
+composer require denis660/laravel-centrifugo
 ```
 
 
@@ -45,7 +45,7 @@ Open your config/app.php and add the following to the providers array:
 ```php
 'providers' => [
     // Add service provider ( Laravel 5.4 or below )
-    denis660\Centrifuge\CentrifugeServiceProvider::class,
+    denis660\Centrifugo\CentrifugoServiceProvider::class,
 
     // And uncomment BroadcastServiceProvider
     App\Providers\BroadcastServiceProvider::class,
@@ -55,34 +55,34 @@ Open your config/app.php and add the following to the providers array:
 Open your config/broadcasting.php and add new connection like this:
 
 ```php
-        'centrifuge' => [
-            'driver' => 'centrifuge',
-            'secret'  => env('CENTRIFUGE_SECRET'),
-            'apikey'  => env('CENTRIFUGE_APIKEY'),
-            'url'     => env('CENTRIFUGE_URL', 'http://localhost:8000'), // centrifugo api url
-            'verify'  => env('CENTRIFUGE_VERIFY', false), // Verify host ssl if centrifugo uses this
-            'ssl_key' => env('CENTRIFUGE_SSL_KEY', null), // Self-Signed SSl Key for Host (require verify=true)
+        'centrifugo' => [
+            'driver' => 'centrifugo',
+            'secret'  => env('CENTRIFUGO_SECRET'),
+            'apikey'  => env('CENTRIFUGO_APIKEY'),
+            'url'     => env('CENTRIFUGO_URL', 'http://localhost:8000'), // centrifugo api url
+            'verify'  => env('CENTRIFUGO_VERIFY', false), // Verify host ssl if centrifugo uses this
+            'ssl_key' => env('CENTRIFUGO_SSL_KEY', null), // Self-Signed SSl Key for Host (require verify=true)
         ],
 ```
 
 Also you should add these two lines to your .env file:
 
 ```
-CENTRIFUGE_SECRET=token_hmac_secret_key-from-centrifugo-config
-CENTRIFUGE_APIKEY=api_key-from-centrifugo-config
-CENTRIFUGE_URL=http://localhost:8000
+CENTRIFUGO_SECRET=token_hmac_secret_key-from-centrifugo-config
+CENTRIFUGO_APIKEY=api_key-from-centrifugo-config
+CENTRIFUGO_URL=http://localhost:8000
 ```
 
 These lines are optional:
 ```
-CENTRIFUGE_SSL_KEY=/etc/ssl/some.pem
-CENTRIFUGE_VERIFY=false
+CENTRIFUGO_SSL_KEY=/etc/ssl/some.pem
+CENTRIFUGO_VERIFY=false
 ```
 
 Don't forget to change `BROADCAST_DRIVER` setting in .env file!
 
 ```
-BROADCAST_DRIVER=centrifuge
+BROADCAST_DRIVER=centrifugo
 ```
 
 ## Basic Usage

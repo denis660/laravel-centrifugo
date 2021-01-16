@@ -1,7 +1,7 @@
 {
-    "name": "denis660/laravel-centrifuge",
+    "name": "denis660/laravel-centrifugo",
     "type": "library",
-    "description": "Centrifugo broadcaster for laravel 5.6-8 and Centrifugo >= 2.8.0",
+    "description": "Centrifugo broadcaster for laravel 5.6-8 and Centrifugo >= 2.8.1",
     "keywords": ["laravel", "centrifugo", "broadcaster"],
     "license": "MIT",
     "authors": [
@@ -10,10 +10,10 @@
             "email": "amx-serv@ya.ru"
         }
     ],
-    "homepage": "https://github.com/denis660/laravel-centrifuge",
+    "homepage": "https://github.com/denis660/laravel-centrifugo",
     "support": {
-        "issues": "https://github.com/denis660/laravel-centrifuge/issues",
-        "source": "https://github.com/denis660/laravel-centrifuge"
+        "issues": "https://github.com/denis660/laravel-centrifugo/issues",
+        "source": "https://github.com/denis660/laravel-centrifugo"
     },
     "require": {
         "php": "^7.3|^8.0",
@@ -37,7 +37,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Centrifuge\\CentrifugeServiceProvider"
+                "Centrifugo\\CentrifugoServiceProvider"
             ]
         }
     },

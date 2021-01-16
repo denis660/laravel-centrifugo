@@ -9,21 +9,21 @@ use Illuminate\Broadcasting\Broadcasters\Broadcaster;
 use Illuminate\Broadcasting\BroadcastException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class CentrifugeBroadcaster extends Broadcaster
+class CentrifugoBroadcaster extends Broadcaster
 {
     /**
-     * The Centrifuge SDK instance.
+     * The Centrifugo SDK instance.
      *
-     * @var Contracts\CentrifugeInterface
+     * @var Contracts\CentrifugoInterface
      */
     protected $centrifuge;
 
     /**
      * Create a new broadcaster instance.
      *
-     * @param Centrifuge $centrifuge
+     * @param Centrifugo $centrifuge
      */
-    public function __construct(Centrifuge $centrifuge)
+    public function __construct(Centrifugo $centrifuge)
     {
         $this->centrifuge = $centrifuge;
     }

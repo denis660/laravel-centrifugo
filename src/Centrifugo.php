@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace denis660\Centrifuge;
 
-use denis660\Centrifuge\Contracts\CentrifugeInterface;
+use denis660\Centrifuge\Contracts\CentrifugoInterface;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ClientException;
 
-class Centrifuge implements CentrifugeInterface
+class Centrifugo implements CentrifugoInterface
 {
     const API_PATH = '/api';
 
@@ -23,7 +23,7 @@ class Centrifuge implements CentrifugeInterface
     protected $config;
 
     /**
-     * Create a new Centrifuge instance.
+     * Create a new Centrifugo instance.
      *
      * @param array $config
      * @param \GuzzleHttp\Client $httpClient
