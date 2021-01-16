@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace denis660\Centrifuge;
 
-use denis660\Centrifuge\Contracts\CentrifugeInterface;
 use Exception;
 use Illuminate\Broadcasting\Broadcasters\Broadcaster;
 use Illuminate\Broadcasting\BroadcastException;
