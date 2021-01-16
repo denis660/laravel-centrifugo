@@ -21,7 +21,7 @@ class CentrifugeBroadcaster extends Broadcaster
     /**
      * Create a new broadcaster instance.
      *
-     * @param \denis660\Centrifuge\Contracts\Centrifuge $centrifuge
+     * @param Centrifuge $centrifuge
      */
     public function __construct(Centrifuge $centrifuge)
     {
