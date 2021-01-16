@@ -92,7 +92,7 @@ interface CentrifugeInterface
      *
      * @param string $userId
      * @param int $exp
-     * @param string $info
+     * @param array $info
      * @return string
      */
     public function generateConnectionToken(string $userId = '', int $exp = 0, array $info = []);

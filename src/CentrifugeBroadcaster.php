@@ -14,7 +14,7 @@ class CentrifugeBroadcaster extends Broadcaster
     /**
      * The Centrifuge SDK instance.
      *
-     * @var \denis660\Centrifuge\Contracts\Centrifuge
+     * @var Contracts\CentrifugeInterface
      */
     protected $centrifuge;
 
