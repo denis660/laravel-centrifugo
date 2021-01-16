@@ -92,10 +92,10 @@ interface CentrifugeInterface
      *
      * @param string $userId
      * @param int $exp
-     * @param array $info
+     * @param string $info
      * @return string
      */
-    public function generateConnectionToken(string $userId = '', int $exp = 0, array $info = []): string;
+    public function generateConnectionToken(string $userId = '', int $exp = 0, array $info = []);
 
     /**
      * Generate private channel token.
@@ -106,5 +106,5 @@ interface CentrifugeInterface
      * @param array $info
      * @return string
      */
-    public function generatePrivateChannelToken(string $client, string $channel, int $exp = 0, array $info = []): string;
+    public function generatePrivateChannelToken(string $client, string $channel, int $exp = 0, array $info = []);
 }

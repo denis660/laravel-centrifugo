@@ -35,7 +35,7 @@ class Centrifuge implements CentrifugeInterface
     }
 
     /**
-     * Init Centrifuge configuration.
+     * Init centrifuge configuration.
      *
      * @param array $config
      * @return array
@@ -188,7 +188,7 @@ class Centrifuge implements CentrifugeInterface
      * @param array $info
      * @return string
      */
-    public function generateConnectionToken(string $userId = '', int $exp = 0, array $info = []): string
+    public function generateConnectionToken(string $userId = '', int $exp = 0, array $info = [])
     {
         $header = ['typ' => 'JWT', 'alg' => 'HS256'];
         $payload = ['sub' => $userId];
@@ -217,7 +217,7 @@ class Centrifuge implements CentrifugeInterface
      * @param array $info
      * @return string
      */
-    public function generatePrivateChannelToken(string $client, string $channel, int $exp = 0, array $info = []): string
+    public function generatePrivateChannelToken(string $client, string $channel, int $exp = 0, array $info = [])
     {
         $header = ['typ' => 'JWT', 'alg' => 'HS256'];
         $payload = ['channel' => $channel, 'client' => $client];
@@ -248,7 +248,7 @@ class Centrifuge implements CentrifugeInterface
     }
 
     /**
-     * Send message to Centrifuge server.
+     * Send message to centrifuge server.
      *
      * @param string $method
      * @param array $params

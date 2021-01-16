@@ -36,14 +36,15 @@ Centrifugo broadcaster for laravel >= 8 is fork of [Laracent](https://github.com
 Require this package with composer:
 
 ```bash
-composer req denis660/laravel-centrifuge
+composer require denis660/laravel-centrifuge
 ```
+
 
 Open your config/app.php and add the following to the providers array:
 
 ```php
 'providers' => [
-    // ...
+    // Add service provider ( Laravel 5.4 or below )
     denis660\Centrifuge\CentrifugeServiceProvider::class,
 
     // And uncomment BroadcastServiceProvider
@@ -54,34 +55,34 @@ Open your config/app.php and add the following to the providers array:
 Open your config/broadcasting.php and add new connection like this:
 
 ```php
-    'centrifugo' => [
-        'driver' => 'centrifugo',
-        'secret'  => env('CENTRIFUGO_SECRET'),
-        'apikey'  => env('CENTRIFUGO_APIKEY'),
-        'url'     => env('CENTRIFUGO_URL', 'http://localhost:8000'), // centrifugo api url
-        'verify'  => env('CENTRIFUGO_VERIFY', false), // Verify host ssl if centrifugo uses this
-        'ssl_key' => env('CENTRIFUGO_SSL_KEY', null), // Self-Signed SSl Key for Host (require verify=true)
-    ],
+        'centrifuge' => [
+            'driver' => 'centrifuge',
+            'secret'  => env('CENTRIFUGE_SECRET'),
+            'apikey'  => env('CENTRIFUGE_APIKEY'),
+            'url'     => env('CENTRIFUGE_URL', 'http://localhost:8000'), // centrifugo api url
+            'verify'  => env('CENTRIFUGE_VERIFY', false), // Verify host ssl if centrifugo uses this
+            'ssl_key' => env('CENTRIFUGE_SSL_KEY', null), // Self-Signed SSl Key for Host (require verify=true)
+        ],
 ```
 
 Also you should add these two lines to your .env file:
 
 ```
-CENTRIFUGO_SECRET=token_hmac_secret_key-from-centrifugo-config
-CENTRIFUGO_APIKEY=api_key-from-centrifugo-config
-CENTRIFUGO_URL=http://localhost:8000
+CENTRIFUGE_SECRET=token_hmac_secret_key-from-centrifugo-config
+CENTRIFUGE_APIKEY=api_key-from-centrifugo-config
+CENTRIFUGE_URL=http://localhost:8000
 ```
 
 These lines are optional:
 ```
-CENTRIFUGO_SSL_KEY=/etc/ssl/some.pem
-CENTRIFUGO_VERIFY=false
+CENTRIFUGE_SSL_KEY=/etc/ssl/some.pem
+CENTRIFUGE_VERIFY=false
 ```
 
 Don't forget to change `BROADCAST_DRIVER` setting in .env file!
 
 ```
-BROADCAST_DRIVER=centrifugo
+BROADCAST_DRIVER=centrifuge
 ```
 
 ## Basic Usage
@@ -123,9 +124,9 @@ class NotificationService
 | publish(string $channel, array $data) | Send message into channel. |
 | broadcast(array $channels, array $data) | Send message into multiple channel. |
 | presence(string $channel) | Get channel presence information (all clients currently subscribed on this channel). |
-| presence_stats(string $channel) | Get channel presence information in short form (number of clients).|
+| presenceStats(string $channel) | Get channel presence information in short form (number of clients).|
 | history(string $channel) | Get channel history information (list of last messages sent into channel). |
-| history_remove(string $channel) | Remove channel history information.
+| historyRemove(string $channel) | Remove channel history information.
 | unsubscribe(string $channel,  string $user) | Unsubscribe user from channel. |
 | disconnect(string $user_id) | Disconnect user by it's ID. |
 | channels() | Get channels information (list of currently active channels). |

@@ -11,14 +11,15 @@ use Illuminate\Support\ServiceProvider;
 class CentrifugeServiceProvider extends ServiceProvider
 {
     /**
-     * Add Centrifuge broadcaster.
+     * Add centrifugo broadcaster.
      *
      * @param \Illuminate\Broadcasting\BroadcastManager $broadcastManager
      */
     public function boot(BroadcastManager $broadcastManager)
     {
-        $broadcastManager->extend('Centrifuge', function ($app) {
-            return new CentrifugeBroadcaster($app->make('Centrifuge'));
+
+        $broadcastManager->extend('centrifuge', function ($app) {
+            return new CentrifugeBroadcaster($app->make('centrifuge'));
         });
     }
 
@@ -29,14 +30,14 @@ class CentrifugeServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('Centrifuge', function ($app) {
-            $config = $app->make('config')->get('broadcasting.connections.centrifugo');
+        $this->app->singleton('centrifuge', function ($app) {
+            $config = $app->make('config')->get('broadcasting.connections.centrifuge');
             $http = new HttpClient();
 
             return new Centrifuge($config, $http);
         });
 
-        $this->app->alias('Centrifuge', 'denis660\Centrifuge\Centrifuge');
-        $this->app->alias('Centrifuge', 'denis660\Centrifuge\Contracts\Centrifuge');
+        $this->app->alias('centrifuge', 'denis660\Centrifuge\Centrifuge');
+        $this->app->alias('centrifuge', 'denis660\Centrifuge\Contracts\Centrifuge');
     }
 }

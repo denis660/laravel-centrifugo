@@ -15,18 +15,18 @@ class CentrifugeBroadcaster extends Broadcaster
     /**
      * The Centrifuge SDK instance.
      *
-     * @var \denis660\Centrifuge\Contracts\CentrifugeInterface
+     * @var \denis660\Centrifuge\Contracts\Centrifuge
      */
-    protected $Centrifuge;
+    protected $centrifuge;
 
     /**
      * Create a new broadcaster instance.
      *
-     * @param \denis660\Centrifuge\Contracts\CentrifugeInterface $Centrifuge
+     * @param \denis660\Centrifuge\Contracts\Centrifuge $centrifuge
      */
-    public function __construct(CentrifugeInterface $Centrifuge)
+    public function __construct(Centrifuge $centrifuge)
     {
-        $this->Centrifuge = $Centrifuge;
+        $this->centrifuge = $centrifuge;
     }
 
     /**
@@ -84,7 +84,7 @@ class CentrifugeBroadcaster extends Broadcaster
     {
         $payload['event'] = $event;
 
-        $response = $this->Centrifuge->broadcast($this->formatChannels($channels), $payload);
+        $response = $this->centrifuge->broadcast($this->formatChannels($channels), $payload);
 
         if (is_array($response) && ! isset($response['error'])) {
             return;
@@ -142,7 +142,7 @@ class CentrifugeBroadcaster extends Broadcaster
         $info = [];
 
         return $access_granted ? [
-            'sign' => $this->Centrifuge->generateConnectionToken($client, 0, $info),
+            'sign' => $this->centrifuge->generateConnectionToken($client, 0, $info),
             'info' => $info,
         ] : [
             'status' => 403,
