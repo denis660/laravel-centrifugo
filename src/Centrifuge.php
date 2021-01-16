@@ -269,7 +269,7 @@ class Centrifuge implements CentrifugeInterface
             $config = collect([
                 'headers'     => $headers,
                 'body'        => $json,
-                'http_errors' => false,
+                'http_errors' => true,
             ]);
 
             if ($url['scheme'] == 'https') {
