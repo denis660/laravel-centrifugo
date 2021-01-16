@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace denis660\Centrifuge;
+namespace denis660\Centrifugo;
 
 use GuzzleHttp\Client as HttpClient;
 use Illuminate\Broadcasting\BroadcastManager;

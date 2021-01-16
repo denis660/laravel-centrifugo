@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace denis660\Centrifuge;
+namespace denis660\Centrifugo;
 
-use denis660\Centrifuge\Contracts\CentrifugoInterface;
+use denis660\Centrifugo\Contracts\CentrifugoInterface;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ClientException;
 

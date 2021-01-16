@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace denis660\Centrifuge\Contracts;
+namespace denis660\Centrifugo\Contracts;
 
 interface CentrifugoInterface
 {

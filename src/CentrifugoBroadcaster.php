@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace denis660\Centrifuge;
+namespace denis660\Centrifugo;
 
 use Exception;
 use Illuminate\Broadcasting\Broadcasters\Broadcaster;
