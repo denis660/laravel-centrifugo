@@ -36,7 +36,7 @@ Centrifugo broadcaster for laravel >= 8 is fork of [Laracent](https://github.com
 Require this package with composer:
 
 ```bash
-composer require denis660/laravel-centrifugo
+composer req denis660/laravel-centrifugo
 ```
 
 
@@ -136,4 +136,4 @@ class NotificationService
 
 ## License
 
-The MIT License (MIT). Please see [License File](https://github.com/LaraComponents/centrifuge-broadcaster/blob/master/LICENSE) for more information.
+The MIT License (MIT). Please see [License File](https://github.com/denis660/laravel-centrifugo/blob/master/LICENSE for more information.

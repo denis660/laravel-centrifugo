@@ -36,7 +36,7 @@ Centrifugo broadcaster для laravel >= 8 это форк репозитори�
 Установить через composer, выполнив команду в консоле:
 
 ```bash
-composer require denis660/laravel-centrifugo
+composer req denis660/laravel-centrifugo
 ```
 
 Откройте ваш config/app.php и добавьте соелубщее в раздел providers:
@@ -134,4 +134,4 @@ class NotificationService
 
 ## Лицения
 
-Лицензия MIT. Пожалуйста прочитайте [License File](https://github.com/LaraComponents/centrifugo-broadcaster/blob/master/LICENSE) для получения дополнительной информации.
+Лицензия MIT. Пожалуйста прочитайте [License File](https://github.com/denis660/laravel-centrifugo/blob/master/LICENSE) для получения дополнительной информации.
