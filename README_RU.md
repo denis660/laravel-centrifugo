@@ -25,7 +25,7 @@ Centrifugo broadcaster для laravel >= 8 это форк репозитори�
 
 - PHP >= 7.3
 - Framework Laravel 5.6 - 8
-- Centrifugo Сервер 2.8.1 или новее (см. [здесь](https://github.com/centrifugal/centrifugo))
+- Centrifugo Сервер 2.8.2 или новее (см. [здесь](https://github.com/centrifugal/centrifugo))
 
 ## Зависимости
 
