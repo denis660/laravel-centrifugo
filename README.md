@@ -95,24 +95,38 @@ A simple client usage example:
 
 ```php
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
-namespace App\Services;
+namespace App\Http\Controllers;
+
 
 use denis660\Centrifugo\Centrifugo;
+use Illuminate\Support\Facades\Auth;
 
-class NotificationService
+class ExampleController
 {
-    private $centrifugo;
 
-    public function __construct(Centrifugo $centrifugo)
+    public function example(Centrifugo $centrifugo)
     {
-        $this->centrifugo = $centrifugo;
-    }
+        // Send message into channel
+        $centrifugo->publish('news', ['message' => 'Hello world']);
 
-    public function example(): void
-    {
-        $this->centrifugo->publish('news', ['message' => 'Hello world']);
+        // Generate connection token
+        $token = $centrifugo->generateConnectionToken((string)Auth::id(), 0, [
+            'name' => Auth::user()->name,
+        ]);
+
+        // Generate private channel token
+        $apiSign = $centrifugo->generatePrivateChannelToken((string)Auth::id(), 'channel', time() + 5 * 60, [
+            'name' => Auth::user()->name,
+        ]);
+
+        //Get a list of currently active channels.
+        $centrifugo->channels();
+
+        //Get channel presence information (all clients currently subscribed on this channel).
+        $centrifugo->presence('news');
+
     }
 }
 ```
