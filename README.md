@@ -13,14 +13,14 @@
 </p>
 
 ## Introduction
-Centrifugo broadcaster for laravel >= 8 is fork of [Laracent](https://github.com/AlexHnydiuk/Laracent), based on:
+Centrifugo broadcaster for laravel  is fork of [Laracent](https://github.com/AlexHnydiuk/Laracent), based on:
 - [LaraComponents/centrifuge-broadcaster](https://github.com/LaraComponents/centrifuge-broadcaster)
 - [centrifugal/phpcent](https://github.com/centrifugal/phpcent)
 
 ## Features 
-- Compatible with latest Centrifugo 2.8.2 🚀
-- Wrapper over Centrifugo HTTP API 🔌
-- Authentication with JWT token (HMAC algorithm) for anonymous, authenticated user and private channel 🗝️
+- [x] Compatible with latest [Centrifugo 2.8.2](https://github.com/centrifugal/centrifugo/releases/tag/v2.8.2) 🚀
+- [x] Wrapper over [Centrifugo HTTP API](https://centrifugal.github.io/centrifugo/server/http_api/) 🔌
+- [X] Authentication with JWT token (HMAC algorithm) for [anonymous](./Resources/docs/authentication.md#anonymous), [authenticated user](./Resources/docs/authentication.md#authenticated-user) and [private channel](./Resources/docs/authentication.md#private-channel) 🗝️
 
 ## Requirements
 - PHP >= 7.3
