@@ -17,7 +17,7 @@ Centrifugo broadcaster для laravel  это форк репозитория [L
 - [LaraComponents/centrifugo-broadcaster](https://github.com/LaraComponents/centrifugo-broadcaster)
 - [centrifugal/phpcent](https://github.com/centrifugal/phpcent)
 
-##Особенности
+## Особенности
 - Совместимость с последней версией [Centrifugo 2.8.2](https://github.com/centrifugal/centrifugo/releases/tag/v2.8.2) 🚀
 - Обертка над [Centrifugo HTTP API](https://centrifugal.github.io/centrifugo/server/http_api/) 🔌
 - Аутентификация с помощью токена JWT (HMAC алгоритм) для [анонимного](./Resources/docs/authentication.md#anonymous), [авторизованного пользователя](./Resources/docs/authentication.md#authenticated-user) и [приватного канала](./Resources/docs/authentication.md#private-channel) 🗝️
