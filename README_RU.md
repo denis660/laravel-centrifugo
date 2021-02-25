@@ -13,26 +13,22 @@
 </p>
 
 ## Введение
-Centrifugo broadcaster для laravel >= 8 это форк репозитория [Laracent](https://github.com/AlexHnydiuk/Laracent), based on:
+Centrifugo broadcaster для laravel  это форк репозитория [Laracent](https://github.com/AlexHnydiuk/Laracent), based on:
 - [LaraComponents/centrifugo-broadcaster](https://github.com/LaraComponents/centrifugo-broadcaster)
 - [centrifugal/phpcent](https://github.com/centrifugal/phpcent)
 
-## Изменения
-- поддержка Laravel 5.6 - 8
-- поддержка guzzlehttp/guzzle 6-7
+##Особенности
+- Совместимость с последней версией [Centrifugo 2.8.2](https://github.com/centrifugal/centrifugo/releases/tag/v2.8.2) 🚀
+- Обертка над [Centrifugo HTTP API](https://centrifugal.github.io/centrifugo/server/http_api/) 🔌
+- Аутентификация с помощью токена JWT (HMAC алгоритм) для [анонимного](./Resources/docs/authentication.md#anonymous), [авторизованного пользователя](./Resources/docs/authentication.md#authenticated-user) и [приватного канала](./Resources/docs/authentication.md#private-channel) 🗝️
 
 ## Требования
-
 - PHP >= 7.3
 - Framework Laravel 5.6 - 8
+- guzzlehttp/guzzle 6 - 7
 - Centrifugo Сервер 2.8.2 или новее (см. [здесь](https://github.com/centrifugal/centrifugo))
 
-## Зависимости
-
-- guzzlehttp/guzzle 6 - 7
-
 ## Установка
-
 Установить через composer, выполнив команду в консоле:
 
 ```bash
