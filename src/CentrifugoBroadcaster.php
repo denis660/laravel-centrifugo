@@ -59,7 +59,6 @@ class CentrifugoBroadcaster extends Broadcaster
             }
 
             return response($private ? $privateResponse : $response);
-
         } else {
             throw new HttpException(401);
         }
