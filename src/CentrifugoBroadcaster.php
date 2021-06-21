@@ -7,6 +7,7 @@ namespace denis660\Centrifugo;
 use Exception;
 use Illuminate\Broadcasting\Broadcasters\Broadcaster;
 use Illuminate\Broadcasting\BroadcastException;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class CentrifugoBroadcaster extends Broadcaster
@@ -49,10 +50,12 @@ class CentrifugoBroadcaster extends Broadcaster
                 } catch (HttpException $e) {
                     $is_access_granted = false;
                 }
-
+                if ($this->isPrivateChannel($channel)) {
+                    $response['channels'][] = $this->makeResponseForPrivateChannel($is_access_granted, $client, $channel);
+                    continue;
+                }
                 $response[$channel] = $this->makeResponseForClient($is_access_granted, $client);
             }
-
             return response()->json($response);
         } else {
             throw new HttpException(401);
@@ -85,7 +88,7 @@ class CentrifugoBroadcaster extends Broadcaster
 
         $response = $this->centrifugo->broadcast($this->formatChannels($channels), $payload);
 
-        if (is_array($response) && ! isset($response['error'])) {
+        if (is_array($response) && !isset($response['error'])) {
             return;
         }
 
@@ -146,5 +149,20 @@ class CentrifugoBroadcaster extends Broadcaster
         ] : [
             'status' => 403,
         ];
+    }
+
+    private function makeResponseForPrivateChannel(bool $access_granted, string $client, string $channel): array
+    {
+        return $access_granted ? [
+            'channel' => $channel,
+            'token' => $this->centrifugo->generatePrivateChannelToken($client, $channel),
+        ] : [
+            'status' => 403,
+        ];
+    }
+
+    private function isPrivateChannel(string $channel): bool
+    {
+        return Str::contains($channel, "$");
     }
 }
