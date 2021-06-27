@@ -1,7 +1,7 @@
 <p align="center">Документация <a href="https://github.com/denis660/laravel-centrifugo/blob/master/README.md">EN</a> | <b>RU</b></p>
 
 <h1 align="center">Laravel + Centrifugo</h1>
-<h2 align="center">Centrifugo broadcast драйвер для Laravel 5.6 - 8 </h2>
+<h2 align="center">Centrifugo broadcast драйвер для Laravel 6.20.26 - 8 </h2>
 
 <p align="center">
 <a href="https://scrutinizer-ci.com/g/denis660/laravel-centrifugo/build-status/main"><img src="https://scrutinizer-ci.com/g/denis660/laravel-centrifugo/badges/build.png?b=master" alt="Build Status"></a>
@@ -18,15 +18,15 @@ Centrifugo broadcaster для laravel  это форк репозитория [L
 - [centrifugal/phpcent](https://github.com/centrifugal/phpcent)
 
 ## Особенности
-- Совместимость с последней версией [Centrifugo 2.8.2](https://github.com/centrifugal/centrifugo/releases/tag/v2.8.2) 🚀
+- Совместимость с последней версией [Centrifugo 2.8.5](https://github.com/centrifugal/centrifugo/releases/tag/v2.8.5) 🚀
 - Обертка над [Centrifugo HTTP API](https://centrifugal.github.io/centrifugo/server/http_api/) 🔌
 - Аутентификация с помощью токена JWT (HMAC алгоритм) для [анонимного](./Resources/docs/authentication.md#anonymous), [авторизованного пользователя](./Resources/docs/authentication.md#authenticated-user) и [приватного канала](./Resources/docs/authentication.md#private-channel) 🗝️
 
 ## Требования
 - PHP >= 7.3
-- Framework Laravel 5.6 - 8
+- Framework Laravel 6.20.26 - 8
 - guzzlehttp/guzzle 6 - 7
-- Centrifugo Сервер 2.8.2 или новее (см. [здесь](https://github.com/centrifugal/centrifugo))
+- Centrifugo Сервер 2.8.5 или новее (см. [здесь](https://github.com/centrifugal/centrifugo))
 
 ## Установка
 Установить через composer, выполнив команду в консоле:
