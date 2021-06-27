@@ -39,9 +39,6 @@ composer req denis660/laravel-centrifugo
 
 ```php
 'providers' => [
-    // Добавлять для версии Laravel 5.4 и ниже
-    denis660\Centrifugo\CentrifugoServiceProvider::class,
-
     // Раскомментируйте эту строчку BroadcastServiceProvider
     App\Providers\BroadcastServiceProvider::class,
 ],
