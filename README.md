@@ -1,7 +1,7 @@
 <p align="center">Documentation <b>EN</b> | <a href="https://github.com/denis660/laravel-centrifuge/blob/master/README_RU.md">RU</a></p>
 
 <h1 align="center">Laravel + Centrifugo</h1>
-<h2 align="center">Centrifugo broadcast driver for Laravel 5.6 - 8 </h2>
+<h2 align="center">Centrifugo broadcast driver for Laravel 6.20.26 - 8 </h2>
 
 <p align="center">
 <a href="https://scrutinizer-ci.com/g/denis660/laravel-centrifugo"><img src="https://scrutinizer-ci.com/g/denis660/laravel-centrifugo/badges/build.png?b=master" alt="Build Status"></a>
@@ -18,15 +18,15 @@ Centrifugo broadcaster for laravel  is fork of [Laracent](https://github.com/Ale
 - [centrifugal/phpcent](https://github.com/centrifugal/phpcent)
 
 ## Features 
-- Compatible with latest [Centrifugo 2.8.2](https://github.com/centrifugal/centrifugo/releases/tag/v2.8.2) 🚀
+- Compatible with latest [Centrifugo 2.8.5](https://github.com/centrifugal/centrifugo/releases/tag/v2.8.5) 🚀
 - Wrapper over [Centrifugo HTTP API](https://centrifugal.github.io/centrifugo/server/http_api/) 🔌
 - Authentication with JWT token (HMAC algorithm) for [anonymous](./Resources/docs/authentication.md#anonymous), [authenticated user](./Resources/docs/authentication.md#authenticated-user) and [private channel](./Resources/docs/authentication.md#private-channel) 🗝️
 
 ## Requirements
 - PHP >= 7.3
-- Laravel 5.6 - 8
+- Laravel 6.20.26 - 8
 - guzzlehttp/guzzle 6 - 7
-- Centrifugo Server 2.8.2 or newer (see [here](https://github.com/centrifugal/centrifugo))
+- Centrifugo Server 2.8.5 or newer (see [here](https://github.com/centrifugal/centrifugo))
 
 ## Installation
 
