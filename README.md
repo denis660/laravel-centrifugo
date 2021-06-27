@@ -41,9 +41,6 @@ Open your config/app.php and add the following to the providers array:
 
 ```php
 'providers' => [
-    // Add service provider ( Laravel 5.4 or below )
-    denis660\Centrifugo\CentrifugoServiceProvider::class,
-
     // And uncomment BroadcastServiceProvider
     App\Providers\BroadcastServiceProvider::class,
 ],
