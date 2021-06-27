@@ -41,6 +41,7 @@ class CentrifugoBroadcaster extends Broadcaster
             $channels = $this->getChannelsFromRequest($request);
 
             $response = [];
+            $privateResponse = [];
             foreach ($channels as $channel) {
                 $channelName = $this->getChannelName($channel);
 
@@ -50,10 +51,14 @@ class CentrifugoBroadcaster extends Broadcaster
                     $is_access_granted = false;
                 }
 
-                $response[$channel] = $this->makeResponseForClient($is_access_granted, $client);
+                if ($private = $this->isPrivateChannel($channel)) {
+                    $privateResponse['channels'][] = $this->makeResponseForPrivateClient($is_access_granted, $channel, $client);
+                } else {
+                    $response[$channel] = $this->makeResponseForClient($is_access_granted, $client);
+                }
             }
 
-            return response()->json($response);
+            return response($private ? $privateResponse : $response);
         } else {
             throw new HttpException(401);
         }
@@ -82,6 +87,9 @@ class CentrifugoBroadcaster extends Broadcaster
     public function broadcast(array $channels, $event, array $payload = [])
     {
         $payload['event'] = $event;
+        $channels = array_map(function ($channel) {
+            return str_replace('private-', '$', $channel);
+        }, $channels);
 
         $response = $this->centrifugo->broadcast($this->formatChannels($channels), $payload);
 
@@ -126,7 +134,18 @@ class CentrifugoBroadcaster extends Broadcaster
      */
     private function getChannelName(string $channel)
     {
-        return (substr($channel, 0, 1) === '$') ? substr($channel, 1) : $channel;
+        return $this->isPrivateChannel($channel) ? substr($channel, 1) : $channel;
+    }
+
+    /**
+     * Check channel name by $ symbol.
+     *
+     * @param string $channel
+     * @return bool
+     */
+    private function isPrivateChannel(string $channel): bool
+    {
+        return substr($channel, 0, 1) === '$';
     }
 
     /**
@@ -143,6 +162,29 @@ class CentrifugoBroadcaster extends Broadcaster
         return $access_granted ? [
             'sign' => $this->centrifugo->generateConnectionToken($client, 0, $info),
             'info' => $info,
+        ] : [
+            'status' => 403,
+        ];
+    }
+
+    /**
+     * Make response for client, based on access rights of private channel.
+     *
+     * @param bool $access_granted
+     * @param string $channel
+     * @param string $client
+     * @return array
+     */
+    private function makeResponseForPrivateClient(bool $access_granted, string $channel, string $client)
+    {
+        $info = [];
+
+        return $access_granted ? [
+
+            'channel' => $channel,
+            'token' => $this->centrifugo->generatePrivateChannelToken($client, $channel, 0, $info),
+            'info' => $this->centrifugo->info(),
+
         ] : [
             'status' => 403,
         ];
