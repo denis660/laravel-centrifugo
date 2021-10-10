@@ -34,7 +34,7 @@ class CentrifugoServiceProvider extends ServiceProvider
             $config = $app->make('config')->get('broadcasting.connections.centrifugo');
             $http = new HttpClient();
 
-            return new Centrifugo($config, $http);
+            return new CentrifugoBroadcaster($config, $http);
         });
 
         $this->app->alias('centrifugo', 'denis660\Centrifugo\Centrifugo');
