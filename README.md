@@ -24,9 +24,9 @@ Centrifugo broadcaster for laravel  is fork of [Laracent](https://github.com/Ale
 
 ## Requirements
 - PHP >= 7.3
-- Laravel 6.20.26 - 8
+- Laravel 7.30.4 - 8
 - guzzlehttp/guzzle 6 - 7
-- Centrifugo Server 2.8.5 or newer (see [here](https://github.com/centrifugal/centrifugo))
+- Centrifugo Server 2.8.6 or newer (see [here](https://github.com/centrifugal/centrifugo))
 
 ## Installation
 
