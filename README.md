@@ -1,7 +1,7 @@
 <p align="center">Documentation <b>EN</b> | <a href="https://github.com/denis660/laravel-centrifuge/blob/master/README_RU.md">RU</a></p>
 
 <h1 align="center">Laravel + Centrifugo</h1>
-<h2 align="center">Centrifugo broadcast driver for Laravel 6.20.26 - 8 </h2>
+<h2 align="center">Centrifugo broadcast driver for Laravel 7.30.4 - 8 </h2>
 
 <p align="center">
 <a href="https://scrutinizer-ci.com/g/denis660/laravel-centrifugo"><img src="https://scrutinizer-ci.com/g/denis660/laravel-centrifugo/badges/build.png?b=master" alt="Build Status"></a>
