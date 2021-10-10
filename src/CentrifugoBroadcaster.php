@@ -4,189 +4,345 @@ declare(strict_types=1);
 
 namespace denis660\Centrifugo;
 
-use Exception;
-use Illuminate\Broadcasting\Broadcasters\Broadcaster;
-use Illuminate\Broadcasting\BroadcastException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use denis660\Centrifugo\Contracts\CentrifugoBroadcaster as CentrifugoBroadcasterContract;
+use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 
-class CentrifugoBroadcaster extends Broadcaster
+class CentrifugoBroadcaster implements CentrifugoBroadcasterContract
 {
-    /**
-     * The Centrifugo SDK instance.
-     *
-     * @var Contracts\CentrifugoInterface
-     */
-    protected $centrifugo;
+    const API_PATH = '/api';
 
     /**
-     * Create a new broadcaster instance.
-     *
-     * @param Centrifugo $centrifugo
+     * @var HttpClient
      */
-    public function __construct(Centrifugo $centrifugo)
+    protected $httpClient;
+
+    /**
+     * @var array
+     */
+    protected $config;
+
+    /**
+     * Create a new Centrifugo instance.
+     *
+     * @param  array  $config
+     * @param  HttpClient  $httpClient
+     */
+    public function __construct(array $config, HttpClient $httpClient)
     {
-        $this->centrifugo = $centrifugo;
+        $this->httpClient = $httpClient;
+        $this->config = $this->initConfiguration($config);
     }
 
     /**
-     * Authenticate the incoming request for a given channel.
+     * Init centrifugo configuration.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return mixed
+     * @param  array  $config
+     * @return array
      */
-    public function auth($request)
+    protected function initConfiguration(array $config)
     {
-        if ($request->user()) {
-            $client = $this->getClientFromRequest($request);
-            $channels = $this->getChannelsFromRequest($request);
+        $defaults = [
+            'url' => 'http://localhost:8000',
+            'secret' => null,
+            'apikey' => null,
+            'ssl_key' => null,
+            'verify' => true,
+        ];
 
-            $response = [];
-            $privateResponse = [];
-            foreach ($channels as $channel) {
-                $channelName = $this->getChannelName($channel);
+        foreach ($config as $key => $value) {
+            if (array_key_exists($key, $defaults)) {
+                $defaults[$key] = $value;
+            }
+        }
 
-                try {
-                    $is_access_granted = $this->verifyUserCanAccessChannel($request, $channelName);
-                } catch (HttpException $e) {
-                    $is_access_granted = false;
-                }
+        return $defaults;
+    }
 
-                if ($private = $this->isPrivateChannel($channel)) {
-                    $privateResponse['channels'][] = $this->makeResponseForPrivateClient($is_access_granted, $channel, $client);
-                } else {
-                    $response[$channel] = $this->makeResponseForClient($is_access_granted, $client);
+    /**
+     * Send message into channel.
+     *
+     * @param  string  $channel
+     * @param  array  $data
+     * @return mixed
+     * @throws GuzzleException
+     */
+    public function publish(string $channel, array $data)
+    {
+        return $this->send('publish', [
+            'channel' => $channel,
+            'data' => $data,
+        ]);
+    }
+
+    /**
+     * Send message into multiple channel.
+     *
+     * @param  array  $channels
+     * @param  array  $data
+     * @return mixed
+     * @throws GuzzleException
+     */
+    public function broadcast(array $channels, array $data)
+    {
+        $params = ['channels' => $channels, 'data' => $data];
+
+        return $this->send('broadcast', $params);
+    }
+
+    /**
+     * Get channel presence information (all clients currently subscribed on this channel).
+     *
+     * @param  string  $channel
+     * @return mixed
+     * @throws GuzzleException
+     */
+    public function presence(string $channel)
+    {
+        return $this->send('presence', ['channel' => $channel]);
+    }
+
+    /**
+     * Get channel presence information in short form.
+     *
+     * @param  string  $channel
+     * @return mixed
+     * @throws GuzzleException
+     */
+    public function presenceStats(string $channel)
+    {
+        return $this->send('presence_stats', ['channel' => $channel]);
+    }
+
+    /**
+     * Get channel history information (list of last messages sent into channel).
+     *
+     * @param  string  $channel
+     * @return mixed
+     * @throws GuzzleException
+     */
+    public function history(string $channel)
+    {
+        return $this->send('history', ['channel' => $channel]);
+    }
+
+    /**
+     * Remove channel history information.
+     *
+     * @param  string  $channel
+     * @return mixed
+     * @throws GuzzleException
+     */
+    public function historyRemove(string $channel)
+    {
+        return $this->send('history_remove', [
+            'channel' => $channel,
+        ]);
+    }
+
+    /**
+     * Unsubscribe user from channel.
+     *
+     * @param  string  $channel
+     * @param  string  $user
+     * @return mixed
+     * @throws GuzzleException
+     */
+    public function unsubscribe(string $channel, string $user)
+    {
+        return $this->send('unsubscribe', [
+            'channel' => $channel,
+            'user' => $user,
+        ]);
+    }
+
+    /**
+     * Disconnect user by its ID.
+     *
+     * @param  string  $user_id
+     * @return mixed
+     * @throws GuzzleException
+     */
+    public function disconnect(string $user_id)
+    {
+        return $this->send('disconnect', ['user' => (string) $user_id]);
+    }
+
+    /**
+     * Get channels information (list of currently active channels).
+     *
+     * @return mixed
+     * @throws GuzzleException
+     */
+    public function channels()
+    {
+        return $this->send('channels');
+    }
+
+    /**
+     * Get stats information about running server nodes.
+     *
+     * @return mixed
+     * @throws GuzzleException
+     */
+    public function info()
+    {
+        return $this->send('info');
+    }
+
+    /**
+     * Generate connection token.
+     *
+     * @param  string  $userId
+     * @param  int  $exp
+     * @param  array  $info
+     * @return string
+     */
+    public function generateConnectionToken(string $userId = '', int $exp = 0, array $info = []): string
+    {
+        $header = ['typ' => 'JWT', 'alg' => 'HS256'];
+        $payload = ['sub' => $userId];
+        if (!empty($info)) {
+            $payload['info'] = $info;
+        }
+        if ($exp) {
+            $payload['exp'] = $exp;
+        }
+        $segments = [];
+        $segments[] = $this->urlsafeB64Encode(json_encode($header));
+        $segments[] = $this->urlsafeB64Encode(json_encode($payload));
+        $signing_input = implode('.', $segments);
+        $signature = $this->sign($signing_input, $this->getSecret());
+        $segments[] = $this->urlsafeB64Encode($signature);
+
+        return implode('.', $segments);
+    }
+
+    /**
+     * Generate private channel token.
+     *
+     * @param  string  $client
+     * @param  string  $channel
+     * @param  int  $exp
+     * @param  array  $info
+     * @return string
+     */
+    public function generatePrivateChannelToken(string $client, string $channel, int $exp = 0, array $info = []): string
+    {
+        $header = ['typ' => 'JWT', 'alg' => 'HS256'];
+        $payload = ['channel' => $channel, 'client' => $client];
+        if (!empty($info)) {
+            $payload['info'] = $info;
+        }
+        if ($exp) {
+            $payload['exp'] = $exp;
+        }
+        $segments = [];
+        $segments[] = $this->urlsafeB64Encode(json_encode($header));
+        $segments[] = $this->urlsafeB64Encode(json_encode($payload));
+        $signing_input = implode('.', $segments);
+        $signature = $this->sign($signing_input, $this->getSecret());
+        $segments[] = $this->urlsafeB64Encode($signature);
+
+        return implode('.', $segments);
+    }
+
+    /**
+     * Get secret key.
+     *
+     * @return string
+     */
+    protected function getSecret()
+    {
+        return $this->config['secret'];
+    }
+
+    /**
+     * Send message to centrifugo server.
+     *
+     * @param  string  $method
+     * @param  array  $params
+     * @return mixed
+     * @throws GuzzleException
+     */
+    protected function send($method, array $params = [])
+    {
+        $json = json_encode(['method' => $method, 'params' => $params]);
+
+        $headers = [
+            'Content-type' => 'application/json',
+            'Authorization' => 'apikey '.$this->config['apikey'],
+        ];
+
+        try {
+            $url = parse_url($this->prepareUrl());
+
+            $config = collect([
+                'headers' => $headers,
+                'body' => $json,
+                'http_errors' => true,
+            ]);
+
+            if ($url['scheme'] == 'https') {
+                $config->put('verify', collect($this->config)->get('verify', false));
+
+                if (collect($this->config)->get('ssl_key')) {
+                    $config->put('ssl_key', collect($this->config)->get('ssl_key'));
                 }
             }
 
-            return response($private ? $privateResponse : $response);
-        } else {
-            throw new HttpException(401);
-        }
-    }
+            $response = $this->httpClient->post($this->prepareUrl(), $config->toArray());
 
-    /**
-     * Return the valid authentication response.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param mixed $result
-     * @return mixed
-     */
-    public function validAuthenticationResponse($request, $result)
-    {
+            $result = json_decode((string) $response->getBody(), true);
+        } catch (ClientException $e) {
+            $result = [
+                'method' => $method,
+                'error' => $e->getMessage(),
+                'body' => $params,
+            ];
+        }
+
         return $result;
     }
 
     /**
-     * Broadcast the given event.
+     * Prepare URL to send the http request.
      *
-     * @param array $channels
-     * @param string $event
-     * @param array $payload
-     * @return void
+     * @return string
      */
-    public function broadcast(array $channels, $event, array $payload = [])
+    protected function prepareUrl(): string
     {
-        $payload['event'] = $event;
-        $channels = array_map(function ($channel) {
-            return str_replace('private-', '$', $channel);
-        }, $channels);
+        $address = rtrim($this->config['url'], '/');
 
-        $response = $this->centrifugo->broadcast($this->formatChannels($channels), $payload);
-
-        if (is_array($response) && ! isset($response['error'])) {
-            return;
+        if (substr_compare($address, static::API_PATH, -strlen(static::API_PATH)) !== 0) {
+            $address .= static::API_PATH;
         }
+        //$address .= '/';
 
-        throw new BroadcastException(
-            $response['error'] instanceof Exception ? $response['error']->getMessage() : $response['error']
-        );
+        return $address;
     }
 
     /**
-     * Get client from request.
+     * Safely encode string in base64.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  string  $input
      * @return string
      */
-    private function getClientFromRequest($request)
+    private function urlsafeB64Encode($input): string
     {
-        return $request->get('client', '');
+        return str_replace('=', '', strtr(base64_encode($input), '+/', '-_'));
     }
 
     /**
-     * Get channels from request.
+     * Sign message with secret key.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return array
-     */
-    private function getChannelsFromRequest($request)
-    {
-        $channels = $request->get('channels', []);
-
-        return is_array($channels) ? $channels : [$channels];
-    }
-
-    /**
-     * Get channel name without $ symbol (if present).
-     *
-     * @param string $channel
+     * @param  string  $msg
+     * @param  string  $key
      * @return string
      */
-    private function getChannelName(string $channel)
+    private function sign($msg, $key): string
     {
-        return $this->isPrivateChannel($channel) ? substr($channel, 1) : $channel;
-    }
-
-    /**
-     * Check channel name by $ symbol.
-     *
-     * @param string $channel
-     * @return bool
-     */
-    private function isPrivateChannel(string $channel): bool
-    {
-        return substr($channel, 0, 1) === '$';
-    }
-
-    /**
-     * Make response for client, based on access rights.
-     *
-     * @param bool $access_granted
-     * @param string $client
-     * @return array
-     */
-    private function makeResponseForClient(bool $access_granted, string $client)
-    {
-        $info = [];
-
-        return $access_granted ? [
-            'sign' => $this->centrifugo->generateConnectionToken($client, 0, $info),
-            'info' => $info,
-        ] : [
-            'status' => 403,
-        ];
-    }
-
-    /**
-     * Make response for client, based on access rights of private channel.
-     *
-     * @param bool $access_granted
-     * @param string $channel
-     * @param string $client
-     * @return array
-     */
-    private function makeResponseForPrivateClient(bool $access_granted, string $channel, string $client)
-    {
-        $info = [];
-
-        return $access_granted ? [
-
-            'channel' => $channel,
-            'token' => $this->centrifugo->generatePrivateChannelToken($client, $channel, 0, $info),
-            'info' => $this->centrifugo->info(),
-
-        ] : [
-            'status' => 403,
-        ];
+        return hash_hmac('sha256', $msg, $key, true);
     }
 }
