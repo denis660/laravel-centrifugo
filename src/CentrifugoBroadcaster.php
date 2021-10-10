@@ -66,6 +66,7 @@ class CentrifugoBroadcaster implements CentrifugoBroadcasterContract
      * @param  string  $channel
      * @param  array  $data
      * @return mixed
+     *
      * @throws GuzzleException
      */
     public function publish(string $channel, array $data)
@@ -82,6 +83,7 @@ class CentrifugoBroadcaster implements CentrifugoBroadcasterContract
      * @param  array  $channels
      * @param  array  $data
      * @return mixed
+     *
      * @throws GuzzleException
      */
     public function broadcast(array $channels, array $data)
@@ -96,6 +98,7 @@ class CentrifugoBroadcaster implements CentrifugoBroadcasterContract
      *
      * @param  string  $channel
      * @return mixed
+     *
      * @throws GuzzleException
      */
     public function presence(string $channel)
@@ -108,6 +111,7 @@ class CentrifugoBroadcaster implements CentrifugoBroadcasterContract
      *
      * @param  string  $channel
      * @return mixed
+     *
      * @throws GuzzleException
      */
     public function presenceStats(string $channel)
@@ -120,6 +124,7 @@ class CentrifugoBroadcaster implements CentrifugoBroadcasterContract
      *
      * @param  string  $channel
      * @return mixed
+     *
      * @throws GuzzleException
      */
     public function history(string $channel)
@@ -132,6 +137,7 @@ class CentrifugoBroadcaster implements CentrifugoBroadcasterContract
      *
      * @param  string  $channel
      * @return mixed
+     *
      * @throws GuzzleException
      */
     public function historyRemove(string $channel)
@@ -147,6 +153,7 @@ class CentrifugoBroadcaster implements CentrifugoBroadcasterContract
      * @param  string  $channel
      * @param  string  $user
      * @return mixed
+     *
      * @throws GuzzleException
      */
     public function unsubscribe(string $channel, string $user)
@@ -162,6 +169,7 @@ class CentrifugoBroadcaster implements CentrifugoBroadcasterContract
      *
      * @param  string  $user_id
      * @return mixed
+     *
      * @throws GuzzleException
      */
     public function disconnect(string $user_id)
@@ -173,6 +181,7 @@ class CentrifugoBroadcaster implements CentrifugoBroadcasterContract
      * Get channels information (list of currently active channels).
      *
      * @return mixed
+     *
      * @throws GuzzleException
      */
     public function channels()
@@ -184,6 +193,7 @@ class CentrifugoBroadcaster implements CentrifugoBroadcasterContract
      * Get stats information about running server nodes.
      *
      * @return mixed
+     *
      * @throws GuzzleException
      */
     public function info()
@@ -203,7 +213,7 @@ class CentrifugoBroadcaster implements CentrifugoBroadcasterContract
     {
         $header = ['typ' => 'JWT', 'alg' => 'HS256'];
         $payload = ['sub' => $userId];
-        if (!empty($info)) {
+        if (! empty($info)) {
             $payload['info'] = $info;
         }
         if ($exp) {
@@ -232,7 +242,7 @@ class CentrifugoBroadcaster implements CentrifugoBroadcasterContract
     {
         $header = ['typ' => 'JWT', 'alg' => 'HS256'];
         $payload = ['channel' => $channel, 'client' => $client];
-        if (!empty($info)) {
+        if (! empty($info)) {
             $payload['info'] = $info;
         }
         if ($exp) {
@@ -264,6 +274,7 @@ class CentrifugoBroadcaster implements CentrifugoBroadcasterContract
      * @param  string  $method
      * @param  array  $params
      * @return mixed
+     *
      * @throws GuzzleException
      */
     protected function send($method, array $params = [])
