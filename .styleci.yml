@@ -1,19 +1,18 @@
-php:
-  risky: false
-  version: 8.0
-  preset: recommended
-  tab-width: 4
-  use-tabs: false
-  finder:
-    exclude:
-      - "modules"
-      - "node_modules"
-      - "nova"
-      - "nova-components"
-      - "storage"
-      - "spark"
-      - "vendor"
-    name: "*.php"
-    not-name:
-      - "*.blade.php"
-      - "_ide_helper.php"
+risky: false
+version: 8.0
+preset: recommended
+tab-width: 4
+use-tabs: false
+finder:
+  exclude:
+    - "modules"
+    - "node_modules"
+    - "nova"
+    - "nova-components"
+    - "storage"
+    - "spark"
+    - "vendor"
+  name: "*.php"
+  not-name:
+    - "*.blade.php"
+    - "_ide_helper.php"
