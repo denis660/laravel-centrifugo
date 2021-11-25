@@ -25,8 +25,8 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Create a new Centrifugo instance.
      *
-     * @param array $config
-     * @param \GuzzleHttp\Client $httpClient
+     * @param  array  $config
+     * @param  \GuzzleHttp\Client  $httpClient
      */
     public function __construct(array $config, HttpClient $httpClient)
     {
@@ -37,8 +37,8 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Init centrifugo configuration.
      *
-     * @param array $config
-     * @return array
+     * @param  array  $config
+     * @return  array
      */
     protected function initConfiguration(array $config)
     {
@@ -62,9 +62,9 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Send message into channel.
      *
-     * @param string $channel
-     * @param array $data
-     * @return mixed
+     * @param  string  $channel
+     * @param  array  $data
+     * @return  mixed
      */
     public function publish(string $channel, array $data)
     {
@@ -77,9 +77,9 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Send message into multiple channel.
      *
-     * @param array $channels
-     * @param array $data
-     * @return mixed
+     * @param  array  $channels
+     * @param  array  $data
+     * @return  mixed
      */
     public function broadcast(array $channels, array $data)
     {
@@ -91,8 +91,8 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Get channel presence information (all clients currently subscribed on this channel).
      *
-     * @param string $channel
-     * @return mixed
+     * @param  string  $channel
+     * @return  mixed
      */
     public function presence(string $channel)
     {
@@ -102,8 +102,8 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Get channel presence information in short form.
      *
-     * @param string $channel
-     * @return mixed
+     * @param  string  $channel
+     * @return  mixed
      */
     public function presenceStats(string $channel)
     {
@@ -113,8 +113,8 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Get channel history information (list of last messages sent into channel).
      *
-     * @param string $channel
-     * @return mixed
+     * @param  string  $channel
+     * @return  mixed
      */
     public function history(string $channel)
     {
@@ -124,8 +124,8 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Remove channel history information.
      *
-     * @param string $channel
-     * @return mixed
+     * @param  string  $channel
+     * @return  mixed
      */
     public function historyRemove(string $channel)
     {
@@ -137,9 +137,9 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Unsubscribe user from channel.
      *
-     * @param string $channel
-     * @param string $user
-     * @return mixed
+     * @param  string  $channel
+     * @param  string  $user
+     * @return  mixed
      */
     public function unsubscribe(string $channel, string $user)
     {
@@ -152,8 +152,8 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Disconnect user by its ID.
      *
-     * @param string $user_id
-     * @return mixed
+     * @param  string  $user_id
+     * @return  mixed
      */
     public function disconnect(string $user_id)
     {
@@ -163,7 +163,7 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Get channels information (list of currently active channels).
      *
-     * @return mixed
+     * @return  mixed
      */
     public function channels()
     {
@@ -173,7 +173,7 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Get stats information about running server nodes.
      *
-     * @return mixed
+     * @return  mixed
      */
     public function info()
     {
