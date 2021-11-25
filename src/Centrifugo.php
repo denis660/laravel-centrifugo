@@ -38,6 +38,7 @@ class Centrifugo implements CentrifugoInterface
      * Init centrifugo configuration.
      *
      * @param array $config
+     *
      * @return  array
      */
     protected function initConfiguration(array $config)
@@ -64,6 +65,7 @@ class Centrifugo implements CentrifugoInterface
      *
      * @param string $channel
      * @param array  $data
+     *
      * @return  mixed
      */
     public function publish(string $channel, array $data)
@@ -79,6 +81,7 @@ class Centrifugo implements CentrifugoInterface
      *
      * @param array $channels
      * @param array $data
+     *
      * @return  mixed
      */
     public function broadcast(array $channels, array $data)
@@ -92,6 +95,7 @@ class Centrifugo implements CentrifugoInterface
      * Get channel presence information (all clients currently subscribed on this channel).
      *
      * @param string $channel
+     *
      * @return  mixed
      */
     public function presence(string $channel)
@@ -103,6 +107,7 @@ class Centrifugo implements CentrifugoInterface
      * Get channel presence information in short form.
      *
      * @param string $channel
+     *
      * @return  mixed
      */
     public function presenceStats(string $channel)
@@ -114,6 +119,7 @@ class Centrifugo implements CentrifugoInterface
      * Get channel history information (list of last messages sent into channel).
      *
      * @param string $channel
+     *
      * @return  mixed
      */
     public function history(string $channel)
@@ -125,6 +131,7 @@ class Centrifugo implements CentrifugoInterface
      * Remove channel history information.
      *
      * @param string $channel
+     *
      * @return  mixed
      */
     public function historyRemove(string $channel)
@@ -139,6 +146,7 @@ class Centrifugo implements CentrifugoInterface
      *
      * @param string $channel
      * @param string $user
+     *
      * @return  mixed
      */
     public function unsubscribe(string $channel, string $user)
@@ -153,6 +161,7 @@ class Centrifugo implements CentrifugoInterface
      * Disconnect user by its ID.
      *
      * @param string $user_id
+     *
      * @return  mixed
      */
     public function disconnect(string $user_id)
@@ -186,6 +195,7 @@ class Centrifugo implements CentrifugoInterface
      * @param string $userId
      * @param int    $exp
      * @param array  $info
+     *
      * @return string
      */
     public function generateConnectionToken(string $userId = '', int $exp = 0, array $info = [])
@@ -215,6 +225,7 @@ class Centrifugo implements CentrifugoInterface
      * @param string $channel
      * @param int    $exp
      * @param array  $info
+     *
      * @return string
      */
     public function generatePrivateChannelToken(string $client, string $channel, int $exp = 0, array $info = [])
@@ -252,6 +263,7 @@ class Centrifugo implements CentrifugoInterface
      *
      * @param string $method
      * @param array  $params
+     *
      * @return mixed
      */
     protected function send($method, array $params = [])
@@ -315,6 +327,7 @@ class Centrifugo implements CentrifugoInterface
      * Safely encode string in base64.
      *
      * @param string $input
+     *
      * @return string
      */
     private function urlsafeB64Encode($input)
@@ -327,6 +340,7 @@ class Centrifugo implements CentrifugoInterface
      *
      * @param string $msg
      * @param string $key
+     *
      * @return string
      */
     private function sign($msg, $key)
