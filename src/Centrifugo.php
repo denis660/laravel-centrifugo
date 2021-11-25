@@ -25,8 +25,8 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Create a new Centrifugo instance.
      *
-     * @param  array  $config
-     * @param  \GuzzleHttp\Client  $httpClient
+     * @param array $config
+     * @param \GuzzleHttp\Client $httpClient
      */
     public function __construct(array $config, HttpClient $httpClient)
     {
@@ -37,7 +37,7 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Init centrifugo configuration.
      *
-     * @param  array  $config
+     * @param array $config
      * @return  array
      */
     protected function initConfiguration(array $config)
@@ -62,8 +62,8 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Send message into channel.
      *
-     * @param  string  $channel
-     * @param  array  $data
+     * @param string $channel
+     * @param array $data
      * @return  mixed
      */
     public function publish(string $channel, array $data)
@@ -77,8 +77,8 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Send message into multiple channel.
      *
-     * @param  array  $channels
-     * @param  array  $data
+     * @param array $channels
+     * @param array $data
      * @return  mixed
      */
     public function broadcast(array $channels, array $data)
@@ -91,7 +91,7 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Get channel presence information (all clients currently subscribed on this channel).
      *
-     * @param  string  $channel
+     * @param string $channel
      * @return  mixed
      */
     public function presence(string $channel)
@@ -102,7 +102,7 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Get channel presence information in short form.
      *
-     * @param  string  $channel
+     * @param string $channel
      * @return  mixed
      */
     public function presenceStats(string $channel)
@@ -113,7 +113,7 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Get channel history information (list of last messages sent into channel).
      *
-     * @param  string  $channel
+     * @param string $channel
      * @return  mixed
      */
     public function history(string $channel)
@@ -124,7 +124,7 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Remove channel history information.
      *
-     * @param  string  $channel
+     * @param string $channel
      * @return  mixed
      */
     public function historyRemove(string $channel)
@@ -137,8 +137,8 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Unsubscribe user from channel.
      *
-     * @param  string  $channel
-     * @param  string  $user
+     * @param string $channel
+     * @param string $user
      * @return  mixed
      */
     public function unsubscribe(string $channel, string $user)
@@ -152,12 +152,12 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Disconnect user by its ID.
      *
-     * @param  string  $user_id
+     * @param string $user_id
      * @return  mixed
      */
     public function disconnect(string $user_id)
     {
-        return $this->send('disconnect', ['user' => (string) $user_id]);
+        return $this->send('disconnect', ['user' => (string)$user_id]);
     }
 
     /**
@@ -192,7 +192,7 @@ class Centrifugo implements CentrifugoInterface
     {
         $header = ['typ' => 'JWT', 'alg' => 'HS256'];
         $payload = ['sub' => $userId];
-        if (! empty($info)) {
+        if (!empty($info)) {
             $payload['info'] = $info;
         }
         if ($exp) {
@@ -221,7 +221,7 @@ class Centrifugo implements CentrifugoInterface
     {
         $header = ['typ' => 'JWT', 'alg' => 'HS256'];
         $payload = ['channel' => $channel, 'client' => $client];
-        if (! empty($info)) {
+        if (!empty($info)) {
             $payload['info'] = $info;
         }
         if ($exp) {
@@ -260,7 +260,7 @@ class Centrifugo implements CentrifugoInterface
 
         $headers = [
             'Content-type'  => 'application/json',
-            'Authorization' => 'apikey '.$this->config['apikey'],
+            'Authorization' => 'apikey ' . $this->config['apikey'],
         ];
 
         try {
@@ -282,7 +282,7 @@ class Centrifugo implements CentrifugoInterface
 
             $response = $this->httpClient->post($this->prepareUrl(), $config->toArray());
 
-            $result = json_decode((string) $response->getBody(), true);
+            $result = json_decode((string)$response->getBody(), true);
         } catch (ClientException $e) {
             $result = [
                 'method' => $method,
