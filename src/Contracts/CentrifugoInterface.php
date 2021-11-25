@@ -9,8 +9,8 @@ interface CentrifugoInterface
     /**
      * Send message into channel.
      *
-     * @param string $channel
-     * @param array $data
+     * @param  string  $channel
+     * @param  array  $data
      * @return mixed
      */
     public function publish(string $channel, array $data);
@@ -18,8 +18,8 @@ interface CentrifugoInterface
     /**
      * Send message into multiple channel.
      *
-     * @param array $channels
-     * @param array $data
+     * @param  array  $channels
+     * @param  array  $data
      * @return mixed
      */
     public function broadcast(array $channels, array $data);
@@ -27,7 +27,7 @@ interface CentrifugoInterface
     /**
      * Get channel presence information (all clients currently subscribed to this channel).
      *
-     * @param string $channel
+     * @param  string  $channel
      * @return mixed
      */
     public function presence(string $channel);
@@ -35,7 +35,7 @@ interface CentrifugoInterface
     /**
      * Get channel presence information in short form (number of clients currently subscribed to this channel).
      *
-     * @param string $channel
+     * @param  string  $channel
      * @return mixed
      */
     public function presenceStats(string $channel);
@@ -43,7 +43,7 @@ interface CentrifugoInterface
     /**
      * Get channel history information (list of last messages sent into channel).
      *
-     * @param string $channel
+     * @param  string  $channel
      * @return mixed
      */
     public function history(string $channel);
@@ -51,7 +51,7 @@ interface CentrifugoInterface
     /**
      * Remove channel history information .
      *
-     * @param string $channel
+     * @param  string  $channel
      * @return mixed
      */
     public function historyRemove(string $channel);
@@ -59,8 +59,8 @@ interface CentrifugoInterface
     /**
      * Unsubscribe user from channel.
      *
-     * @param string $channel
-     * @param string $user
+     * @param  string  $channel
+     * @param  string  $user
      * @return mixed
      */
     public function unsubscribe(string $channel, string $user);
@@ -68,7 +68,7 @@ interface CentrifugoInterface
     /**
      * Disconnect user by its ID.
      *
-     * @param string $user_id
+     * @param  string  $user_id
      * @return mixed
      */
     public function disconnect(string $user_id);
@@ -90,9 +90,9 @@ interface CentrifugoInterface
     /**
      * Generate connection token.
      *
-     * @param string $userId
-     * @param int $exp
-     * @param array $info
+     * @param  string  $userId
+     * @param  int  $exp
+     * @param  array  $info
      * @return string
      */
     public function generateConnectionToken(string $userId = '', int $exp = 0, array $info = []);
@@ -100,10 +100,10 @@ interface CentrifugoInterface
     /**
      * Generate private channel token.
      *
-     * @param string $client
-     * @param string $channel
-     * @param int $exp
-     * @param array $info
+     * @param  string  $client
+     * @param  string  $channel
+     * @param  int  $exp
+     * @param  array  $info
      * @return string
      */
     public function generatePrivateChannelToken(string $client, string $channel, int $exp = 0, array $info = []);
