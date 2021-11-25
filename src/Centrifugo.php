@@ -166,7 +166,7 @@ class Centrifugo implements CentrifugoInterface
      */
     public function disconnect(string $user_id)
     {
-        return $this->send('disconnect', ['user' => (string)$user_id]);
+        return $this->send('disconnect', ['user' => (string) $user_id]);
     }
 
     /**
@@ -294,7 +294,7 @@ class Centrifugo implements CentrifugoInterface
 
             $response = $this->httpClient->post($this->prepareUrl(), $config->toArray());
 
-            $result = json_decode((string)$response->getBody(), true);
+            $result = json_decode((string) $response->getBody(), true);
         } catch (ClientException $e) {
             $result = [
                 'method' => $method,
