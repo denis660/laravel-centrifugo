@@ -272,7 +272,7 @@ class Centrifugo implements CentrifugoInterface
 
         $headers = [
             'Content-type'  => 'application/json',
-            'Authorization' => 'apikey ' . $this->config['apikey'],
+            'Authorization' => 'apikey '.$this->config['apikey'],
         ];
 
         try {
