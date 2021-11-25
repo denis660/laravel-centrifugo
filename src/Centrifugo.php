@@ -24,9 +24,8 @@ class Centrifugo implements CentrifugoInterface
 
     /**
      * Create a new Centrifugo instance.
-     *
      * @param array $config
-     * @param \GuzzleHttp\Client $httpClient
+     * @param HttpClient $httpClient
      */
     public function __construct(array $config, HttpClient $httpClient)
     {
