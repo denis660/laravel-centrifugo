@@ -94,7 +94,6 @@ class CentrifugoBroadcaster extends Broadcaster
             return str_replace('private-', '$', (string) $channel);
         }, array_values($channels));
 
-
         $response = $this->centrifugo->broadcast($this->formatChannels($channels), $payload);
 
         if (is_array($response) && !isset($response['error'])) {
