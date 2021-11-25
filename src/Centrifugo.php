@@ -39,7 +39,7 @@ class Centrifugo implements CentrifugoInterface
      *
      * @param array $config
      *
-     * @return  array
+     * @return array
      */
     protected function initConfiguration(array $config)
     {
@@ -66,7 +66,7 @@ class Centrifugo implements CentrifugoInterface
      * @param string $channel
      * @param array  $data
      *
-     * @return  mixed
+     * @return mixed
      */
     public function publish(string $channel, array $data)
     {
@@ -82,7 +82,7 @@ class Centrifugo implements CentrifugoInterface
      * @param array $channels
      * @param array $data
      *
-     * @return  mixed
+     * @return mixed
      */
     public function broadcast(array $channels, array $data)
     {
@@ -96,7 +96,7 @@ class Centrifugo implements CentrifugoInterface
      *
      * @param string $channel
      *
-     * @return  mixed
+     * @return mixed
      */
     public function presence(string $channel)
     {
@@ -108,7 +108,7 @@ class Centrifugo implements CentrifugoInterface
      *
      * @param string $channel
      *
-     * @return  mixed
+     * @return mixed
      */
     public function presenceStats(string $channel)
     {
@@ -120,7 +120,7 @@ class Centrifugo implements CentrifugoInterface
      *
      * @param string $channel
      *
-     * @return  mixed
+     * @return mixed
      */
     public function history(string $channel)
     {
@@ -132,7 +132,7 @@ class Centrifugo implements CentrifugoInterface
      *
      * @param string $channel
      *
-     * @return  mixed
+     * @return mixed
      */
     public function historyRemove(string $channel)
     {
@@ -147,7 +147,7 @@ class Centrifugo implements CentrifugoInterface
      * @param string $channel
      * @param string $user
      *
-     * @return  mixed
+     * @return mixed
      */
     public function unsubscribe(string $channel, string $user)
     {
@@ -162,7 +162,7 @@ class Centrifugo implements CentrifugoInterface
      *
      * @param string $user_id
      *
-     * @return  mixed
+     * @return mixed
      */
     public function disconnect(string $user_id)
     {
@@ -172,7 +172,7 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Get channels information (list of currently active channels).
      *
-     * @return  mixed
+     * @return mixed
      */
     public function channels()
     {
@@ -182,7 +182,7 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Get stats information about running server nodes.
      *
-     * @return  mixed
+     * @return mixed
      */
     public function info()
     {
