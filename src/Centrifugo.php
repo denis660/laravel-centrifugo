@@ -47,6 +47,7 @@ class Centrifugo implements CentrifugoInterface
             'url'                   => 'http://localhost:8000',
             'token_hmac_secret_key' => null,
             'api_key'               => null,
+            'namespace'             => '',
             'ssl_key'               => null,
             'verify'                => true,
         ];
@@ -278,8 +279,10 @@ class Centrifugo implements CentrifugoInterface
      */
     public function generatePrivateChannelToken(string $client, string $channel, int $exp = 0, array $info = []): string
     {
+        // @var Channel $chan
+        $chan = new Channel($this, $channel);
         $header = ['typ' => 'JWT', 'alg' => 'HS256'];
-        $payload = ['channel' => $channel, 'client' => $client];
+        $payload = ['channel' => $chan->getCentrifugoChannelName(), 'client' => $client];
         if (!empty($info)) {
             $payload['info'] = $info;
         }
@@ -317,6 +320,16 @@ class Centrifugo implements CentrifugoInterface
     }
 
     /**
+     * Get site-wide centrifugo namespace.
+     *
+     * @return string
+     */
+    public function getNamespace()
+    {
+        return $this->config['namespace'];
+    }
+
+    /**
      * Send message to centrifugo server.
      *
      * @param string $method
@@ -326,7 +339,7 @@ class Centrifugo implements CentrifugoInterface
      */
     protected function send($method, array $params = [])
     {
-        $json = json_encode(['method' => $method, 'params' => $params]);
+        $json = json_encode(['method' => $method, 'params' => $this->prepareParams($params)]);
 
         $headers = [
             'Content-type'  => 'application/json',
@@ -362,6 +375,31 @@ class Centrifugo implements CentrifugoInterface
         }
 
         return $result;
+    }
+
+    /**
+     * Prepare parameters before $this->send().
+     *
+     * @param mixed[] $params
+     *
+     * @return array
+     */
+    protected function prepareParams(array &$params)
+    {
+        if (!$this->config['namespace']) {
+            return $params;
+        }
+        if (!empty($params['channels'])) {
+            array_walk($params['channels'], function (&$channel) {
+                $chan = new Channel($this, $channel);
+                $channel = $chan->getCentrifugoChannelName();
+            });
+        }
+        if (!empty($params['channel'])) {
+            $chan = new Channel($this, $params['channel']);
+            $params['channel'] = $chan->getCentrifugoChannelName();
+        }
+        return $params;
     }
 
     /**
