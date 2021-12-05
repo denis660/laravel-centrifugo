@@ -9,9 +9,9 @@ interface CentrifugoInterface
     /**
      * Send message into channel.
      *
-     * @param string  $channel
-     * @param array   $data
-     * @param boolean $skipHistory (optional)
+     * @param string $channel
+     * @param array  $data
+     * @param bool   $skipHistory (optional)
      *
      * @return mixed
      */
@@ -20,9 +20,9 @@ interface CentrifugoInterface
     /**
      * Send message into multiple channel.
      *
-     * @param array   $channels
-     * @param array   $data
-     * @param boolean $skipHistory (optional)
+     * @param array $channels
+     * @param array $data
+     * @param bool  $skipHistory (optional)
      *
      * @return mixed
      */
@@ -49,10 +49,10 @@ interface CentrifugoInterface
     /**
      * Get channel history information (list of last messages sent into channel).
      *
-     * @param string  $channel
-     * @param int     $limit   (optional)
-     * @param array   $since   (optional)
-     * @param boolean $reverse (optional)
+     * @param string $channel
+     * @param int    $limit   (optional)
+     * @param array  $since   (optional)
+     * @param bool   $reverse (optional)
      *
      * @return mixed
      */

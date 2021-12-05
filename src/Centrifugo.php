@@ -63,9 +63,9 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Publish data into channel.
      *
-     * @param string  $channel
-     * @param array   $data
-     * @param boolean $skipHistory (optional)
+     * @param string $channel
+     * @param array  $data
+     * @param bool   $skipHistory (optional)
      *
      * @return mixed
      */
@@ -81,9 +81,9 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Broadcast the same data into multiple channels.
      *
-     * @param array   $channels
-     * @param array   $data
-     * @param boolean $skipHistory (optional)
+     * @param array $channels
+     * @param array $data
+     * @param bool  $skipHistory (optional)
      *
      * @return mixed
      */
@@ -125,10 +125,10 @@ class Centrifugo implements CentrifugoInterface
     /**
      * Get channel history.
      *
-     * @param string  $channel
-     * @param int     $limit   (optional)
-     * @param array   $since   (optional)
-     * @param boolean $reverse (optional)
+     * @param string $channel
+     * @param int    $limit   (optional)
+     * @param array  $since   (optional)
+     * @param bool   $reverse (optional)
      *
      * @return mixed
      */
