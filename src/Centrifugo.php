@@ -92,7 +92,7 @@ class Centrifugo implements CentrifugoInterface
         $params = [
             'channels'     => $channels,
             'data'         => $data,
-            'skip_history' => $skipHistory,
+            'skip_history' => $skipHistory
         ];
 
         return $this->send('broadcast', $params);
@@ -138,11 +138,12 @@ class Centrifugo implements CentrifugoInterface
         $params = [
             'channel' => $channel,
             'limit'   => $limit,
-            'reverse' => $reverse
+            'reverse' => $reverse,
         ];
         if (!empty($since)) {
             $params['since'] = $since;
         }
+
         return $this->send('history', $params);
     }
 
@@ -160,13 +161,12 @@ class Centrifugo implements CentrifugoInterface
         ]);
     }
 
-
     /**
      * Subscribe user to channel.
      *
      * @param string $channel
      * @param string $user
-     * @param string $client (optional)
+     * @param string $client  (optional)
      *
      * @return mixed
      */
@@ -184,7 +184,7 @@ class Centrifugo implements CentrifugoInterface
      *
      * @param string $channel
      * @param string $user
-     * @param string $client (optional)
+     * @param string $client  (optional)
      *
      * @return mixed
      */
