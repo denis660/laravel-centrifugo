@@ -13,7 +13,8 @@
 </p>
 
 ## Introduction
-Centrifugo broadcaster for laravel  is fork of [Laracent](https://github.com/AlexHnydiuk/Laracent), based on:
+Centrifugo broadcaster for laravel  , based on:
+- [LaraComponents/centrifugo-broadcaster](https://github.com/LaraComponents/centrifugo-broadcaster)
 - [centrifugal/phpcent](https://github.com/centrifugal/phpcent)
 
 ## Features
@@ -23,7 +24,7 @@ Centrifugo broadcaster for laravel  is fork of [Laracent](https://github.com/Ale
 
 ## Requirements
 - PHP >= 7.3 , 8.0, 8.1
-- Laravel 7.30.4 - 8.1
+- Laravel 7.30.4 - 8.6.8
 - guzzlehttp/guzzle 6 - 7
 - Centrifugo Server 3.1.0 or newer (see [here](https://github.com/centrifugal/centrifugo))
 
@@ -80,7 +81,7 @@ BROADCAST_DRIVER=centrifugo
 
 ## Basic Usage
 
-To configure Centrifugo server, read [official documentation](https://centrifugal.github.io/centrifugo/)
+To configure Centrifugo server, read [official documentation](https://centrifugal.dev)
 
 For broadcasting events, see [official documentation of laravel](https://laravel.com/docs/8.x/broadcasting)
 
