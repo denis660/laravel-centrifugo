@@ -14,19 +14,18 @@
 
 ## Introduction
 Centrifugo broadcaster for laravel  is fork of [Laracent](https://github.com/AlexHnydiuk/Laracent), based on:
-- [LaraComponents/centrifuge-broadcaster](https://github.com/LaraComponents/centrifuge-broadcaster)
 - [centrifugal/phpcent](https://github.com/centrifugal/phpcent)
 
-## Features 
-- Compatible with latest [Centrifugo 2.8.5](https://github.com/centrifugal/centrifugo/releases/tag/v2.8.5) 🚀
-- Wrapper over [Centrifugo HTTP API](https://centrifugal.github.io/centrifugo/server/http_api/) 🔌
-- Authentication with JWT token (HMAC algorithm) for [anonymous](./Resources/docs/authentication.md#anonymous), [authenticated user](./Resources/docs/authentication.md#authenticated-user) and [private channel](./Resources/docs/authentication.md#private-channel) 🗝️
+## Features
+- Compatible with latest [Centrifugo 3.1.0](https://github.com/centrifugal/centrifugo/releases/tag/v3.1.0) 🚀
+- Wrapper over [Centrifugo HTTP API](https://centrifugal.dev/docs/server/server_api) 🔌
+- Authentication with JWT token (HMAC algorithm) for anonymous, authenticated user and private channel 🗝️
 
 ## Requirements
-- PHP >= 7.3
-- Laravel 7.30.4 - 8
+- PHP >= 7.3 , 8.0, 8.1
+- Laravel 7.30.4 - 8.1
 - guzzlehttp/guzzle 6 - 7
-- Centrifugo Server 2.8.6 or newer (see [here](https://github.com/centrifugal/centrifugo))
+- Centrifugo Server 3.1.0 or newer (see [here](https://github.com/centrifugal/centrifugo))
 
 ## Installation
 
@@ -51,8 +50,8 @@ Open your config/broadcasting.php and add new connection like this:
 ```php
         'centrifugo' => [
             'driver' => 'centrifugo',
-            'secret'  => env('CENTRIFUGO_SECRET'),
-            'apikey'  => env('CENTRIFUGO_APIKEY'),
+            'token_hmac_secret_key'  => env('CENTRIFUGO_TOKEN_HMAC_SECRET_KEY',''),
+            'api_key'  => env('CENTRIFUGO_API_KEY',''),
             'url'     => env('CENTRIFUGO_URL', 'http://localhost:8000'), // centrifugo api url
             'verify'  => env('CENTRIFUGO_VERIFY', false), // Verify host ssl if centrifugo uses this
             'ssl_key' => env('CENTRIFUGO_SSL_KEY', null), // Self-Signed SSl Key for Host (require verify=true)
@@ -62,8 +61,8 @@ Open your config/broadcasting.php and add new connection like this:
 Also you should add these two lines to your .env file:
 
 ```
-CENTRIFUGO_SECRET=token_hmac_secret_key-from-centrifugo-config
-CENTRIFUGO_APIKEY=api_key-from-centrifugo-config
+CENTRIFUGO_TOKEN_HMAC_SECRET_KEY=token_hmac_secret_key-from-centrifugo-config
+CENTRIFUGO_API_KEY=api_key-from-centrifugo-config
 CENTRIFUGO_URL=http://localhost:8000
 ```
 
@@ -129,18 +128,19 @@ class ExampleController
 
 | Name | Description |
 |------|-------------|
-| publish(string $channel, array $data) | Send message into channel. |
-| broadcast(array $channels, array $data) | Send message into multiple channel. |
+| publish(string $channel, array $data, $skipHistory = false) | Send message into channel. |
+| broadcast(array $channels, array $data, $skipHistory = false) | Send message into multiple channel. |
 | presence(string $channel) | Get channel presence information (all clients currently subscribed on this channel). |
 | presenceStats(string $channel) | Get channel presence information in short form (number of clients).|
-| history(string $channel) | Get channel history information (list of last messages sent into channel). |
+| history(string $channel, $limit = 0, $since = [], $reverse = false) | Get channel history information (list of last messages sent into channel). |
 | historyRemove(string $channel) | Remove channel history information.
-| unsubscribe(string $channel,  string $user) | Unsubscribe user from channel. |
+| subscribe(string $channel,  string $user, $client = '') | subscribe user from channel. |
+| unsubscribe(string $channel, string $user, string $client = '') | Unsubscribe user from channel. |
 | disconnect(string $user_id) | Disconnect user by it's ID. |
-| channels() | Get channels information (list of currently active channels). |
+| channels(string $pattern = '') | Get channels information (list of currently active channels). |
 | info() | Get stats information about running server nodes. |
-| generateConnectionToken(string $userId, int $exp, array $info)  | Generate connection token. |
-| generatePrivateChannelToken(string $client, string $channel, int $exp, array $info) | Generate private channel token. |
+| generateConnectionToken(string $userId = '', int $exp = 0, array $info = [], array $channels = [])  | Generate connection token. |
+| generatePrivateChannelToken(string $client, string $channel, int $exp = 0, array $info = []) | Generate private channel token. |
 
 ## License
 

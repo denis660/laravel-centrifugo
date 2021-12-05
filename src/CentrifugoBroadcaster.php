@@ -37,6 +37,8 @@ class CentrifugoBroadcaster extends Broadcaster
      */
     public function auth($request)
     {
+
+
         if ($request->user()) {
             $client = $this->getClientFromRequest($request);
             $channels = $this->getChannelsFromRequest($request);
@@ -75,6 +77,7 @@ class CentrifugoBroadcaster extends Broadcaster
      */
     public function validAuthenticationResponse($request, $result)
     {
+
         return $result;
     }
 
@@ -89,10 +92,12 @@ class CentrifugoBroadcaster extends Broadcaster
      */
     public function broadcast(array $channels, $event, array $payload = [])
     {
+
         $payload['event'] = $event;
         $channels = array_map(function ($channel) {
             return str_replace('private-', '$', (string) $channel);
         }, array_values($channels));
+
 
         $response = $this->centrifugo->broadcast($this->formatChannels($channels), $payload);
 
