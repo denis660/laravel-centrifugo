@@ -72,7 +72,7 @@ interface CentrifugoInterface
      *
      * @param string $channel
      * @param string $user
-     * @param string $client (optional)
+     * @param string $client  (optional)
      *
      * @return mixed
      */
@@ -83,7 +83,7 @@ interface CentrifugoInterface
      *
      * @param string $channel
      * @param string $user
-     * @param string $client (optional)
+     * @param string $client  (optional)
      *
      * @return mixed
      */

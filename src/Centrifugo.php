@@ -74,7 +74,7 @@ class Centrifugo implements CentrifugoInterface
         return $this->send('publish', [
             'channel'      => $channel,
             'data'         => $data,
-            'skip_history' => $skipHistory
+            'skip_history' => $skipHistory,
         ]);
     }
 
@@ -92,7 +92,7 @@ class Centrifugo implements CentrifugoInterface
         $params = [
             'channels'     => $channels,
             'data'         => $data,
-            'skip_history' => $skipHistory
+            'skip_history' => $skipHistory,
         ];
 
         return $this->send('broadcast', $params);
@@ -307,7 +307,7 @@ class Centrifugo implements CentrifugoInterface
     }
 
     /**
-     * Get Api Key
+     * Get Api Key.
      *
      * @return string
      */
