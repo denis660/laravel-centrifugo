@@ -207,8 +207,8 @@ class Centrifugo implements CentrifugoInterface
     public function disconnect(string $user_id, string $client = '')
     {
         return $this->send('disconnect', [
-            'user'   => (string) $user_id,
-            'client' => $client
+            'user'   => $user_id,
+            'client' => $client,
         ]);
     }
 
