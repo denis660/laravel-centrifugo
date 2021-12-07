@@ -44,22 +44,27 @@ class CentrifugoBroadcaster extends Broadcaster
             $response = [];
             $privateResponse = [];
             foreach ($channels as $channel) {
-                $channelName = $this->getChannelName($channel);
-
+                // @var Channel $chan
+                $chan = new Channel($this->centrifugo, $channel);
                 try {
-                    $is_access_granted = $this->verifyUserCanAccessChannel($request, $channelName);
+                    $is_access_granted = $this->verifyUserCanAccessChannel($request, $chan->getName());
                 } catch (HttpException $e) {
                     $is_access_granted = false;
                 }
 
-                if ($private = $this->isPrivateChannel($channel)) {
-                    $privateResponse['channels'][] = $this->makeResponseForPrivateClient($is_access_granted, $channel, $client);
+                if ($chan->isPrivate()) {
+                    dump("Channel internal name: " . $chan->getInternalName());
+                    $privateResponse['channels'][] = $this->makeResponseForPrivateClient(
+                        $is_access_granted,
+                        $chan->getInternalName(),
+                        $client
+                    );
                 } else {
                     $response[$channel] = $this->makeResponseForClient($is_access_granted, $client);
                 }
             }
 
-            return response($private ? $privateResponse : $response);
+            return response($privateResponse || $response);
         } else {
             throw new HttpException(401);
         }
@@ -189,11 +194,9 @@ class CentrifugoBroadcaster extends Broadcaster
         $info = [];
 
         return $access_granted ? [
-
             'channel' => $channel,
             'token'   => $this->centrifugo->generatePrivateChannelToken($client, $channel, 0, $info),
             'info'    => $this->centrifugo->info(),
-
         ] : [
             'status' => 403,
         ];

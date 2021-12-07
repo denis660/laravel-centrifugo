@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace denis660\Centrifugo;
 
+/**
+ * Parse and process channel names to and from Centrifugo server.
+ */
 class Channel
 {
     /**
@@ -12,14 +15,14 @@ class Channel
     protected $centrifugo;
 
     /**
-     * The original channel name when instanciated.
+     * The original channel name when instantiated.
      *
      * @var string
      */
     protected $orig;
 
     /**
-     * The 'bare' channel name, with no modifiers.
+     * The 'bare' channel name, with no modifiers and no namespace.
      *
      * @var string
      */
@@ -48,6 +51,12 @@ class Channel
         $this->name = $this->private ? substr($channel, 1) : $channel;
         $this->centrifugo = $centrifugo;
         $this->namespace = $centrifugo->getNamespace();
+        if ($this->namespace) {
+            $parts = explode(':', $this->name);
+            if (count($parts) > 1 && $parts[0] === $this->namespace) {
+                $this->name = substr($this->name, strlen($this->namespace) + 1);
+            }
+        }
     }
 
     /**
@@ -71,11 +80,21 @@ class Channel
     }
 
     /**
+     * Get the channel name as used internally.
+     *
+     * @return string
+     */
+    public function getInternalName()
+    {
+        return ($this->isPrivate() ? '$' : '') . $this->name;
+    }
+
+    /**
      * Return complete channel name sent to centrifugo server.
      *
      * @return string
      */
-    public function getCentrifugoChannelName()
+    public function getCentrifugoName()
     {
         $privateStr = $this->isPrivate() ? '$' : '';
         $namespaceStr = $this->namespace ? "$this->namespace:" : '';
