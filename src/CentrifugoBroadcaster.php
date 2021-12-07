@@ -47,7 +47,6 @@ class CentrifugoBroadcaster extends Broadcaster
         $privateResponse = [];
 
         foreach ($channels as $channel) {
-            // @var Channel $chan
             $chan = new Channel($this->centrifugo, $channel);
             try {
                 $is_access_granted = $this->verifyUserCanAccessChannel($request, $chan->getName());
@@ -164,9 +163,11 @@ class CentrifugoBroadcaster extends Broadcaster
         $info = [];
 
         return $access_granted ? [
+
             'channel' => $channel,
             'token'   => $this->centrifugo->generatePrivateChannelToken($client, $channel, 0, $info),
             'info'    => $this->centrifugo->info(),
+
         ] : [
             'status' => 403,
         ];

@@ -293,6 +293,7 @@ class Centrifugo implements CentrifugoInterface
         $signing_input = implode('.', $segments);
         $signature = $this->sign($signing_input, $this->getSecret());
         $segments[] = $this->urlsafeB64Encode($signature);
+
         return implode('.', $segments);
     }
 
