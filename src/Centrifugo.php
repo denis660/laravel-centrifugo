@@ -279,11 +279,8 @@ class Centrifugo implements CentrifugoInterface
      */
     public function generatePrivateChannelToken(string $client, string $channel, int $exp = 0, array $info = []): string
     {
-        dump("generating private channel token for $channel");
-        // @var Channel $chan
-        $chan = new Channel($this, $channel);
         $header = ['typ' => 'JWT', 'alg' => 'HS256'];
-        $payload = ['channel' => $chan->getCentrifugoName(), 'client' => $client];
+        $payload = ['channel' => $channel, 'client' => $client];
         if (!empty($info)) {
             $payload['info'] = $info;
         }
@@ -296,7 +293,6 @@ class Centrifugo implements CentrifugoInterface
         $signing_input = implode('.', $segments);
         $signature = $this->sign($signing_input, $this->getSecret());
         $segments[] = $this->urlsafeB64Encode($signature);
-
         return implode('.', $segments);
     }
 
@@ -393,7 +389,7 @@ class Centrifugo implements CentrifugoInterface
         if (!empty($params['channels'])) {
             array_walk($params['channels'], function (&$channel) {
                 $chan = new Channel($this, $channel);
-                $channel = $chan->getCentrifugoChannelName();
+                $channel = $chan->getCentrifugoName();
             });
         }
         if (!empty($params['channel'])) {
