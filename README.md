@@ -21,6 +21,7 @@ Centrifugo broadcaster for laravel  , based on:
 - Compatible with latest [Centrifugo 3.1.0](https://github.com/centrifugal/centrifugo/releases/tag/v3.1.0) 🚀
 - Wrapper over [Centrifugo HTTP API](https://centrifugal.dev/docs/server/server_api) 🔌
 - Authentication with JWT token (HMAC algorithm) for anonymous, authenticated user and private channel 🗝️
+- Supports site-wide [Centrifugo namespace](https://centrifugal.dev/docs/server/channels#channel-namespaces)
 
 ## Requirements
 - PHP >= 7.3 , 8.0, 8.1
@@ -74,6 +75,14 @@ CENTRIFUGO_NAMESPACE=laravel
 CENTRIFUGO_SSL_KEY=/etc/ssl/some.pem
 CENTRIFUGO_VERIFY=false
 ```
+
+The `CENTRIFUGO_NAMESPACE` variable will move all channels into this
+namespace, while maintaining the private modifier (`$`). With the
+namespace set to e.g. `mysite`, a private channel named `$user.3` will
+be sent to centrifugo as `$mysite:user.3`. This allows for
+site-specific configuration in your centrifugo `config.json`, paving
+way for having several sites on the same centrifugo server, with
+different channel config.
 
 Don't forget to change `BROADCAST_DRIVER` setting in .env file!
 

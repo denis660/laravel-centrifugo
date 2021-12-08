@@ -389,13 +389,11 @@ class Centrifugo implements CentrifugoInterface
         }
         if (!empty($params['channels'])) {
             array_walk($params['channels'], function (&$channel) {
-                $chan = new Channel($this, $channel);
-                $channel = $chan->getCentrifugoName();
+                $channel = (new Channel($this, $channel))->getCentrifugoName();
             });
         }
         if (!empty($params['channel'])) {
-            $chan = new Channel($this, $params['channel']);
-            $params['channel'] = $chan->getCentrifugoName();
+            $params['channel'] = (new Channel($this, $channel))->getCentrifugoName();
         }
         return $params;
     }
