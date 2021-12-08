@@ -44,6 +44,12 @@ class Channel
      */
     protected $namespace;
 
+    /**
+     * Create a channel name manipulator instance.
+     *
+     * @param Contracts\CentrifugoInterface $centrifugo
+     * @param string $channel Channel name with or without site namespace.
+     */
     public function __construct(Centrifugo $centrifugo, $channel)
     {
         $this->orig = $channel;
