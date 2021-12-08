@@ -37,30 +37,35 @@ class CentrifugoBroadcaster extends Broadcaster
      */
     public function auth($request)
     {
-        if (!$request->user()) {
+        if ($request->user()) {
+            $client = $this->getClientFromRequest($request);
+            $channels = $this->getChannelsFromRequest($request);
+
+            $response = [];
+            $privateResponse = [];
+            foreach ($channels as $channel) {
+                $chan = new Channel($this->centrifugo, $channel);
+
+                try {
+                    $is_access_granted = $this->verifyUserCanAccessChannel($request, $chan->getName());
+                } catch (HttpException $e) {
+                    $is_access_granted = false;
+                }
+
+                if ($chan->isPrivate()) {
+                    $privateResponse['channels'][] = $this->makeResponseForPrivateClient(
+                        $is_access_granted,
+                        $chan->getCentrifugoName(),
+                        $client
+                    );
+                } else {
+                    $response[$channel] = $this->makeResponseForClient($is_access_granted, $client);
+                }
+            }
+            return response($privateResponse ?: $response);
+        } else {
             throw new HttpException(401);
         }
-
-        $client = $this->getClientFromRequest($request);
-        $channels = $this->getChannelsFromRequest($request);
-        $response = [];
-        $privateResponse = [];
-
-        foreach ($channels as $channel) {
-            $chan = new Channel($this->centrifugo, $channel);
-            try {
-                $is_access_granted = $this->verifyUserCanAccessChannel($request, $chan->getName());
-            } catch (HttpException $e) {
-                $is_access_granted = false;
-            }
-
-            if ($chan->isPrivate()) {
-                $privateResponse['channels'][] = $this->makeResponseForPrivateClient($is_access_granted, $chan->getCentrifugoName(), $client);
-            } else {
-                $response[$channel] = $this->makeResponseForClient($is_access_granted, $client);
-            }
-        }
-        return response($privateResponse ?: $response);
     }
 
     /**
