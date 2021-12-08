@@ -86,7 +86,7 @@ class Channel
      */
     public function getInternalName()
     {
-        return ($this->isPrivate() ? '$' : '') . $this->name;
+        return ($this->isPrivate() ? '$' : '').$this->name;
     }
 
     /**
@@ -98,6 +98,6 @@ class Channel
     {
         $privateStr = $this->isPrivate() ? '$' : '';
         $namespaceStr = $this->namespace ? "$this->namespace:" : '';
-        return $privateStr . $namespaceStr . $this->getName();
+        return $privateStr.$namespaceStr.$this->getName();
     }
 }

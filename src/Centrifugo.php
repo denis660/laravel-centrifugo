@@ -395,6 +395,7 @@ class Centrifugo implements CentrifugoInterface
         if (!empty($params['channel'])) {
             $params['channel'] = (new Channel($this, $channel))->getCentrifugoName();
         }
+
         return $params;
     }
 

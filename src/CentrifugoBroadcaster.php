@@ -62,6 +62,7 @@ class CentrifugoBroadcaster extends Broadcaster
                     $response[$channel] = $this->makeResponseForClient($is_access_granted, $client);
                 }
             }
+
             return response($privateResponse ?: $response);
         } else {
             throw new HttpException(401);
