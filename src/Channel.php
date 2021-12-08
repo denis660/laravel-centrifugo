@@ -47,8 +47,8 @@ class Channel
     /**
      * Create a channel name manipulator instance.
      *
-     * @param Contracts\CentrifugoInterface $centrifugo
-     * @param string $channel Channel name with or without site namespace.
+     * @param Contracts\CentrifugoInterface $centrifugo Centrifugo instance.
+     * @param string                        $channel    Channel name with or without site namespace.
      */
     public function __construct(Centrifugo $centrifugo, $channel)
     {
