@@ -1,7 +1,7 @@
 <p align="center">Документация <a href="https://github.com/denis660/laravel-centrifugo/blob/master/README.md">EN</a> | <b>RU</b></p>
 
 <h1 align="center">Laravel + Centrifugo</h1>
-<h2 align="center">Centrifugo broadcast драйвер для Laravel 7.30.4 - 8 </h2>
+<h2 align="center">Centrifugo broadcast драйвер для Laravel 8.75.0 - 9 </h2>
 
 <p align="center">
 <a href="https://scrutinizer-ci.com/g/denis660/laravel-centrifugo/build-status/main"><img src="https://scrutinizer-ci.com/g/denis660/laravel-centrifugo/badges/quality-score.png?b=master" alt="Build Status"></a>
@@ -23,8 +23,8 @@ Centrifugo broadcaster для laravel , основан на :
 - Аутентификация с помощью токена JWT (HMAC алгоритм) для анонимного, авторизованного пользователя и приватного канала 🗝️
 
 ## Требования
-- PHP >= 7.3, 8.0, 8.1
-- Framework Laravel 7.30.4 - 9.0
+- PHP >= 7.4, 8.0, 8.1
+- Framework Laravel 8.75.0 - 9.0
 - guzzlehttp/guzzle 6 - 7
 - Centrifugo Сервер 3.1.1 или новее (см. [здесь](https://github.com/centrifugal/centrifugo))
 
