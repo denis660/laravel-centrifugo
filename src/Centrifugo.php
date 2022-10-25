@@ -342,7 +342,7 @@ class Centrifugo implements CentrifugoInterface
                 'http_errors' => true,
             ]);
 
-            if ($url['scheme'] == 'https') {
+            if (isset($url['scheme']) && $url['scheme'] == 'https') {
                 $config->put('verify', collect($this->config)->get('verify', false));
 
                 if (collect($this->config)->get('ssl_key')) {
