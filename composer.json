@@ -2,7 +2,16 @@
     "name": "denis660/laravel-centrifugo",
     "type": "library",
     "description": "Centrifugo broadcaster for laravel 6.20.26-8 and Centrifugo >= 2.8.1",
-    "keywords": ["laravel-broadcaster","broadcaster", "laravel", "centrifugo", "web socket", "web-socket", "socket", "real time"],
+    "keywords": [
+        "laravel-broadcaster",
+        "broadcaster",
+        "laravel",
+        "centrifugo",
+        "web socket",
+        "web-socket",
+        "socket",
+        "real time"
+    ],
     "license": "MIT",
     "authors": [
         {
@@ -19,12 +28,12 @@
     },
     "require": {
         "php": "^7.4|^8.0",
-       "laravel/framework": "^8.75.0|^9.0",
+        "laravel/framework": "^8.75.0|^9.0|^10.0",
         "guzzlehttp/guzzle": "~6.0|^7.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^3.7",
-        "phpunit/phpunit": "^6||^7||^8"
+        "orchestra/testbench": "^3.7|^8.0",
+        "phpunit/phpunit": "^6||^7||^8|^9.5.10"
     },
     "autoload": {
         "psr-4": {
