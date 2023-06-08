@@ -24,7 +24,7 @@ Centrifugo broadcaster для laravel , основан на :
 
 ## Требования
 - PHP >= 7.4, 8.0, 8.1
-- Framework Laravel 8.75.0 - 9.0
+- Framework Laravel 8.75.0 - 10.0
 - guzzlehttp/guzzle 6 - 7
 - Centrifugo Сервер 3.2.0 или новее (см. [здесь](https://github.com/centrifugal/centrifugo))
 
