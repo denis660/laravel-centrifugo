@@ -43,6 +43,8 @@ class CentrifugoBroadcaster extends Broadcaster
 
             $response = [];
             $privateResponse = [];
+            $private = null;
+            
             foreach ($channels as $channel) {
                 $channelName = $this->getChannelName($channel);
 
