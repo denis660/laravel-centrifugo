@@ -254,7 +254,8 @@ class Centrifugo implements CentrifugoInterface
             $payload['channels'] = $channels;
         }
         if ($exp) {
-            $payload['exp'] = $exp;
+            $payload['exp'] = now()->addSeconds($exp)->timestamp;
+            $payload['iat'] = now()->timestamp;
         }
         $segments = [];
         $segments[] = $this->urlsafeB64Encode(json_encode($header));
@@ -284,7 +285,8 @@ class Centrifugo implements CentrifugoInterface
             $payload['info'] = $info;
         }
         if ($exp) {
-            $payload['exp'] = $exp;
+            $payload['exp'] = now()->addSeconds($exp)->timestamp;
+            $payload['iat'] = now()->timestamp;
         }
         $segments = [];
         $segments[] = $this->urlsafeB64Encode(json_encode($header));
