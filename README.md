@@ -36,31 +36,19 @@ php artisan install:broadcasting
 The `install:broadcasting` command will create the config/broadcasting.php configuration file. In addition, the command will create the `routes/channels.php` file where you may register your application's broadcast authorization routes and callbacks.
 
 
-
-```bash
-php artisan centrifuge:install
-```
-
-
 Require this package with composer:
 
 ```bash
 composer require denis660/laravel-centrifugo
 ```
 
-
-Open your config/broadcasting.php and add new connection like this:
-
-```php
-        'centrifugo' => [
-            'driver' => 'centrifugo',
-            'token_hmac_secret_key'  => env('CENTRIFUGO_TOKEN_HMAC_SECRET_KEY',''),
-            'api_key'  => env('CENTRIFUGO_API_KEY',''),
-            'url'     => env('CENTRIFUGO_URL', 'http://localhost:8000'), // centrifugo api url
-            'verify'  => env('CENTRIFUGO_VERIFY', false), // Verify host ssl if centrifugo uses this
-            'ssl_key' => env('CENTRIFUGO_SSL_KEY', null), // Self-Signed SSl Key for Host (require verify=true)
-        ],
+```bash
+php artisan centrifuge:install
 ```
+
+
+Application Credentials
+In order to establish a connection to Reverb, a set of Reverb "application" credentials must be exchanged between the client and server. These credentials are configured on the server and are used to verify the request from the client. You may define these credentials using the following environment variables:
 
 Also you should add these two lines to your .env file:
 
