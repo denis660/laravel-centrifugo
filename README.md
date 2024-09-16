@@ -29,6 +29,13 @@ Centrifugo broadcaster for laravel  , based on:
 - Centrifugo Server v5.4.5 or newer (see [here](https://github.com/centrifugal/centrifugo))
 
 ## Installation
+By default, broadcasting is not enabled in new Laravel 11 applications. You may enable broadcasting using the install:broadcasting Artisan command:
+```bash
+php artisan install:broadcasting
+```
+The `install:broadcasting` command will create the config/broadcasting.php configuration file. In addition, the command will create the `routes/channels.php` file where you may register your application's broadcast authorization routes and callbacks.
+
+
 
 Require this package with composer:
 
@@ -36,15 +43,6 @@ Require this package with composer:
 composer req denis660/laravel-centrifugo
 ```
 
-
-Open your config/app.php and add the following to the providers array:
-
-```php
-'providers' => [
-    // And uncomment BroadcastServiceProvider
-    App\Providers\BroadcastServiceProvider::class,
-],
-```
 
 Open your config/broadcasting.php and add new connection like this:
 
