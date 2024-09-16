@@ -40,7 +40,7 @@ The `install:broadcasting` command will create the config/broadcasting.php confi
 Require this package with composer:
 
 ```bash
-composer req denis660/laravel-centrifugo
+composer require denis660/laravel-centrifugo
 ```
 
 
