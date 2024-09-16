@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace denis660\Centrifugo;
 
+use denis660\Centrifugo\Commands\InstallCommand;
 use GuzzleHttp\Client as HttpClient;
 use Illuminate\Broadcasting\BroadcastManager;
 use Illuminate\Support\ServiceProvider;
@@ -17,6 +18,11 @@ class CentrifugoServiceProvider extends ServiceProvider
      */
     public function boot(BroadcastManager $broadcastManager)
     {
+        if ($this->app->runningInConsole()) {
+            $this->commands(InstallCommand::class);
+        }
+
+
         $broadcastManager->extend('centrifugo', function ($app) {
             return new CentrifugoBroadcaster($app->make('centrifugo'));
         });
@@ -27,8 +33,9 @@ class CentrifugoServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
+
         $this->app->singleton('centrifugo', function ($app) {
             $config = $app->make('config')->get('broadcasting.connections.centrifugo');
             $http = new HttpClient();

@@ -5,6 +5,7 @@ namespace denis660\Centrifugo\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
+
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Attribute\AsCommand;
 
@@ -51,8 +52,8 @@ class InstallCommand extends Command
         }
         $contents = File::get($env);
 
-        $token_hmac_secret_key=Str::uud()->toString();
-        $api_key=Str::uud()->toString();
+        $token_hmac_secret_key=Str::uuid()->toString();
+        $api_key=Str::uuid()->toString();
 
 
         $variables = Arr::where([
@@ -80,9 +81,10 @@ class InstallCommand extends Command
      */
     protected function publishConfiguration(): void
     {
+        return;
         $this->callSilently('vendor:publish', [
             '--provider' => 'App\Providers\BroadcastServiceProvider',
-            '--tag' => 'centrifugo-config',
+            '--tag' => 'centrifuge-config',
         ]);
     }
 
@@ -159,9 +161,8 @@ class InstallCommand extends Command
      */
     protected function updateBroadcastingDriver(): void
     {
-        $enable = confirm('Would you like to enable the Reverb broadcasting driver?', default: true);
 
-        if (! $enable || File::missing($env = app()->environmentFile())) {
+        if ( File::missing($env = app()->environmentFile())) {
             return;
         }
 
