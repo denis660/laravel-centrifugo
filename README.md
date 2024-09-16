@@ -37,6 +37,11 @@ The `install:broadcasting` command will create the config/broadcasting.php confi
 
 
 
+```bash
+php artisan centrifuge:install
+```
+
+
 Require this package with composer:
 
 ```bash
