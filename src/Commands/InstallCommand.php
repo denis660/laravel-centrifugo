@@ -5,10 +5,8 @@ namespace denis660\Centrifugo\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
-
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Attribute\AsCommand;
-
 
 #[AsCommand(name: 'centrifuge:install')]
 class InstallCommand extends Command
