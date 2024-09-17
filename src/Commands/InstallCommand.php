@@ -40,7 +40,7 @@ class InstallCommand extends Command
     }
 
     /**
-     * Add the Reverb variables to the environment file.
+     * Add the Centrifuge-laravel variables to the environment file.
      */
     protected function addEnvironmentVariables(): void
     {
@@ -74,7 +74,7 @@ class InstallCommand extends Command
     }
 
     /**
-     * Publish the Reverb configuration file.
+     * Publish the Centrifuge-laravel configuration file.
      */
     protected function publishConfiguration(): void
     {
