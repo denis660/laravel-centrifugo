@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Attribute\AsCommand;
 
-use function Laravel\Prompts\confirm;
 
 #[AsCommand(name: 'centrifuge:install')]
 class InstallCommand extends Command
