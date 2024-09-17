@@ -15,7 +15,7 @@ interface CentrifugoInterface
      *
      * @return mixed
      */
-    public function publish(string $channel, array $data, $skipHistory = false);
+    public function publish(string $channel, array $data, bool $skipHistory = false);
 
     /**
      * Send message into multiple channel.
