@@ -88,7 +88,7 @@ class Centrifugo implements CentrifugoInterface
      *
      * @return mixed
      */
-    public function broadcast(array $channels, array $data, $skipHistory = false) : array
+    public function broadcast(array $channels, array $data, bool $skipHistory = false) : array
     {
         $params = [
             'channels'     => $channels,
@@ -133,7 +133,7 @@ class Centrifugo implements CentrifugoInterface
      *
      * @return mixed
      */
-    public function history(string $channel, $limit = 0, $since = [], $reverse = false) : array
+    public function history(string $channel, $limit = 0, array $since = [], bool $reverse = false) : array
     {
         $params = [
             'channel' => $channel,
@@ -326,7 +326,7 @@ class Centrifugo implements CentrifugoInterface
      * @return mixed
      * @throws GuzzleException
      */
-    protected function send($method, array $params = []) : array
+    protected function send(string $method, array $params = []) : array
     {
         $json = json_encode(['method' => $method, 'params' => $params]);
 
@@ -390,7 +390,7 @@ class Centrifugo implements CentrifugoInterface
      *
      * @return string
      */
-    private function urlsafeB64Encode($input): string
+    private function urlsafeB64Encode(string $input): string
     {
         return str_replace('=', '', strtr(base64_encode($input), '+/', '-_'));
     }
@@ -403,7 +403,7 @@ class Centrifugo implements CentrifugoInterface
      *
      * @return string
      */
-    private function sign($msg, $key): string
+    private function sign(string $msg, string $key): string
     {
         return hash_hmac('sha256', $msg, $key, true);
     }

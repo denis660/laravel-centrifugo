@@ -26,7 +26,7 @@ interface CentrifugoInterface
      *
      * @return mixed
      */
-    public function broadcast(array $channels, array $data, $skipHistory = false);
+    public function broadcast(array $channels, array $data, bool $skipHistory = false);
 
     /**
      * Get channel presence information (all clients currently subscribed to this channel).
@@ -56,7 +56,7 @@ interface CentrifugoInterface
      *
      * @return mixed
      */
-    public function history(string $channel, $limit = 0, $since = [], $reverse = false);
+    public function history(string $channel, int $limit = 0, array $since = [], bool $reverse = false);
 
     /**
      * Remove channel history information .
@@ -76,7 +76,7 @@ interface CentrifugoInterface
      *
      * @return mixed
      */
-    public function subscribe($channel, $user, $client = '');
+    public function subscribe(string $channel, string $user, string $client = '');
 
     /**
      * Unsubscribe user from channel.
