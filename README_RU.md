@@ -14,7 +14,6 @@
 
 ## Введение
 Centrifugo broadcaster для laravel , основан на :
-- [LaraComponents/centrifugo-broadcaster](https://github.com/LaraComponents/centrifugo-broadcaster)
 - [centrifugal/phpcent](https://github.com/centrifugal/phpcent)
 
 ## Особенности
