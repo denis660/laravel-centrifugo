@@ -70,7 +70,7 @@ class Centrifugo implements CentrifugoInterface
      *
      * @return mixed
      */
-    public function publish(string $channel, array $data, $skipHistory = false) : array
+    public function publish(string $channel, array $data, bool $skipHistory = false) : array
     {
         return $this->send('publish', [
             'channel'      => $channel,
