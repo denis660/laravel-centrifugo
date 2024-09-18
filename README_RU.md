@@ -4,13 +4,9 @@
 <h2 align="center">Centrifugo broadcast драйвер для Laravel 8.75.0 - 11 </h2>
 
 
-[![CI](https://github.com/denis660/laravel-centrifugo/actions/workflows/tests.yml/badge.svg)](https://github.com/denis660/laravel-centrifugo/actions/workflows/tests.yml?query=event%3Apush+branch%3Amaster+workflow%3ATest)
-
-
 <p align="center">
-<a href="https://scrutinizer-ci.com/g/denis660/laravel-centrifugo/build-status/main"><img src="https://scrutinizer-ci.com/g/denis660/laravel-centrifugo/badges/quality-score.png?b=master" alt="Build Status"></a>
+<a href="https://github.com/denis660/laravel-centrifugo/actions/workflows/tests.yml?query=event%3Apush+branch%3Amaster+workflow%3ATest"><img src="https://github.com/denis660/laravel-centrifugo/actions/workflows/tests.yml/badge.svg" alt="Build Status"></a>
 <a href="https://github.com/denis660/laravel-centrifugo/releases"><img src="https://img.shields.io/github/release/denis660/laravel-centrifugo.svg?style=flat-square" alt="Latest Version"></a>
-<a href="https://scrutinizer-ci.com/g/denis660/laravel-centrifugo"><img src="https://img.shields.io/scrutinizer/g/denis660/laravel-centrifugo.svg?style=flat-square" alt="Quality Score"></a>
 <a href="https://github.styleci.io/repos/324202212"><img src="https://github.styleci.io/repos/324202212/shield?branch=master" alt="StyleCI"></a>
 <a href="https://packagist.org/packages/denis660/laravel-centrifugo"><img src="https://img.shields.io/packagist/dt/denis660/laravel-centrifugo.svg?style=flat-square" alt="Total Downloads"></a>
 <a href="https://github.com/denis660/Centrifuge/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Software License"></a>
