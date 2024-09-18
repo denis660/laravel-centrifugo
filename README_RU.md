@@ -163,3 +163,10 @@ class ExampleController
 ## Лицения
 
 Лицензия MIT. Пожалуйста прочитайте [License File](https://github.com/denis660/laravel-centrifugo/blob/master/LICENSE) для получения дополнительной информации.
+
+# Помочь проекту
+Кошелек USDT: ``TUYJrA9VRtXhDFooESHyT8dQSyg5zmtUg7```
+Сеть: ```TRC20```
+
+## Contributing 🤝
+
