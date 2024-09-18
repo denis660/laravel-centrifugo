@@ -330,27 +330,22 @@ class Centrifugo implements CentrifugoInterface
     {
         $json = json_encode(['method' => $method, 'params' => $params]);
 
-        $url = parse_url($this->prepareUrl());
-        $config = collect([
+        $url = $this->prepareUrl();
+
+        $config =[
+            'base_uri' => $url,
             'headers'     => [
                 'Content-type'  => 'application/json',
-                'Authorization' => 'apikey '.$this->getApiKey(),
+                'X-API-Key' => $this->getApiKey(),
             ],
-            'body'        => $json,
+            'json'        => $params,
             'http_errors' => true,
-        ]);
-
-        if (isset($url['scheme']) && $url['scheme'] == 'https') {
-            $config->put('verify', collect($this->config)->get('verify', false));
-
-            if (collect($this->config)->get('ssl_key')) {
-                $config->put('ssl_key', collect($this->config)->get('ssl_key'));
-            }
-        }
-
+            'verify' => $this->config['verify'],
+            'ssl_key' => $this->config['ssl_key']
+        ];
         try {
 
-            $response = $this->httpClient->post($this->prepareUrl(), $config->toArray());
+            $response = $this->httpClient->post($method, $config);
 
             $result = json_decode((string) $response->getBody(), true);
         } catch (ClientException $e) {
@@ -361,7 +356,7 @@ class Centrifugo implements CentrifugoInterface
             ];
         }
 
-
+        dd($result);
 
         return $result;
     }
@@ -378,9 +373,8 @@ class Centrifugo implements CentrifugoInterface
         if (substr_compare($address, static::API_PATH, -strlen(static::API_PATH)) !== 0) {
             $address .= static::API_PATH;
         }
-        //$address .= '/';
 
-        return $address;
+        return $address.'/';
     }
 
     /**
