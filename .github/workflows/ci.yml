@@ -1,25 +1,35 @@
 name: "test"
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+      - '*.x'
 
 jobs:
   test:
-    name: Test with PHP ${{ matrix.php-version }}
-    runs-on: ubuntu-latest
-    # Prevent duplicate builds on internal PRs.
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+    timeout-minutes: 3
+    runs-on: ubuntu-22.04
+
     strategy:
       matrix:
         php-version: [ "8.0"]
+        laravel: [11]
+        
+    name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
+
     steps:
-      - uses: "actions/checkout@v2"
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: "shivammathur/setup-php@v2"
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          php-version: "${{ matrix.php-version }}"
-
-      - name: Composer install
-        uses: "ramsey/composer-install@v1"
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip
+          ini-values: error_reporting=E_ALL
+          tools: composer:v2
+          coverage: none
 
       - name: Start Centrifugo
         run: docker run -d -p 8000:8000 centrifugo/centrifugo:latest centrifugo --api_insecure
