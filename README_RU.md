@@ -31,7 +31,7 @@ Centrifugo broadcaster для laravel , основан на :
 
 ##### Выберите нужную вам версию
 
-| Версия  (X.Y.Z) |   PHP    | Laravel |       Комментарий       |
+| Версия  |   PHP    | Laravel |       Комментарий       |
 |:----------------------:|:--------:|:-------:|:--------------------|
 |        `4.0.*`         | `>= 8.0` | `11.*`   | **Текущая версия** |
 |        `3.0.*`         | `>= 7.4` | `8.75.*`   | Предыдущая версия    |
@@ -124,8 +124,14 @@ class ExampleController
     }
 }
 ```
+### Методы для генерации клиентских токенов
+| Название | Описание |
+|------|-------------|
+| generateConnectionToken(string $userId = '', int $exp = 0, array $info = [], array $channels = [])  | Генерация токена для подключения |
+| generatePrivateChannelToken(string $client, string $channel, int $exp = 0, array $info = []) | Генерация приватного токена для приватного канала |
 
-### Методы
+
+### Методы API
 
 | Название | Описание |
 |------|-------------|
@@ -140,8 +146,7 @@ class ExampleController
 | disconnect(string $user_id) | Отключить пользователя по его ID. |
 | channels(string $pattern = '') | Cписок текущих активных каналов. |
 | info() | Статистическая информация о запущенных серверных узлах. |
-| generateConnectionToken(string $userId = '', int $exp = 0, array $info = [], array $channels = [])  | Генерация токена для подключения |
-| generatePrivateChannelToken(string $client, string $channel, int $exp = 0, array $info = []) | Генерация приватного токена для приватного канала |
+
 
 ## Лицения
 
