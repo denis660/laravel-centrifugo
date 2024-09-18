@@ -4,7 +4,7 @@
 <h2 align="center">Centrifugo broadcast драйвер для Laravel 8.75.0 - 11 </h2>
 
 
-[![CI](https://github.com/denis660/laravel-centrifugo/actions/workflows/test.yml/badge.svg)](https://github.com/denis660/laravel-centrifugo/actions/workflows/test.yml?query=event%3Apush+branch%3Amaster+workflow%3ATest)
+[![CI](https://github.com/denis660/laravel-centrifugo/actions/workflows/tests.yml/badge.svg)](https://github.com/denis660/laravel-centrifugo/actions/workflows/tests.yml?query=event%3Apush+branch%3Amaster+workflow%3ATest)
 
 
 <p align="center">
