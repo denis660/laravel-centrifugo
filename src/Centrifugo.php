@@ -330,27 +330,25 @@ class Centrifugo implements CentrifugoInterface
     {
         $json = json_encode(['method' => $method, 'params' => $params]);
 
-        $headers = [
-            'Content-type'  => 'application/json',
-            'Authorization' => 'apikey '.$this->getApiKey(),
-        ];
+        $url = parse_url($this->prepareUrl());
+        $config = collect([
+            'headers'     => [
+                'Content-type'  => 'application/json',
+                'Authorization' => 'apikey '.$this->getApiKey(),
+            ],
+            'body'        => $json,
+            'http_errors' => true,
+        ]);
+
+        if (isset($url['scheme']) && $url['scheme'] == 'https') {
+            $config->put('verify', collect($this->config)->get('verify', false));
+
+            if (collect($this->config)->get('ssl_key')) {
+                $config->put('ssl_key', collect($this->config)->get('ssl_key'));
+            }
+        }
 
         try {
-            $url = parse_url($this->prepareUrl());
-
-            $config = collect([
-                'headers'     => $headers,
-                'body'        => $json,
-                'http_errors' => true,
-            ]);
-
-            if (isset($url['scheme']) && $url['scheme'] == 'https') {
-                $config->put('verify', collect($this->config)->get('verify', false));
-
-                if (collect($this->config)->get('ssl_key')) {
-                    $config->put('ssl_key', collect($this->config)->get('ssl_key'));
-                }
-            }
 
             $response = $this->httpClient->post($this->prepareUrl(), $config->toArray());
 
@@ -362,6 +360,8 @@ class Centrifugo implements CentrifugoInterface
                 'body'   => $params,
             ];
         }
+
+
 
         return $result;
     }
