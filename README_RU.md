@@ -77,13 +77,25 @@ CENTRIFUGO_VERIFY=false
 BROADCAST_DRIVER=centrifugo
 ```
 
+## Клиентские SDK 
+Для работы с клиентом , почитайте в [Client SDK API](https://centrifugal.dev/docs/transports/client_api) 
+
+Вот список SDK, поддерживаемых Centrifugal Labs:
+- [JavaScript](https://github.com/centrifugal/centrifuge-js) — для браузера, NodeJS и React Native
+- [Golang](https://github.com/centrifugal/centrifuge-go) — для языка Go
+- [Dart](https://github.com/centrifugal/centrifuge-dart) — для Dart и Flutter (мобильные и веб-приложения)
+- [Swift](https://github.com/centrifugal/centrifuge-swift) — для собственной разработки iOS
+- [Java](https://github.com/centrifugal/centrifuge-java) — для собственной разработки Android и общей Java
+- [Python](https://github.com/centrifugal/centrifuge-python) — SDK реального времени для Python поверх asyncio
+
 ## Базовое использование
 
 Настройте ваш сервер Centrifugo , детальнее в [официальной документации](https://centrifugal.dev)
-
 Для отправки событий, почитайте [официальную документацию для Laravel](https://laravel.com/docs/11.x/broadcasting)
 
-Для работы с клиентом на сайте с использованием JavaScript, почитайте в [Client SDK API](https://centrifugal.dev/docs/transports/client_api)
+ 
+
+
 
 Простой пример использования клиента:
 
@@ -127,25 +139,25 @@ class ExampleController
 ### Методы для генерации клиентских токенов
 | Название | Описание |
 |------|-------------|
-| generateConnectionToken(string $userId = '', int $exp = 0, array $info = [], array $channels = [])  | Генерация токена для подключения |
-| generatePrivateChannelToken(string $client, string $channel, int $exp = 0, array $info = []) | Генерация приватного токена для приватного канала |
+| ```generateConnectionToken```  | Генерация токена для подключения |
+| ```generatePrivateChannelToken``` | Генерация приватного токена для приватного канала |
 
 
 ### Методы API
 
 | Название | Описание |
 |------|-------------|
-| publish(string $channel, array $data, $skipHistory = false) | Отправка сообщения в канал |
-| broadcast(array $channels, array $data, $skipHistory = false) | Отправить сообщение в несколько каналов. |
-| presence(string $channel) | Получите информацию о присутствии в канале (все клиенты в настоящее время подписаны на этот канал). |
-| presenceStats(string $channel) | Получите краткую информацию о канале (количество клиентов).|
-| history(string $channel, $limit = 0, $since = [], $reverse = false) | Получить информацию об истории канала (список последних сообщений, отправленных в канал). |
-| historyRemove(string $channel) | Удалить информацию из истории канала. |
-| subscribe(string $channel,  string $user, $client = '') | Подписать пользователя на канал |
-| unsubscribe(string $channel, string $user, string $client = '') | Отписать пользователя от канала. |
-| disconnect(string $user_id) | Отключить пользователя по его ID. |
-| channels(string $pattern = '') | Cписок текущих активных каналов. |
-| info() | Статистическая информация о запущенных серверных узлах. |
+| ```publish``` | Отправка сообщения в канал |
+| ```broadcast``` | Отправить сообщение в несколько каналов. |
+| ```presence``` | Получите информацию о присутствии в канале (все клиенты в настоящее время подписаны на этот канал). |
+| ```presenceStats``` | Получите краткую информацию о канале (количество клиентов).|
+| ```history``` | Получить информацию об истории канала (список последних сообщений, отправленных в канал). |
+| ```historyRemove``` | Удалить информацию из истории канала. |
+| ```subscribe``` | Подписать пользователя на канал |
+| ```unsubscribe``` | Отписать пользователя от канала. |
+| ```disconnect``` | Отключить пользователя по его ID. |
+| ```channels``` | Cписок текущих активных каналов. |
+| ```info``` | Статистическая информация о запущенных серверных узлах. |
 
 
 ## Лицения
