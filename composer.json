@@ -1,61 +1,64 @@
 {
-    "name": "denis660/laravel-centrifugo",
-    "type": "library",
-    "description": "Centrifugo broadcaster for laravel 8.75.0 - 11 and Centrifugo >= 5.4.5",
-    "keywords": [
-        "laravel-broadcaster",
-        "broadcaster",
-        "laravel",
-        "centrifugo",
-        "web socket",
-        "web-socket",
-        "websocket",
-        "socket",
-        "real time"
-    ],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Denis Zakharenko",
-            "email": "amx-serv@ya.ru",
-            "role": "Creator"
-        }
-    ],
-    "homepage": "https://github.com/denis660/laravel-centrifugo",
-    "support": {
-        "email": "amx-serv@ya.ru",
-        "issues": "https://github.com/denis660/laravel-centrifugo/issues",
-        "source": "https://github.com/denis660/laravel-centrifugo"
-    },
-    "require": {
-        "php": "^8.0|^8.1|^8.2|^8.3",
-        "laravel/framework": "^8.75.0|^9.0|^10.0|^11.0",
-        "guzzlehttp/guzzle": "~6.0|^7.0"
-    },
-    "require-dev": {
-        "orchestra/testbench": "^3.7|^8.0|^9.0",
-        "phpunit/phpunit": "^6||^7||^8|^9.5.10|^10.5"
-    },
-    "autoload": {
-        "psr-4": {
-            "denis660\\Centrifugo\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "denis660\\Centrifugo\\Test\\": "tests/"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "denis660\\Centrifugo\\CentrifugoServiceProvider"
-            ]
-        }
-    },
-    "config": {
-        "sort-packages": true
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+  "name" : "denis660/laravel-centrifugo",
+  "type" : "library",
+  "description" : "Centrifugo broadcaster for laravel 8.75.0 - 11 and Centrifugo >= 5.0",
+  "keywords" : [
+    "laravel-broadcaster",
+    "broadcaster",
+    "laravel",
+    "centrifugo",
+    "web socket",
+    "web-socket",
+    "websocket",
+    "socket",
+    "real time"
+  ],
+  "license" : "MIT",
+  "authors" : [
+    {
+      "name" : "Denis Zakharenko",
+      "email" : "amx-serv@ya.ru",
+      "role" : "Creator"
+    }
+  ],
+  "homepage" : "https://github.com/denis660/laravel-centrifugo",
+  "support" : {
+    "email" : "amx-serv@ya.ru",
+    "issues" : "https://github.com/denis660/laravel-centrifugo/issues",
+    "source" : "https://github.com/denis660/laravel-centrifugo"
+  },
+  "require" : {
+    "php" : "^8.0|^8.1|^8.2|^8.3",
+    "laravel/framework" : "^8.75.0|^9.0|^10.0|^11.0",
+    "guzzlehttp/guzzle" : "~6.0|^7.0"
+  },
+  "require-dev" : {
+    "orchestra/testbench" : "^3.7|^8.0|^9.0",
+    "phpunit/phpunit" : "^6||^7||^8|^9.5.10|^10.5"
+  },
+  "autoload" : {
+    "psr-4" : {
+      "denis660\\Centrifugo\\" : "src/"
+    }
+  },
+  "autoload-dev" : {
+    "psr-4" : {
+      "denis660\\Centrifugo\\Test\\" : "tests/"
+    }
+  },
+  "extra" : {
+    "laravel" : {
+      "providers" : [
+        "denis660\\Centrifugo\\CentrifugoServiceProvider"
+      ]
+    }
+  },
+  "config" : {
+    "sort-packages" : true
+  },
+  "minimum-stability" : "dev",
+  "prefer-stable" : true,
+  "scripts" : {
+    "test" : "phpunit"
+  }
 }

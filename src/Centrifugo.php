@@ -356,7 +356,6 @@ class Centrifugo implements CentrifugoInterface
             ];
         }
 
-        dd($result);
 
         return $result;
     }
