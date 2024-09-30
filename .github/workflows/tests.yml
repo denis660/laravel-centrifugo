@@ -1,10 +1,6 @@
 name: "tests"
 
-on:
-  push:
-    branches:
-      - master
-      - '*.x'
+on: [pull_request, push]
 
 jobs:
   test:
@@ -13,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        php-version: [ "8.0"]
+        php-version: [ "8.2"]
         laravel: [11]
         
     name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
@@ -45,5 +41,5 @@ jobs:
           done
         shell: bash
 
-      - name: Run tests
-        run: vendor/bin/phpunit
+      - name: PHPUnit Tests
+        run: php-actions/phpunit@v4
