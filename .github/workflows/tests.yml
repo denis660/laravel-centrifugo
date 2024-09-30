@@ -1,6 +1,10 @@
 name: "tests"
 
-on: [pull_request, push]
+on:
+  push:
+    branches:
+      - master
+      - '*.x'
 
 jobs:
   test:
@@ -8,6 +12,7 @@ jobs:
     runs-on: ubuntu-22.04
 
     strategy:
+      fail-fast: true
       matrix:
         php-version: [ "8.2"]
         laravel: [11]
@@ -40,6 +45,11 @@ jobs:
             sleep 1
           done
         shell: bash
-
+        
+      - name: Install dependencies
+        run: |
+           composer require "illuminate/contracts=^${{ matrix.laravel }}" --no-update
+           composer update --prefer-dist --no-interaction --no-progress
+           
       - name: PHPUnit Tests
-        run: php-actions/phpunit@v4
+        run: vendor/bin/phpunit
