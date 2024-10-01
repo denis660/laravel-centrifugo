@@ -25,6 +25,8 @@ jobs:
         
       - name: Install dependencies
         uses: php-actions/composer@v6
+        with:
+          php_version: "8.2"
         
       - name: Start Centrifugo
         run: docker run -d -p 8000:8000 centrifugo/centrifugo:latest centrifugo --api_insecure
