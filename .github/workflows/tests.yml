@@ -23,10 +23,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Install dependencies
-        uses: php-actions/composer@v6
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          php_version: "8.2"
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
+          ini-values: error_reporting=E_ALL
+          tools: composer:v2
+          coverage: none
         
       - name: Start Centrifugo
         run: docker run -d -p 8000:8000 centrifugo/centrifugo:latest centrifugo --api_insecure
@@ -41,6 +45,11 @@ jobs:
             sleep 1
           done
         shell: bash
+
+      - name: Install dependencies
+        run: |
+           composer require "illuminate/contracts=^${{ matrix.laravel }}" --no-update
+           composer update --prefer-dist --no-interaction --no-progress
            
       - name: PHPUnit Tests
         run: vendor/bin/phpunit
