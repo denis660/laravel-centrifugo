@@ -39,10 +39,10 @@ For Laravel 11, there are specific instructions below.
 
 ##### Выберите нужную вам версию
 
-| Version  |   PHP    |  Laravel  | Centrifugo |       Notes       |
-|:-------:|:--------:|:---------:|:----------:|:--------------------|
-| `5.0.*` | `>= 8.0` | `9` - `11` |     `5`      | **Current version** |
-| `3.0.*` | `>= 7.4` | `8.75.*`  |    `4`-`5`	    | Previous version    |
+| Version  |   PHP    |     Laravel     | Centrifugo |       Notes       |
+|:-------:|:--------:|:---------------:|:----------:|:--------------------|
+| `5.0.*` | `>= 8.0` |   `9` - `11`    |     `5`      | **Current version** |
+| `3.0.*` | `>= 7.4` | `8.75.*` - `10` |    `4`-`5`	| Previous version    |
 
 
 By default, broadcasting is disabled in new Laravel 11 applications. You can enable broadcasting using the install
