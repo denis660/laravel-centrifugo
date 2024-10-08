@@ -1,7 +1,7 @@
 <p align="center">Документация <a href="https://github.com/denis660/laravel-centrifugo/blob/master/README.md">EN</a> | <b>RU</b></p>
 
 <h1 align="center">Laravel + Centrifugo</h1>
-<h2 align="center">Centrifugo broadcast драйвер для Laravel 8.75.0 - 11 </h2>
+<h2 align="center">Centrifugo broadcast драйвер для Laravel 9 - 11 </h2>
 
 
 <p align="center">

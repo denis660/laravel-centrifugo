@@ -1,7 +1,7 @@
-<p align="center">Documentation <a href="https://github.com/denis660/laravel-centrifugo/blob/master/README.md">EN</a> | <b>RU</b></p>
+<p align="center">Documentation <b>EN</b> | <a href="https://github.com/denis660/laravel-centrifugo/blob/master/README_RU.md">RU</a></p>
 
 <h1 align="center">Laravel + Centrifugo</h1>
-<h2 align="center">Centrifugo broadcast driver for Laravel 8.75.0 - 11</h2>
+<h2 align="center">Centrifugo broadcast driver for Laravel 9 - 11</h2>
 
 <p align="center">
 <a href="https://github.com/denis660/laravel-centrifugo/actions/workflows/tests.yml"><img src="https://github.com/denis660/laravel-centrifugo/actions/workflows/tests.yml/badge.svg" alt="Build Status"></a>
