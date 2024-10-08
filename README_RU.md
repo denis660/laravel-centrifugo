@@ -7,7 +7,6 @@
 <p align="center">
 <a href="https://github.com/denis660/laravel-centrifugo/actions/workflows/tests.yml"><img src="https://github.com/denis660/laravel-centrifugo/actions/workflows/tests.yml/badge.svg" alt="Build Status"></a>
 <a href="https://github.com/denis660/laravel-centrifugo/releases"><img src="https://img.shields.io/github/release/denis660/laravel-centrifugo.svg?style=flat-square" alt="Latest Version"></a>
-<a href="https://github.styleci.io/repos/324202212"><img src="https://github.styleci.io/repos/324202212/shield?branch=master" alt="StyleCI"></a>
 <a href="https://packagist.org/packages/denis660/laravel-centrifugo"><img src="https://img.shields.io/packagist/dt/denis660/laravel-centrifugo.svg?style=flat-square" alt="Total Downloads"></a>
 <a href="https://github.com/denis660/Centrifuge/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Software License"></a>
 </p>
@@ -17,24 +16,32 @@ Centrifugo broadcaster для laravel , основан на :
 - [centrifugal/phpcent](https://github.com/centrifugal/phpcent)
 
 ## Особенности
-- Совместимость с последней версией [Centrifugo v5.4.5](https://github.com/centrifugal/centrifugo/releases/tag/v5.4.5) 🚀
+- Совместимость с последней версией [Centrifugo v5.4.6](https://github.com/centrifugal/centrifugo/releases/tag/v5.4.6) 🚀
 - Обертка над [Centrifugo HTTP API](https://centrifugal.dev/docs/server/server_api) 🔌
 - Аутентификация с помощью токена JWT (HMAC алгоритм) для анонимного, авторизованного пользователя и приватного канала 🗝️
 
 ## Требования
 - PHP 8.0 - 8.3
-- Framework Laravel 8.75.0 - 11.0
+- Laravel 9 - 11
 - Guzzlehttp/Guzzle 6 - 7
-- Centrifugo Сервер v3 или новее (см. [здесь](https://github.com/centrifugal/centrifugo))
+- Centrifugo Сервер v5 или новее (см. [здесь](https://github.com/centrifugal/centrifugo))
 
 ## Установка
 
+Для Laravel 9-10
+```bash
+composer require denis660/laravel-centrifugo
+```
+Для Laravel 11 есть особенности, читаем ниже
+
+
+
 ##### Выберите нужную вам версию
 
-| Версия  |   PHP    | Laravel |       Комментарий       |
-|:----------------------:|:--------:|:-------:|:--------------------|
-|        `4.0.*`         | `>= 8.0` | `11.*`   | **Текущая версия** |
-|        `3.0.*`         | `>= 7.4` | `8.75.*`   | Предыдущая версия    |
+| Версия  |   PHP    |  Laravel  |       Комментарий       |
+|:-------:|:--------:|:---------:|:--------------------|
+| `5.0.*` | `>= 8.0` | `9` - `11` | **Текущая версия** |
+| `3.0.*` | `>= 7.4` | `8.75.*`  | Предыдущая версия    |
 
 
 По умолчанию вещание не включено в новых приложениях Laravel 11. Вы можете включить вещание с помощью команды install:broadcasting Artisan:
@@ -77,8 +84,8 @@ CENTRIFUGO_VERIFY=false
 BROADCAST_DRIVER=centrifugo
 ```
 
-## Клиентские SDK 
-Для работы с клиентом , почитайте в [Client SDK API](https://centrifugal.dev/docs/transports/client_api) 
+## Клиентские SDK
+Для работы с клиентом , почитайте в [Client SDK API](https://centrifugal.dev/docs/transports/client_api)
 
 Вот список SDK, поддерживаемых Centrifugal Labs:
 - [JavaScript](https://github.com/centrifugal/centrifuge-js) — для браузера, NodeJS и React Native
@@ -93,7 +100,7 @@ BROADCAST_DRIVER=centrifugo
 Настройте ваш сервер Centrifugo , детальнее в [официальной документации](https://centrifugal.dev)
 Для отправки событий, почитайте [официальную документацию для Laravel](https://laravel.com/docs/11.x/broadcasting)
 
- 
+
 
 
 
@@ -165,7 +172,8 @@ class ExampleController
 Лицензия MIT. Пожалуйста прочитайте [License File](https://github.com/denis660/laravel-centrifugo/blob/master/LICENSE) для получения дополнительной информации.
 
 # Помочь проекту
-Кошелек USDT: ``TUYJrA9VRtXhDFooESHyT8dQSyg5zmtUg7```
+Кошелек USDT: ```TUYJrA9VRtXhDFooESHyT8dQSyg5zmtUg7```
+
 Сеть: ```TRC20```
 
 ## Contributing 🤝
