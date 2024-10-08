@@ -56,6 +56,7 @@ class CentrifugoTest extends TestCase
     public function testCentrifugoApiBroadcast(): void
     {
         $broadcast = $this->centrifuge->broadcast(['test-channel-1', 'test-channel-2'], ['event' => 'test-event']);
+        dd($broadcast);
         $this->assertCount(2, $broadcast['result']['responses']);
         $this->assertArrayHasKey('result', $broadcast['result']['responses'][0]);
         $this->assertArrayHasKey('result', $broadcast['result']['responses'][1]);
