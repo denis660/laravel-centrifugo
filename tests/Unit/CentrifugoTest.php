@@ -49,6 +49,7 @@ class CentrifugoTest extends TestCase
     public function testCentrifugoApiPublish(): void
     {
         $publish = $this->centrifuge->publish('test-test', ['event' => 'test-event']);
+        dump($publish);
         $this->assertArrayHasKey('result', $publish);
         $this->assertIsArray($publish['result']);
     }
