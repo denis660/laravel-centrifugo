@@ -330,8 +330,6 @@ class Centrifugo implements CentrifugoInterface
      */
     protected function send(string $method, array $params = []) : array
     {
-        $json = json_encode(['method' => $method, 'params' => $params]);
-
         $url = $this->prepareUrl();
 
         $config =[

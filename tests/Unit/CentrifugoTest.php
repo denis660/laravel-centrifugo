@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace denis660\Centrifugo\Test\Unit;
 
@@ -12,12 +13,17 @@ use GuzzleHttp\Exception\ConnectException;
  *
  * @coversNothing
  */
+
+
 class CentrifugoTest extends TestCase
 {
+
+
+
     public function testGenerateToken(): void
     {
 
-        $timestamp = 1727716803;
+
 
         $info = [
             'first_name' => "Tristian",
@@ -25,17 +31,17 @@ class CentrifugoTest extends TestCase
         ];
         $clientId = "f2527b6a-6705-45b7-a1d9-d0029943dc20";
 
-        $clientToken1 = $this->centrifuge->generateConnectionToken($clientId, $timestamp);
-
+        $clientToken1 = $this->centrifuge->generateConnectionToken(userId:$clientId);
 
         $this->assertEquals(
-            'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmMjUyN2I2YS02NzA1LTQ1YjctYTFkOS1kMDAyOTk0M2RjMjAiLCJleHAiOjE3Mjc3MTY4MDN9.om2AdKJLNYbZ7bfeIS9tw0AJqs1RIp5irUGNfPiqHqk',
+            'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmMjUyN2I2YS02NzA1LTQ1YjctYTFkOS1kMDAyOTk0M2RjMjAifQ.csRuDJhBalF3J3v6JnsNZmOXLx6nbNMi3zcCieJJqng',
             $clientToken1
         );
 
-        $clientToken2 = $this->centrifuge->generatePrivateChannelToken($clientId, 'test', $timestamp, $info);
+        $clientToken2 = $this->centrifuge->generatePrivateChannelToken(userId:$clientId, channel:'test', info:$info);
+
         $this->assertEquals(
-            'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjaGFubmVsIjoidGVzdCIsImNsaWVudCI6ImYyNTI3YjZhLTY3MDUtNDViNy1hMWQ5LWQwMDI5OTQzZGMyMCIsImluZm8iOnsiZmlyc3RfbmFtZSI6IlRyaXN0aWFuIiwibGFzdF9uYW1lIjoiUnVlY2tlciJ9LCJleHAiOjE3Mjc3MTY4MDN9.UtzQDjU1RDXKizcBlvF5VMR45_crs6AU4tcO-EfPnjM',
+            'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjaGFubmVsIjoidGVzdCIsInN1YiI6ImYyNTI3YjZhLTY3MDUtNDViNy1hMWQ5LWQwMDI5OTQzZGMyMCIsImluZm8iOnsiZmlyc3RfbmFtZSI6IlRyaXN0aWFuIiwibGFzdF9uYW1lIjoiUnVlY2tlciJ9fQ.8wNO3gQdg6Knk9J7mPZquV8aAsDtqI2a4A5tK5Y9IR8',
             $clientToken2
         );
     }

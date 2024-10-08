@@ -28,12 +28,12 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     protected function getEnvironmentSetUp($app)
     {
-        
+
         $app['config']->set('broadcasting.default', 'centrifugo');
         $app['config']->set('broadcasting.connections.centrifugo', [
             'driver' => 'centrifugo',
-            'token_hmac_secret_key' => '', //0cac68ac-5965-46bf-8c44-ed28a03ab8ba
-            'api_key' => '', //ae3362d2-5862-4261-9b3b-6b231f8863c8
+            'token_hmac_secret_key' => 'secret',
+            'api_key' => 'api-key',
             'url' => 'http://localhost:8000',
         ]);
     }
