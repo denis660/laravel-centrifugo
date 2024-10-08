@@ -343,6 +343,7 @@ class Centrifugo implements CentrifugoInterface
             'verify' => $this->config['verify'],
             'ssl_key' => $this->config['ssl_key']
         ];
+        dump($config);
         try {
 
             $response = $this->httpClient->post($method, $config);
