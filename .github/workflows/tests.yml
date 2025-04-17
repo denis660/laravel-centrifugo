@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: ['8.0', 8.1, 8.2, 8.3]
+        php: ['8.0', '8.1', '8.2', '8.3', '8.4']
         laravel: [9, 10, 11, 12]
         exclude:
           - php: '8.0'
@@ -28,6 +28,12 @@ jobs:
             php: '8.0'
           - laravel: 12
             php: 8.1
+          # Исключаем запуск Laravel 9 на PHP 8.4 (несовместимы)
+          - php: '8.4'
+            laravel: 9
+          # Исключаем запуск Laravel 10 на PHP 8.4 (несовместимы)
+          - php: '8.4'
+            laravel: 10
 
     name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
 
@@ -45,7 +51,7 @@ jobs:
           coverage: none
 
       - name: Start Centrifugo
-        run: docker run -d -p 8000:8000 -e CENTRIFUGO_TOKEN_HMAC_SECRET_KEY="secret" -e CENTRIFUGO_API_KEY="api-key" -e CENTRIFUGO_PRESENCE=1 -e CENTRIFUGO_JOIN_LEAVE=true -e CENTRIFUGO_FORCE_PUSH_JOIN_LEAVE=true -e CENTRIFUGO_HISTORY_TTL=300s -e CENTRIFUGO_HISTORY_SIZE=100 -e CENTRIFUGO_FORCE_RECOVERY=true -e CENTRIFUGO_USER_SUBSCRIBE_TO_PERSONAL=true -e CENTRIFUGO_ALLOW_PUBLISH_FOR_SUBSCRIBER=true -e CENTRIFUGO_ALLOW_PRESENCE_FOR_SUBSCRIBER=true -e CENTRIFUGO_ALLOW_HISTORY_FOR_SUBSCRIBER=true centrifugo/centrifugo:v5 centrifugo
+        run: docker run -d -p 8000:8000 -e CENTRIFUGO_TOKEN_HMAC_SECRET_KEY="secret" -e CENTRIFUGO_API_KEY="api-key" -e CENTRIFUGO_PRESENCE=1 -e CENTRIFUGO_JOIN_LEAVE=true -e CENTRIFUGO_FORCE_PUSH_JOIN_LEAVE=true -e CENTRIFUGO_HISTORY_TTL=300s -e CENTRIFUGO_HISTORY_SIZE=100 -e CENTRIFUGO_FORCE_RECOVERY=true -e CENTRIFUGO_USER_SUBSCRIBE_TO_PERSONAL=true -e CENTRIFUGO_ALLOW_PUBLISH_FOR_SUBSCRIBER=true -e CENTRIFUGO_ALLOW_PRESENCE_FOR_SUBSCRIBER=true -e CENTRIFUGO_ALLOW_HISTORY_FOR_SUBSCRIBER=true centrifugo/centrifugo:v6 centrifugo
 
       - name: Check container status
         run: docker ps
