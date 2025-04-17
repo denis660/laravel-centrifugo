@@ -15,18 +15,18 @@ Centrifugo broadcaster for Laravel is based on:
 - [centrifugal/phpcent](https://github.com/centrifugal/phpcent)
 
 ## Features
-- Compatibility with the latest version of [Centrifugo v5.4.8](https://github.com/centrifugal/centrifugo/releases/tag/v5.4.8) 🚀
+- Compatibility with the latest version of [Centrifugo v6.1.0](https://github.com/centrifugal/centrifugo/releases/tag/v6.1.0) 🚀
 - Wrapper for [Centrifugo HTTP API](https://centrifugal.dev/docs/server/server_api) 🔌
 - JWT token authentication (HMAC algorithm) for anonymous, authorized users, and private channels 🗝️
 
 ## Requirements
-- PHP 8.0 - 8.3
-- Laravel 9 - 11
+- PHP 8.0 - 8.4
+- Laravel 9 - 12
 - Guzzlehttp/Guzzle 6 - 7
-- Centrifugo Server v5 or newer (see [here](https://github.com/centrifugal/centrifugo))
+- Centrifugo Server v6 or newer (see [here](https://github.com/centrifugal/centrifugo))
 
 ## Installation
-For Laravel 9-10:
+For Laravel 9-12:
 
 ```bash
 composer require denis660/laravel-centrifugo
@@ -41,7 +41,7 @@ For Laravel 11, there are specific instructions below.
 
 | Version  |   PHP    |     Laravel     | Centrifugo |       Notes       |
 |:-------:|:--------:|:---------------:|:----------:|:--------------------|
-| `5.0.*` | `>= 8.0` |   `9` - `11`    |     `5`      | **Current version** |
+| `5.*` | `>= 8.0` |   `9` - `12`    |     `5-6`      | **Current version** |
 | `3.0.*` | `>= 7.4` | `8.75.*` - `10` |    `4`-`5`	| Previous version    |
 
 
