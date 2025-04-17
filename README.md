@@ -26,13 +26,13 @@ Centrifugo broadcaster for Laravel is based on:
 - Centrifugo Server v6 or newer (see [here](https://github.com/centrifugal/centrifugo))
 
 ## Installation
-For Laravel 9-12:
+For Laravel 9-10:
 
 ```bash
 composer require denis660/laravel-centrifugo
 ```
 
-For Laravel 11, there are specific instructions below.
+For Laravel 11-12, there are specific instructions below.
 
 
 
