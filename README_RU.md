@@ -1,7 +1,7 @@
 <p align="center">Документация <a href="https://github.com/denis660/laravel-centrifugo/blob/master/README.md">EN</a> | <b>RU</b></p>
 
 <h1 align="center">Laravel + Centrifugo</h1>
-<h2 align="center">Centrifugo broadcast драйвер для Laravel 9 - 11 </h2>
+<h2 align="center">Centrifugo broadcast драйвер для Laravel 9 - 12 </h2>
 
 
 <p align="center">
@@ -16,15 +16,15 @@ Centrifugo broadcaster для laravel , основан на :
 - [centrifugal/phpcent](https://github.com/centrifugal/phpcent)
 
 ## Особенности
-- Совместимость с последней версией [Centrifugo v5.4.8](https://github.com/centrifugal/centrifugo/releases/tag/v5.4.8) 🚀
+- Совместимость с последней версией [Centrifugo v6.1.0](https://github.com/centrifugal/centrifugo/releases/tag/v6.1.0) 🚀
 - Обертка над [Centrifugo HTTP API](https://centrifugal.dev/docs/server/server_api) 🔌
 - Аутентификация с помощью токена JWT (HMAC алгоритм) для анонимного, авторизованного пользователя и приватного канала 🗝️
 
 ## Требования
-- PHP 8.0 - 8.3
-- Laravel 9 - 11
+- PHP 8.0 - 8.4
+- Laravel 9 - 12
 - Guzzlehttp/Guzzle 6 - 7
-- Centrifugo Сервер v5 или новее (см. [здесь](https://github.com/centrifugal/centrifugo))
+- Centrifugo Сервер v6 или новее (см. [здесь](https://github.com/centrifugal/centrifugo))
 
 ## Установка
 
@@ -32,7 +32,7 @@ Centrifugo broadcaster для laravel , основан на :
 ```bash
 composer require denis660/laravel-centrifugo
 ```
-Для Laravel 11 есть особенности, читаем ниже
+Для Laravel 11-12 есть особенности, читаем ниже
 
 
 
@@ -40,7 +40,7 @@ composer require denis660/laravel-centrifugo
 
 | Версия  |   PHP    |     Laravel     | Centrifugo | Комментарий        |
 |:-------:|:--------:|:---------------:|:----------:|:-------------------|
-| `5.0.*` | `>= 8.0` |   `9` - `11`    |     `5`      | **Текущая версия** |
+| `5.*` | `>= 8.0` |   `9` - `12`    |     `5-6`      | **Текущая версия** |
 | `3.0.*` | `>= 7.4` | `8.75.*` - `10` |   `4`-`5`   | Предыдущая версия  |
 
 
@@ -99,10 +99,6 @@ BROADCAST_DRIVER=centrifugo
 
 Настройте ваш сервер Centrifugo , детальнее в [официальной документации](https://centrifugal.dev)
 Для отправки событий, почитайте [официальную документацию для Laravel](https://laravel.com/docs/11.x/broadcasting)
-
-
-
-
 
 Простой пример использования клиента:
 
