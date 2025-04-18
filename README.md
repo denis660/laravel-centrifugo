@@ -37,7 +37,7 @@ For Laravel 11-12, there are specific instructions below.
 
 
 
-##### Выберите нужную вам версию
+##### Select the version you need
 
 | Version  |   PHP    |     Laravel     | Centrifugo |       Notes       |
 |:-------:|:--------:|:---------------:|:----------:|:--------------------|
