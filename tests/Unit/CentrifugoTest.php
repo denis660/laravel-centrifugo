@@ -98,7 +98,7 @@ class CentrifugoTest extends TestCase
     {
         $info = $this->centrifuge->info();
         if (isset($info['error'])) {
-            $this->assertIsArray($info['error']);
+            $this->assertIsString($info['error']);
         } else {
             $this->assertArrayHasKey('nodes', $info['result']);
         }

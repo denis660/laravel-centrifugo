@@ -39,12 +39,14 @@ class CentrifugoBroadcasterTest extends TestCase
     {
         $this->centrifugo->shouldReceive('broadcast')->once()->with(['test-channel'], ['event' => 'test-event'])->andReturn([]);
         $this->broadcaster->broadcast(['test-channel'], 'test-event', ['event' => 'test-event']);
+        self::assertTrue(true);
     }
 
     public function testBroadcastWithPrivateChannel()
     {
         $this->centrifugo->shouldReceive('broadcast')->once()->with(['$test-channel'], ['event' => 'test-event'])->andReturn([]);
         $this->broadcaster->broadcast(['private-test-channel'], 'test-event', ['event' => 'test-event']);
+        self::assertTrue(true);
     }
 
     public function testBroadcastException()
