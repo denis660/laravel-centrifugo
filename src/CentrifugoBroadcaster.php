@@ -42,8 +42,6 @@ class CentrifugoBroadcaster extends Broadcaster
             $channels = $this->getChannelsFromRequest($request);
 
             $response = [];
-            $privateResponse = [];
-            $private = null;
             foreach ($channels as $channel) {
                 $channelName = $this->getChannelName($channel);
 
@@ -53,14 +51,14 @@ class CentrifugoBroadcaster extends Broadcaster
                     $is_access_granted = false;
                 }
 
-                if ($private = $this->isPrivateChannel($channel)) {
-                    $privateResponse['channels'][] = $this->makeResponseForPrivateClient($is_access_granted, $channel, $client);
+                if ($this->isPrivateChannel($channel)) {
+                    $response['channels'][] = $this->makeResponseForPrivateClient($is_access_granted, $channel, $client);
                 } else {
                     $response[$channel] = $this->makeResponseForClient($is_access_granted, $client);
                 }
             }
 
-            return response($private ? $privateResponse : $response);
+            return response($response);
         } else {
             throw new HttpException(401);
         }
@@ -97,13 +95,22 @@ class CentrifugoBroadcaster extends Broadcaster
 
         $response = $this->centrifugo->broadcast($this->formatChannels($channels), $payload);
 
-        if (is_array($response) && !isset($response['error'])) {
+        if (is_array($response) && isset($response['result'])) {
+            foreach ($response['result']['responses'] ?? [] as $channelResponse) {
+                if (isset($channelResponse['error'])) {
+                    throw new BroadcastException(
+                        $channelResponse['error']['message'] ?? 'Centrifugo broadcast error'
+                    );
+                }
+            }
             return;
         }
 
-        throw new BroadcastException(
-            $response['error'] instanceof Exception ? $response['error']->getMessage() : $response['error']
-        );
+        if (is_array($response) && isset($response['error'])) {
+            throw new BroadcastException(
+                $response['error'] instanceof Exception ? $response['error']->getMessage() : $response['error']
+            );
+        }
     }
 
     /**
@@ -113,7 +120,7 @@ class CentrifugoBroadcaster extends Broadcaster
      *
      * @return string
      */
-    private function getClientFromRequest($request)
+    private function getClientFromRequest(\Illuminate\Http\Request $request): string
     {
         return $request->get('client', '');
     }
@@ -125,7 +132,7 @@ class CentrifugoBroadcaster extends Broadcaster
      *
      * @return array
      */
-    private function getChannelsFromRequest($request)
+    private function getChannelsFromRequest(\Illuminate\Http\Request $request): array
     {
         $channels = $request->get('channels', []);
 
@@ -190,11 +197,9 @@ class CentrifugoBroadcaster extends Broadcaster
         $info = [];
 
         return $access_granted ? [
-
             'channel' => $channel,
             'token'   => $this->centrifugo->generatePrivateChannelToken($client, $channel, 0, $info),
-            'info'    => $this->centrifugo->info(),
-
+            'info'    => $info,
         ] : [
             'status' => 403,
         ];

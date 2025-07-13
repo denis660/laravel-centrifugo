@@ -43,7 +43,7 @@ class CentrifugoServiceProvider extends ServiceProvider
             return new Centrifugo($config, $http);
         });
 
-        $this->app->alias('centrifugo', 'denis660\Centrifugo\Centrifugo');
-        $this->app->alias('centrifugo', 'denis660\Centrifugo\Contracts\Centrifugo');
+        $this->app->alias('centrifugo', Centrifugo::class);
+        $this->app->alias('centrifugo', CentrifugoInterface::class);
     }
 }

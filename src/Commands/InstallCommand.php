@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Attribute\AsCommand;
 
-#[AsCommand(name: 'centrifuge:install')]
+#[AsCommand(name: 'centrifugo:install')]
 class InstallCommand extends Command
 {
     /**
@@ -16,14 +16,14 @@ class InstallCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'centrifuge:install';
+    protected $signature = 'centrifugo:install';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Install the Centrifuge dependencies';
+    protected $description = 'Install the Centrifugo dependencies';
 
     /**
      * Execute the console command.
@@ -69,20 +69,16 @@ class InstallCommand extends Command
 
         File::append(
             $env,
-            Str::endsWith($contents, PHP_EOL) ? PHP_EOL.$variables.PHP_EOL : PHP_EOL.PHP_EOL.$variables.PHP_EOL,
+            PHP_EOL.$variables.PHP_EOL,
         );
     }
 
     /**
-     * Publish the Centrifuge-laravel configuration file.
+     * Publish the Centrifugo-laravel configuration file.
      */
     protected function publishConfiguration(): void
     {
-        return;
-        $this->callSilently('vendor:publish', [
-            '--provider' => 'App\Providers\BroadcastServiceProvider',
-            '--tag' => 'centrifuge-config',
-        ]);
+        // This is not needed as the configuration is added directly.
     }
 
     /**
@@ -93,26 +89,26 @@ class InstallCommand extends Command
         if ($this->laravel->config->has('broadcasting.connections.centrifugo')) {
             return;
         }
+        $configFile = app()->configPath('broadcasting.php');
+        $configContents = File::get($configFile);
 
+        $centrifugoConfig = <<<'CONFIG'
 
-        File::replaceInFile(
-            "'connections' => [\n",
-            <<<'CONFIG'
-            'connections' => [
+        'centrifugo' => [
+            'driver' => 'centrifugo',
+            'token_hmac_secret_key' => env('CENTRIFUGO_TOKEN_HMAC_SECRET_KEY'),
+            'api_key' => env('CENTRIFUGO_API_KEY'),
+            'url' => env('CENTRIFUGO_URL', 'http://localhost:8000'), // centrifugo api url
+            'verify' => env('CENTRIFUGO_VERIFY', false), // Verify host ssl if centrifugo uses this
+            'ssl_key' => env('CENTRIFUGO_SSL_KEY', null),  // Self-Signed SSl Key for Host (require verify=true)
+        ],
+CONFIG;
 
-                    'centrifugo' => [
-                        'driver' => 'centrifugo',
-                        'token_hmac_secret_key' => env('CENTRIFUGO_TOKEN_HMAC_SECRET_KEY'),
-                        'api_key' => env('CENTRIFUGO_API_KEY'),
-                        'url' => env('CENTRIFUGO_URL', 'http://localhost:8000'), // centrifugo api url
-                        'verify'=>env('CENTRIFUGO_VERIFY', false), // Verify host ssl if centrifugo uses this
-                        'ssl_key'=>env('CENTRIFUGO_SSL_KEY', null)  // Self-Signed SSl Key for Host (require verify=true)
-
-                    ],
-
-            CONFIG,
-            app()->configPath('broadcasting.php')
-        );
+        File::put($configFile, str_replace(
+            "'connections' => [",
+            "'connections' => [" . $centrifugoConfig,
+            $configContents
+        ));
     }
 
     /**
@@ -142,14 +138,16 @@ class InstallCommand extends Command
      */
     protected function enableBroadcastServiceProvider(): void
     {
-        $config = File::get(app()->configPath('app.php'));
+        $configPath = app()->configPath('app.php');
+        $config = File::get($configPath);
 
-        if (Str::contains($config, '// App\Providers\BroadcastServiceProvider::class')) {
-            File::replaceInFile(
-                '// App\Providers\BroadcastServiceProvider::class',
-                'App\Providers\BroadcastServiceProvider::class',
-                app()->configPath('app.php'),
+        if (Str::contains($config, '// App\\Providers\\BroadcastServiceProvider::class')) {
+            $newConfig = str_replace(
+                '// App\\Providers\\BroadcastServiceProvider::class',
+                'App\\Providers\\BroadcastServiceProvider::class',
+                $config
             );
+            File::put($configPath, $newConfig);
         }
     }
 
