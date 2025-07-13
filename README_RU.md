@@ -8,7 +8,9 @@
 <a href="https://github.com/denis660/laravel-centrifugo/actions/workflows/tests.yml"><img src="https://github.com/denis660/laravel-centrifugo/actions/workflows/tests.yml/badge.svg" alt="Build Status"></a>
 <a href="https://github.com/denis660/laravel-centrifugo/releases"><img src="https://img.shields.io/github/release/denis660/laravel-centrifugo.svg?style=flat-square" alt="Latest Version"></a>
 <a href="https://packagist.org/packages/denis660/laravel-centrifugo"><img src="https://img.shields.io/packagist/dt/denis660/laravel-centrifugo.svg?style=flat-square" alt="Total Downloads"></a>
-<a href="https://github.com/denis660/Centrifuge/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Software License"></a>
+<a href="https://packagist.org/packages/denis660/laravel-centrifugo"><img src="https://img.shields.io/packagist/php-v/denis660/laravel-centrifugo" alt="PHP Version"></a>
+<a href="https://packagist.org/packages/denis660/laravel-centrifugo"><img src="https://img.shields.io/packagist/v/denis660/laravel-centrifugo" alt="Laravel Version"></a>
+<a href="https://github.com/denis660/laravel-centrifugo/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Software License"></a>
 </p>
 
 ## Введение
@@ -16,7 +18,7 @@ Centrifugo broadcaster для laravel , основан на :
 - [centrifugal/phpcent](https://github.com/centrifugal/phpcent)
 
 ## Особенности
-- Совместимость с последней версией [Centrifugo v6.1.0](https://github.com/centrifugal/centrifugo/releases/tag/v6.1.0) 🚀
+- Совместимость с последней версией [Centrifugo v6.2.3](https://github.com/centrifugal/centrifugo/releases/tag/v6.2.3) 🚀
 - Обертка над [Centrifugo HTTP API](https://centrifugal.dev/docs/server/server_api) 🔌
 - Аутентификация с помощью токена JWT (HMAC алгоритм) для анонимного, авторизованного пользователя и приватного канала 🗝️
 
@@ -38,7 +40,7 @@ composer require denis660/laravel-centrifugo
 
 ##### Выберите нужную вам версию
 
-| Версия  |   PHP    |     Laravel     | Centrifugo | Комментарий        |
+| Версия  |   PHP    |     Laravel     | Centrifugo | Примечания        |
 |:-------:|:--------:|:---------------:|:----------:|:-------------------|
 | `5.*` | `>= 8.0` |   `9` - `12`    |     `5-6`      | **Текущая версия** |
 | `3.0.*` | `>= 7.4` | `8.75.*` - `10` |   `4`-`5`   | Предыдущая версия  |
@@ -56,15 +58,14 @@ composer require denis660/laravel-centrifugo
 ```
 
 ## Конфигурация
-Запустите команду centrifuge:install, которая установит centrifuge-laravel с разумным набором параметров конфигурации по умолчанию и сгенерирует ключи по умолчанию.
-Если вы хотите внести какие-либо изменения в конфигурацию, вы можете сделать это, обновив переменные среды в .env.
+Запустите команду `centrifuge:install`, которая опубликует файл конфигурации и сгенерирует необходимые переменные окружения в вашем файле `.env` со значениями по умолчанию.
 ```bash
 php artisan centrifuge:install
 ```
 
 # Учетные данные
-Для установления соединения с Centrifuge необходимо задать набор учетных данных Centrifuge из файла config.json.
-Эти учетные данные настраиваются на сервере Centrifuge, но Laravel для примера сгенерирует ключи, обязательно замените их. Вы можете определить эти учетные данные с помощью следующих переменных среды:
+Для установления соединения с Centrifugo необходимо задать набор учетных данных из файла `config.json` вашего сервера Centrifugo.
+Laravel сгенерирует примеры ключей, которые вы должны заменить на реальные учетные данные вашего сервера. Вы можете определить эти учетные данные с помощью следующих переменных среды:
 
 Обязательные параметры
 ```
@@ -163,7 +164,7 @@ class ExampleController
 | ```info``` | Статистическая информация о запущенных серверных узлах. |
 
 
-## Лицения
+## Лицензия
 
 Лицензия MIT. Пожалуйста прочитайте [License File](https://github.com/denis660/laravel-centrifugo/blob/master/LICENSE) для получения дополнительной информации.
 
