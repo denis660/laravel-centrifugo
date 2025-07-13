@@ -75,7 +75,6 @@ class CentrifugoBroadcasterTest extends TestCase
     public function testAuthForPrivateChannel()
     {
         $this->centrifugo->shouldReceive('generatePrivateChannelToken')->once()->andReturn('private-test-token');
-        $this->centrifugo->shouldReceive('info')->once()->andReturn([]);
 
         $request = m::mock(Request::class);
         $request->shouldReceive('user')->andReturn(new stdClass());
