@@ -7,7 +7,9 @@
 <a href="https://github.com/denis660/laravel-centrifugo/actions/workflows/tests.yml"><img src="https://github.com/denis660/laravel-centrifugo/actions/workflows/tests.yml/badge.svg" alt="Build Status"></a>
 <a href="https://github.com/denis660/laravel-centrifugo/releases"><img src="https://img.shields.io/github/release/denis660/laravel-centrifugo.svg?style=flat-square" alt="Latest Version"></a>
 <a href="https://packagist.org/packages/denis660/laravel-centrifugo"><img src="https://img.shields.io/packagist/dt/denis660/laravel-centrifugo.svg?style=flat-square" alt="Total Downloads"></a>
-<a href="https://github.com/denis660/Centrifuge/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Software License"></a>
+<a href="https://packagist.org/packages/denis660/laravel-centrifugo"><img src="https://img.shields.io/packagist/php-v/denis660/laravel-centrifugo" alt="PHP Version"></a>
+<a href="https://packagist.org/packages/denis660/laravel-centrifugo"><img src="https://img.shields.io/packagist/v/denis660/laravel-centrifugo" alt="Laravel Version"></a>
+<a href="https://github.com/denis660/laravel-centrifugo/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Software License"></a>
 </p>
 
 ## Introduction
@@ -15,7 +17,7 @@ Centrifugo broadcaster for Laravel is based on:
 - [centrifugal/phpcent](https://github.com/centrifugal/phpcent)
 
 ## Features
-- Compatibility with the latest version of [Centrifugo v6.1.0](https://github.com/centrifugal/centrifugo/releases/tag/v6.1.0) 🚀
+- Compatibility with the latest version of [Centrifugo v6.2.3](https://github.com/centrifugal/centrifugo/releases/tag/v6.2.3) 🚀
 - Wrapper for [Centrifugo HTTP API](https://centrifugal.dev/docs/server/server_api) 🔌
 - JWT token authentication (HMAC algorithm) for anonymous, authorized users, and private channels 🗝️
 
@@ -58,14 +60,14 @@ composer require denis660/laravel-centrifugo
 ```
 
 ## Configuration
-Run the command centrifuge
-, which will install centrifuge-laravel with a reasonable set of default configuration options and generate default keys. If you want to make any changes to the configuration, you can update the environment variables in the .env file.
+Run the `centrifuge:install` command, which will publish the configuration file and generate the necessary environment variables in your `.env` file with default values.
+
 ```bash
 php artisan centrifuge:install
 ```
 
 # Credentials
-To establish a connection with Centrifugo, you need to provide a set of Centrifugo credentials from the config.json file. These credentials are configured on the Centrifugo server, but Laravel will generate example keys that you should replace. You can specify these credentials with the following environment variables:
+To establish a connection with Centrifugo, you need to provide credentials from your Centrifugo server's `config.json` file. Laravel will generate example keys that you should replace with your actual server credentials. You can specify these credentials with the following environment variables:
 
 Required parameters:
 ```
@@ -151,7 +153,7 @@ class ExampleController
 
 ### API Methods
 
-| Название | Описание                                                                                            |
+| Method | Description                                                                                            |
 |------|-----------------------------------------------------------------------------------------------------|
 | ```publish``` | Send a message to a channel                                                                         |
 | ```broadcast``` | Send a message to multiple channels.                                                            |

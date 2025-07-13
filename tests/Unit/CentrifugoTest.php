@@ -82,6 +82,28 @@ class CentrifugoTest extends TestCase
         $this->assertArrayHasKey('channels', $channels['result']);
     }
 
+    public function testCentrifugoApiHistoryRemove(): void
+    {
+        $historyRemove = $this->centrifuge->historyRemove('test-channel');
+        $this->assertEquals([], $historyRemove['result']);
+    }
+
+    public function testCentrifugoApiDisconnect(): void
+    {
+        $disconnect = $this->centrifuge->disconnect('test-user-id');
+        $this->assertEquals([], $disconnect['result']);
+    }
+
+    public function testCentrifugoApiInfo(): void
+    {
+        $info = $this->centrifuge->info();
+        if (isset($info['error'])) {
+            $this->assertIsString($info['error']);
+        } else {
+            $this->assertArrayHasKey('nodes', $info['result']);
+        }
+    }
+
     public function testCentrifugoApiUnsubscribe(): void
     {
         $unsubscribe = $this->centrifuge->unsubscribe('test-channel', '1');
@@ -90,7 +112,7 @@ class CentrifugoTest extends TestCase
 
     public function testCentrifugoApiSubscribe(): void
     {
-        $subscribe = $this->centrifuge->unsubscribe('test-channel', '1');
+        $subscribe = $this->centrifuge->subscribe('test-channel', '1');
         $this->assertEquals([], $subscribe['result']);
     }
 
