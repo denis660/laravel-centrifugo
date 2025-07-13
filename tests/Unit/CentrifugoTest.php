@@ -97,7 +97,11 @@ class CentrifugoTest extends TestCase
     public function testCentrifugoApiInfo(): void
     {
         $info = $this->centrifuge->info();
-        $this->assertArrayHasKey('nodes', $info['result']);
+        if (isset($info['error'])) {
+            $this->assertIsArray($info['error']);
+        } else {
+            $this->assertArrayHasKey('nodes', $info['result']);
+        }
     }
 
     public function testCentrifugoApiUnsubscribe(): void

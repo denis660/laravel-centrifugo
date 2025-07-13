@@ -37,20 +37,20 @@ class CentrifugoBroadcasterTest extends TestCase
 
     public function testBroadcast()
     {
-        $this->centrifugo->shouldReceive('broadcast')->once()->with(['test-channel'], ['event' => 'test-event'], false)->andReturn([]);
+        $this->centrifugo->shouldReceive('broadcast')->once()->with(['test-channel'], ['event' => 'test-event'])->andReturn([]);
         $this->broadcaster->broadcast(['test-channel'], 'test-event', ['event' => 'test-event']);
     }
 
     public function testBroadcastWithPrivateChannel()
     {
-        $this->centrifugo->shouldReceive('broadcast')->once()->with(['$test-channel'], ['event' => 'test-event'], false)->andReturn([]);
+        $this->centrifugo->shouldReceive('broadcast')->once()->with(['$test-channel'], ['event' => 'test-event'])->andReturn([]);
         $this->broadcaster->broadcast(['private-test-channel'], 'test-event', ['event' => 'test-event']);
     }
 
     public function testBroadcastException()
     {
         $this->expectException(BroadcastException::class);
-        $this->centrifugo->shouldReceive('broadcast')->once()->with(['test-channel'], ['event' => 'test-event'], false)->andReturn(['error' => 'test-error']);
+        $this->centrifugo->shouldReceive('broadcast')->once()->with(['test-channel'], ['event' => 'test-event'])->andReturn(['error' => 'test-error']);
         $this->broadcaster->broadcast(['test-channel'], 'test-event', ['event' => 'test-event']);
     }
 
@@ -67,7 +67,7 @@ class CentrifugoBroadcasterTest extends TestCase
         $broadcaster->shouldReceive('verifyUserCanAccessChannel')->andReturn(true);
 
         $response = $broadcaster->auth($request);
-        $this->assertEquals(['test-channel' => ['sign' => 'test-token', 'info' => []]], $response->getData(true));
+        $this->assertEquals(['test-channel' => ['sign' => 'test-token', 'info' => []]], json_decode($response->getContent(), true));
     }
 
     public function testAuthForPrivateChannel()
@@ -93,7 +93,7 @@ class CentrifugoBroadcasterTest extends TestCase
                 ],
             ],
         ];
-        $this->assertEquals($expected, $response->getData(true));
+        $this->assertEquals($expected, json_decode($response->getContent(), true));
     }
 
     public function testAuthAccessDenied()
@@ -107,6 +107,6 @@ class CentrifugoBroadcasterTest extends TestCase
         $broadcaster->shouldReceive('verifyUserCanAccessChannel')->andReturn(false);
 
         $response = $broadcaster->auth($request);
-        $this->assertEquals(['test-channel' => ['status' => 403]], $response->getData(true));
+        $this->assertEquals(['test-channel' => ['status' => 403]], json_decode($response->getContent(), true));
     }
 } 
