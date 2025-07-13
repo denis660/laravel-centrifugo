@@ -327,6 +327,7 @@ class Centrifugo implements CentrifugoInterface
      * @param array  $params
      *
      * @return array
+     * @throws GuzzleException
      */
     protected function send(string $method, array $params = []): array
     {
@@ -347,7 +348,7 @@ class Centrifugo implements CentrifugoInterface
             $response = $this->httpClient->post($method, $config);
 
             $result = json_decode((string) $response->getBody(), true);
-        } catch (GuzzleException $e) {
+        } catch (ClientException $e) {
             $result = [
                 'method' => $method,
                 'error'  => $e->getMessage(),

@@ -199,6 +199,7 @@ class CentrifugoBroadcaster extends Broadcaster
         return $access_granted ? [
             'channel' => $channel,
             'token'   => $this->centrifugo->generatePrivateChannelToken($client, $channel, 0, $info),
+            'info'    => $info,
         ] : [
             'status' => 403,
         ];
