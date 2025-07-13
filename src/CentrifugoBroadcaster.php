@@ -86,7 +86,7 @@ class CentrifugoBroadcaster extends Broadcaster
      *
      * @return void
      */
-    public function broadcast(array $channels, string $event, array $payload = [])
+    public function broadcast(array $channels, $event, array $payload = [])
     {
         $payload['event'] = $event;
         $channels = array_map(function ($channel) {
