@@ -11,7 +11,7 @@ use Illuminate\Broadcasting\BroadcastManager;
 
 class CentrifugoServiceProviderTest extends TestCase
 {
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         return [CentrifugoServiceProvider::class];
     }
