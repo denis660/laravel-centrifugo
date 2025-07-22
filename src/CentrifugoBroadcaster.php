@@ -116,7 +116,7 @@ class CentrifugoBroadcaster extends Broadcaster
         if (is_array($result)) {
             if (isset($result['userId'], $result['info'])) {
                 return new CentrifugoTokenDataDto(
-                    userId: $result['userId'],
+                    userId: (string)$result['userId'],
                     info: $result['info'],
                     expireSeconds: $result['expireSeconds'] ?? 0
                 );
