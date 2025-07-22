@@ -31,7 +31,6 @@ class InstallCommand extends Command
     public function handle(): void
     {
         $this->addEnvironmentVariables();
-        $this->publishConfiguration();
         $this->updateBroadcastingConfiguration();
         $this->enableBroadcasting();
         $this->updateBroadcastingDriver();
@@ -71,18 +70,6 @@ class InstallCommand extends Command
             $env,
             Str::endsWith($contents, PHP_EOL) ? PHP_EOL.$variables.PHP_EOL : PHP_EOL.PHP_EOL.$variables.PHP_EOL,
         );
-    }
-
-    /**
-     * Publish the Centrifuge-laravel configuration file.
-     */
-    protected function publishConfiguration(): void
-    {
-        return;
-        $this->callSilently('vendor:publish', [
-            '--provider' => 'App\Providers\BroadcastServiceProvider',
-            '--tag' => 'centrifuge-config',
-        ]);
     }
 
     /**
@@ -158,8 +145,7 @@ class InstallCommand extends Command
      */
     protected function updateBroadcastingDriver(): void
     {
-
-        if ( File::missing($env = app()->environmentFile())) {
+        if (File::missing($env = app()->environmentFile())) {
             return;
         }
 
