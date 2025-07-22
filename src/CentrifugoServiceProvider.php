@@ -22,7 +22,6 @@ class CentrifugoServiceProvider extends ServiceProvider
             $this->commands(InstallCommand::class);
         }
 
-
         $broadcastManager->extend('centrifugo', function ($app) {
             return new CentrifugoBroadcaster($app->make('centrifugo'));
         });
@@ -35,7 +34,6 @@ class CentrifugoServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-
         $this->app->singleton('centrifugo', function ($app) {
             $config = $app->make('config')->get('broadcasting.connections.centrifugo');
             $http = new HttpClient();

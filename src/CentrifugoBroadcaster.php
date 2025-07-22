@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace denis660\Centrifugo;
 
+use denis660\Centrifugo\Dto\CentrifugoTokenDataDto;
 use Exception;
 use Illuminate\Broadcasting\Broadcasters\Broadcaster;
 use Illuminate\Broadcasting\BroadcastException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class CentrifugoBroadcaster extends Broadcaster
 {
+    public const CONNECTION_CHANNEL = 'App';
+
     /**
      * The Centrifugo SDK instance.
      *
@@ -37,33 +42,104 @@ class CentrifugoBroadcaster extends Broadcaster
      */
     public function auth($request)
     {
-        if ($request->user()) {
-            $client = $this->getClientFromRequest($request);
-            $channels = $this->getChannelsFromRequest($request);
+        $channels = $this->getChannelsFromRequest($request);
 
-            $response = [];
-            $privateResponse = [];
-            $private = null;
-            foreach ($channels as $channel) {
-                $channelName = $this->getChannelName($channel);
+        if (empty($channels)) {
+            return response()->json([
+                static::CONNECTION_CHANNEL => $this->generateTokenFromChannelCallbackResult(
+                    $request,
+                    static::CONNECTION_CHANNEL
+                )
+            ]);
+        }
 
-                try {
-                    $is_access_granted = $this->verifyUserCanAccessChannel($request, $channelName);
-                } catch (HttpException $e) {
-                    $is_access_granted = false;
-                }
+        $tokens = Arr::mapWithKeys(
+            $channels,
+            function ($channel) use ($request) {
+                return [
+                    $channel => $this->generateTokenFromChannelCallbackResult(
+                        $request,
+                        $channel,
+                    )
+                ];
+            }
+        );
 
-                if ($private = $this->isPrivateChannel($channel)) {
-                    $privateResponse['channels'][] = $this->makeResponseForPrivateClient($is_access_granted, $channel, $client);
-                } else {
-                    $response[$channel] = $this->makeResponseForClient($is_access_granted, $client);
-                }
+        return response()->json($tokens);
+    }
+
+    protected function generateTokenFromChannelCallbackResult(
+        Request $request,
+        string $channel
+    ): string {
+        try {
+            $result = $this->verifyUserCanAccessChannel(
+                $request,
+                $this->normalizeChannelName($channel)
+            );
+        } catch (AccessDeniedHttpException $e) {
+            return '';
+        }
+
+        $tokenDto = $this->prepareTokenDtoFromChannelCallbackResult(
+            $result,
+            $request,
+            $channel
+        );
+
+        if ($channel === self::CONNECTION_CHANNEL) {
+            return $this->centrifugo->generateConnectionToken(
+                $tokenDto->userId,
+                $tokenDto->expireSeconds,
+                $tokenDto->info,
+                [$channel]
+            );
+        }
+
+        return $this->centrifugo->generatePrivateChannelToken(
+            $tokenDto->userId,
+            $channel,
+            $tokenDto->expireSeconds,
+            $tokenDto->info
+        );
+    }
+
+    protected function prepareTokenDtoFromChannelCallbackResult(
+        $result,
+        Request $request,
+        string $channel
+    ): CentrifugoTokenDataDto {
+        if ($result instanceof CentrifugoTokenDataDto) {
+            return $result;
+        }
+
+        if (is_array($result)) {
+            if (isset($result['userId'], $result['info'])) {
+                return new CentrifugoTokenDataDto(
+                    userId: (string)$result['userId'],
+                    info: $result['info'],
+                    expireSeconds: $result['expireSeconds'] ?? 0
+                );
             }
 
-            return response($private ? $privateResponse : $response);
-        } else {
-            throw new HttpException(401);
+            return new CentrifugoTokenDataDto(
+                userId: $this->retrieveUserId($request, $channel),
+                info: $result,
+                expireSeconds: 0,
+            );
         }
+
+        return new CentrifugoTokenDataDto(
+            userId: $this->retrieveUserId($request, $channel),
+            info: [],
+            expireSeconds: 0
+        );
+    }
+
+    protected function retrieveUserId(Request $request, string $channel): ?string
+    {
+        $user = $this->retrieveUser($request, $channel);
+        return (string)($user?->getAuthIdentifier() ?? $request->ip());
     }
 
     /**
@@ -97,25 +173,15 @@ class CentrifugoBroadcaster extends Broadcaster
 
         $response = $this->centrifugo->broadcast($this->formatChannels($channels), $payload);
 
-        if (is_array($response) && !isset($response['error'])) {
+        if (!isset($response['error'])) {
             return;
         }
 
         throw new BroadcastException(
-            $response['error'] instanceof Exception ? $response['error']->getMessage() : $response['error']
+            $response['error'] instanceof Exception
+                ? $response['error']->getMessage()
+                : $response['error']
         );
-    }
-
-    /**
-     * Get client from request.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return string
-     */
-    private function getClientFromRequest($request)
-    {
-        return $request->get('client', '');
     }
 
     /**
@@ -125,11 +191,21 @@ class CentrifugoBroadcaster extends Broadcaster
      *
      * @return array
      */
-    private function getChannelsFromRequest($request)
+    private function getChannelsFromRequest(Request $request): array
     {
-        $channels = $request->get('channels', []);
+        $channels = $request->channel
+            ?: $request->channel_name
+            ?: $request->channels
+            ?: $request->c;
 
-        return is_array($channels) ? $channels : [$channels];
+        if (!is_array($channels)) {
+            $channels = explode(',', (string)$channels);
+        }
+
+        return collect(Arr::map(
+            $channels,
+            'trim'
+        ))->filter()->toArray();
     }
 
     /**
@@ -139,9 +215,9 @@ class CentrifugoBroadcaster extends Broadcaster
      *
      * @return string
      */
-    private function getChannelName(string $channel)
+    private function normalizeChannelName(string $channel): string
     {
-        return $this->isPrivateChannel($channel) ? substr($channel, 1) : $channel;
+        return $this->isPrivateChannel($channel) ? mb_substr($channel, 1) : $channel;
     }
 
     /**
@@ -153,50 +229,6 @@ class CentrifugoBroadcaster extends Broadcaster
      */
     private function isPrivateChannel(string $channel): bool
     {
-        return substr($channel, 0, 1) === '$';
-    }
-
-    /**
-     * Make response for client, based on access rights.
-     *
-     * @param bool   $access_granted
-     * @param string $client
-     *
-     * @return array
-     */
-    private function makeResponseForClient(bool $access_granted, string $client)
-    {
-        $info = [];
-
-        return $access_granted ? [
-            'sign' => $this->centrifugo->generateConnectionToken($client, 0, $info),
-            'info' => $info,
-        ] : [
-            'status' => 403,
-        ];
-    }
-
-    /**
-     * Make response for client, based on access rights of private channel.
-     *
-     * @param bool   $access_granted
-     * @param string $channel
-     * @param string $client
-     *
-     * @return array
-     */
-    private function makeResponseForPrivateClient(bool $access_granted, string $channel, string $client)
-    {
-        $info = [];
-
-        return $access_granted ? [
-
-            'channel' => $channel,
-            'token'   => $this->centrifugo->generatePrivateChannelToken($client, $channel, 0, $info),
-            'info'    => $this->centrifugo->info(),
-
-        ] : [
-            'status' => 403,
-        ];
+        return str_starts_with($channel, '$');
     }
 }

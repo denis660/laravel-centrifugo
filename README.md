@@ -36,15 +36,12 @@ composer require denis660/laravel-centrifugo
 
 For Laravel 11-12, there are specific instructions below.
 
-
-
-
 ##### Select the version you need
 
-| Version  |   PHP    |     Laravel     | Centrifugo |       Notes       |
+| Version |   PHP    |     Laravel     | Centrifugo | Notes               |
 |:-------:|:--------:|:---------------:|:----------:|:--------------------|
-| `5.*` | `>= 8.0` |   `9` - `12`    |     `5-6`      | **Current version** |
-| `3.0.*` | `>= 7.4` | `8.75.*` - `10` |    `4`-`5`	| Previous version    |
+|  `5.*`  | `>= 8.0` |   `9` - `12`    |   `5-6`    | **Current version** |
+| `3.0.*` | `>= 7.4` | `8.75.*` - `10` |  `4`-`5`	  | Previous version    |
 
 
 By default, broadcasting is disabled in new Laravel 11 applications. You can enable broadcasting using the install
@@ -103,10 +100,6 @@ Here is a list of SDKs supported by Centrifugal Labs:
 Set up your Centrifugo server as detailed in the [official documentation](https://centrifugal.dev)
 For sending events, refer to the [official Laravel documentation](https://laravel.com/docs/11.x/broadcasting)
 
-
-
-
-
 Here is a simple example of client usage:
 
 ```php
@@ -144,28 +137,68 @@ class ExampleController
 }
 ```
 
+### Connection Token Generation
+In Centrifugo, connecting to the server requires generating a token, necessitating explicit connection permission. 
+This involves configuring a channel for authentication:
+```php
+// routes/channels.php
+
+use denis660\Centrifugo\CentrifugoBroadcaster;
+
+Broadcast::channel(CentrifugoBroadcaster::CONNECTION_CHANNEL, fn() => true);
+```
+
+### Obtaining Broadcasting Authentication Tokens
+Laravel's default /broadcasting/auth endpoint enables the retrieval of tokens for secure broadcasting. 
+Here's how you can obtain tokens for different channels:
+```js
+// Fetch token for connection
+const connectionToken = await fetch('/broadcasting/auth', {
+  method: 'POST',
+  headers: { 
+    'Content-Type': 'application/json',
+  },
+}).then((res) => res.json())
+  .then((tokens) => tokens['App'] || '')
+
+// Fetch token for a specific channel, e.g., 'Chat'
+const chatChannelToken = await fetch('/broadcasting/auth', {
+  method: 'POST',
+  headers: { 
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    // Specify channel(s) here. 
+    // Accepts parameter names: channel, channels, channel_name, or c
+    // Channels can be passed as an array or a comma-separated string
+    c: 'Chat',
+  }),
+}).then((res) => res.json())
+  .then((tokens) => tokens['Chat'] || '')
+```
+
 ### Methods for generating client tokens
-| Method | Description |
-|------|-------------|
-| ```generateConnectionToken```  | Generate a token for connection |
+| Method                            | Description                                    |
+|-----------------------------------|------------------------------------------------|
+| ```generateConnectionToken```     | Generate a token for connection                |
 | ```generatePrivateChannelToken``` | Generate a private token for a private channel |
 
 
 ### API Methods
 
-| Method | Description                                                                                            |
-|------|-----------------------------------------------------------------------------------------------------|
-| ```publish``` | Send a message to a channel                                                                         |
-| ```broadcast``` | Send a message to multiple channels.                                                            |
-| ```presence``` | Get presence information for a channel (all clients currently subscribed to this channel). |
-| ```presenceStats``` | Get summary information for a channel (number of clients).                                        |
-| ```history``` | Get channel history (list of recent messages sent to the channel).           |
-| ```historyRemove``` | Remove channel history.                                                          |
-| ```subscribe``` | Subscribe a user to a channel                                                         |
-| ```unsubscribe``` | Unsubscribe a user from a channel.                                                         |
-| ```disconnect``` | Disconnect a user by their ID.                                                                   |
-| ```channels``` | List current active channels.                                                                   |
-| ```info``` | Statistical information about running server nodes.                                            |
+| Method              | Description                                                                                |
+|---------------------|--------------------------------------------------------------------------------------------|
+| ```publish```       | Send a message to a channel                                                                |
+| ```broadcast```     | Send a message to multiple channels.                                                       |
+| ```presence```      | Get presence information for a channel (all clients currently subscribed to this channel). |
+| ```presenceStats``` | Get summary information for a channel (number of clients).                                 |
+| ```history```       | Get channel history (list of recent messages sent to the channel).                         |
+| ```historyRemove``` | Remove channel history.                                                                    |
+| ```subscribe```     | Subscribe a user to a channel                                                              |
+| ```unsubscribe```   | Unsubscribe a user from a channel.                                                         |
+| ```disconnect```    | Disconnect a user by their ID.                                                             |
+| ```channels```      | List current active channels.                                                              |
+| ```info```          | Statistical information about running server nodes.                                        |
 
 
 ## License
