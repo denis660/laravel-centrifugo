@@ -144,6 +144,46 @@ class ExampleController
 }
 ```
 
+### Connection Token Generation
+In Centrifugo, connecting to the server requires generating a token, necessitating explicit connection permission. 
+This involves configuring a channel for authentication:
+```php
+// routes/channels.php
+
+use denis660\Centrifugo\CentrifugoBroadcaster;
+
+Broadcast::channel(CentrifugoBroadcaster::CONNECTION_CHANNEL, fn() => true);
+```
+
+### Obtaining Broadcasting Authentication Tokens
+Laravel's default /broadcasting/auth endpoint enables the retrieval of tokens for secure broadcasting. 
+Here's how you can obtain tokens for different channels:
+```js
+// Fetch token for connection
+const connectionToken = await fetch('/broadcasting/auth', {
+  method: 'POST',
+  headers: { 
+    'Content-Type': 'application/json',
+  },
+}).then((res) => res.json())
+  .then((tokens) => tokens['App'] || '')
+
+// Fetch token for a specific channel, e.g., 'Chat'
+const chatChannelToken = await fetch('/broadcasting/auth', {
+  method: 'POST',
+  headers: { 
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    // Specify channel(s) here. 
+    // Accepts parameter names: channel, channels, channel_name, or c
+    // Channels can be passed as an array or a comma-separated string
+    c: 'Chat',
+  }),
+}).then((res) => res.json())
+  .then((tokens) => tokens['Chat'] || '')
+```
+
 ### Methods for generating client tokens
 | Method | Description |
 |------|-------------|
