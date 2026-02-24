@@ -29,12 +29,12 @@
     "require": {
         "php": "^8.0",
         "ext-json": "*",
-        "laravel/framework": "^9.0|^10.0|^11.0|^12.0",
+        "laravel/framework": "^9.0|^10.0|^11.0|^12.0|^13.0",
         "guzzlehttp/guzzle": "~6.0|^7.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^7.35|^8.14|^9.0|^10.0",
-        "phpunit/phpunit": "^9.3|^10.5|^11.5.3"
+        "orchestra/testbench": "^7.35|^8.14|^9.0|^10.0|^11.0",
+        "phpunit/phpunit": "^9.3|^10.5|^11.5.3|^12.5.12"
     },
     "autoload": {
         "psr-4": {
