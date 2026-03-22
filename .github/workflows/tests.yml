@@ -165,7 +165,7 @@ jobs:
       - name: Smoke test installed package against real Centrifugo
         working-directory: e2e-app
         run: |
-          php <<'PHP'
+          cat <<'PHP' > smoke-centrifugo.php
           <?php
           require __DIR__.'/vendor/autoload.php';
 
@@ -183,7 +183,20 @@ jobs:
               exit(1);
           }
 
-          $history = $centrifugo->history($channel);
+          $history = null;
+
+          for ($attempt = 0; $attempt < 10; $attempt++) {
+              $history = $centrifugo->history($channel);
+
+              if (
+                  isset($history['result']['publications'][0]['data']['event']) &&
+                  $history['result']['publications'][0]['data']['event'] === 'smoke'
+              ) {
+                  break;
+              }
+
+              usleep(200000);
+          }
 
           if (
               !isset($history['result']['publications'][0]['data']['event']) ||
@@ -195,3 +208,5 @@ jobs:
 
           echo "Centrifugo smoke test passed\n";
           PHP
+          php smoke-centrifugo.php
+          rm smoke-centrifugo.php
