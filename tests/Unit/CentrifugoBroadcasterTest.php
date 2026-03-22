@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace denis660\Centrifugo\Test\Unit;
@@ -6,109 +7,202 @@ namespace denis660\Centrifugo\Test\Unit;
 use denis660\Centrifugo\Centrifugo;
 use denis660\Centrifugo\CentrifugoBroadcaster;
 use denis660\Centrifugo\Test\TestCase;
+use GuzzleHttp\Client;
 use Illuminate\Broadcasting\BroadcastException;
 use Illuminate\Http\Request;
-use Mockery as m;
-use stdClass;
+use Illuminate\Support\Str;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class CentrifugoBroadcasterTest extends TestCase
 {
-    /**
-     * @var \denis660\Centrifugo\Centrifugo|\Mockery\MockInterface
-     */
-    public $centrifugo;
-
-    /**
-     * @var \denis660\Centrifugo\CentrifugoBroadcaster|\Mockery\MockInterface
-     */
-    public $broadcaster;
+    private CentrifugoBroadcaster $broadcaster;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->centrifugo = m::mock(Centrifugo::class);
-        $this->broadcaster = new CentrifugoBroadcaster($this->centrifugo);
+
+        $this->broadcaster = new CentrifugoBroadcaster($this->centrifuge);
     }
 
-    public function tearDown(): void
+    public function testBroadcastPublishesToPublicChannel(): void
     {
-        m::close();
+        $channel = 'test-public-'.Str::uuid()->toString();
+
+        $this->broadcaster->broadcast([$channel], 'test-event', ['payload' => 'public']);
+
+        $this->assertTrue(true);
     }
 
-    public function testBroadcast()
+    public function testBroadcastPublishesToPrivateChannel(): void
     {
-        $this->centrifugo->shouldReceive('broadcast')->once()->with(['test-channel'], ['event' => 'test-event'])->andReturn([]);
-        $this->broadcaster->broadcast(['test-channel'], 'test-event', ['event' => 'test-event']);
-        self::assertTrue(true);
+        $channel = 'private-test-'.Str::uuid()->toString();
+
+        $this->broadcaster->broadcast([$channel], 'test-event', ['payload' => 'private']);
+
+        $this->assertTrue(true);
     }
 
-    public function testBroadcastWithPrivateChannel()
+    public function testBroadcastThrowsWhenCentrifugoRejectsRequest(): void
     {
-        $this->centrifugo->shouldReceive('broadcast')->once()->with(['$test-channel'], ['event' => 'test-event'])->andReturn([]);
-        $this->broadcaster->broadcast(['private-test-channel'], 'test-event', ['event' => 'test-event']);
-        self::assertTrue(true);
-    }
+        $config = $this->app['config']->get('broadcasting.connections.centrifugo');
+        $config['api_key'] = 'invalid-api-key';
 
-    public function testBroadcastException()
-    {
+        $broadcaster = new CentrifugoBroadcaster(new Centrifugo($config, new Client()));
+
         $this->expectException(BroadcastException::class);
-        $this->centrifugo->shouldReceive('broadcast')->once()->with(['test-channel'], ['event' => 'test-event'])->andReturn(['error' => 'test-error']);
-        $this->broadcaster->broadcast(['test-channel'], 'test-event', ['event' => 'test-event']);
+
+        $broadcaster->broadcast(['test-channel'], 'test-event', ['payload' => 'error']);
     }
 
-    public function testAuthForPublicChannel()
+    public function testBroadcastWrapsConnectionFailuresInBroadcastException(): void
     {
-        $this->centrifugo->shouldReceive('generateConnectionToken')->once()->andReturn('test-token');
+        $config = $this->app['config']->get('broadcasting.connections.centrifugo');
+        $config['url'] = 'http://localhost:3999';
 
-        $request = m::mock(Request::class);
-        $request->shouldReceive('user')->andReturn(new stdClass());
-        $request->shouldReceive('get')->with('client', '')->andReturn('test-client-id');
-        $request->shouldReceive('get')->with('channels', [])->andReturn(['test-channel']);
+        $broadcaster = new CentrifugoBroadcaster(new Centrifugo($config, new Client()));
 
-        $broadcaster = m::mock(CentrifugoBroadcaster::class.'[verifyUserCanAccessChannel]', [$this->centrifugo])->shouldAllowMockingProtectedMethods();
-        $broadcaster->shouldReceive('verifyUserCanAccessChannel')->andReturn(true);
+        $this->expectException(BroadcastException::class);
+        $this->expectExceptionMessage('Failed to connect');
+
+        $broadcaster->broadcast(['test-channel'], 'test-event', ['payload' => 'error']);
+    }
+
+    public function testAuthForPublicChannelReturnsConnectionToken(): void
+    {
+        $channel = 'auth-public-'.Str::uuid()->toString();
+
+        $this->broadcaster->channel($channel, static fn ($user): bool => true);
+
+        $request = Request::create('/broadcasting/auth', 'POST', [
+            'client' => 'public-client-id',
+            'channels' => $channel,
+        ]);
+        $request->setUserResolver(static fn ($guard = null): object => (object) ['id' => 1]);
+
+        $response = $this->broadcaster->auth($request);
+        $payload = json_decode($response->getContent(), true);
+        $tokenPayload = $this->decodeJwtPayload($payload[$channel]['sign']);
+
+        $this->assertSame('1', $tokenPayload['sub']);
+        $this->assertNotSame('public-client-id', $tokenPayload['sub']);
+        $this->assertSame([], $payload[$channel]['info']);
+    }
+
+    public function testAuthForPrivateChannelReturnsChannelTokenWithoutCallingCentrifugo(): void
+    {
+        $config = $this->app['config']->get('broadcasting.connections.centrifugo');
+        $config['url'] = 'http://localhost:3999';
+
+        $broadcaster = new CentrifugoBroadcaster(new Centrifugo($config, new Client()));
+        $channel = 'private-auth-'.Str::uuid()->toString();
+        $requestChannel = '$'.$channel;
+
+        $broadcaster->channel($channel, static fn ($user): bool => true);
+
+        $request = Request::create('/broadcasting/auth', 'POST', [
+            'client' => 'private-client-id',
+            'channels' => [$requestChannel],
+        ]);
+        $request->setUserResolver(static fn ($guard = null): object => (object) ['id' => 1]);
 
         $response = $broadcaster->auth($request);
-        $this->assertEquals(['test-channel' => ['sign' => 'test-token', 'info' => []]], json_decode($response->getContent(), true));
+        $payload = json_decode($response->getContent(), true);
+        $channelPayload = $payload['channels'][0];
+        $tokenPayload = $this->decodeJwtPayload($channelPayload['token']);
+
+        $this->assertSame($requestChannel, $channelPayload['channel']);
+        $this->assertSame($requestChannel, $tokenPayload['channel']);
+        $this->assertSame('1', $tokenPayload['sub']);
+        $this->assertNotSame('private-client-id', $tokenPayload['sub']);
+        $this->assertSame([], $channelPayload['info']);
     }
 
-    public function testAuthForPrivateChannel()
+    public function testAuthReturnsForbiddenWhenChannelAuthorizationFails(): void
     {
-        $this->centrifugo->shouldReceive('generatePrivateChannelToken')->once()->andReturn('private-test-token');
-        $this->centrifugo->shouldReceive('info')->once()->andReturn([]);
+        $channel = 'auth-denied-'.Str::uuid()->toString();
 
-        $request = m::mock(Request::class);
-        $request->shouldReceive('user')->andReturn(new stdClass());
-        $request->shouldReceive('get')->with('client', '')->andReturn('test-client-id');
-        $request->shouldReceive('get')->with('channels', [])->andReturn(['$private-channel']);
+        $this->broadcaster->channel($channel, static fn ($user): bool => false);
 
-        $broadcaster = m::mock(CentrifugoBroadcaster::class.'[verifyUserCanAccessChannel]', [$this->centrifugo])->shouldAllowMockingProtectedMethods();
-        $broadcaster->shouldReceive('verifyUserCanAccessChannel')->andReturn(true);
+        $request = Request::create('/broadcasting/auth', 'POST', [
+            'client' => 'forbidden-client-id',
+            'channels' => [$channel],
+        ]);
+        $request->setUserResolver(static fn ($guard = null): object => (object) ['id' => 1]);
+
+        $response = $this->broadcaster->auth($request);
+        $payload = json_decode($response->getContent(), true);
+
+        $this->assertSame(403, $payload[$channel]['status']);
+    }
+
+    public function testAuthReturnsCombinedPayloadForMixedPublicAndPrivateChannels(): void
+    {
+        $config = $this->app['config']->get('broadcasting.connections.centrifugo');
+        $config['url'] = 'http://localhost:3999';
+
+        $broadcaster = new CentrifugoBroadcaster(new Centrifugo($config, new Client()));
+        $publicChannel = 'auth-mixed-public-'.Str::uuid()->toString();
+        $privateChannel = 'auth-mixed-private-'.Str::uuid()->toString();
+        $requestPrivateChannel = '$'.$privateChannel;
+
+        $broadcaster->channel($publicChannel, static fn ($user): bool => true);
+        $broadcaster->channel($privateChannel, static fn ($user): bool => true);
+
+        $request = Request::create('/broadcasting/auth', 'POST', [
+            'client' => 'mixed-client-id',
+            'channels' => [$publicChannel, $requestPrivateChannel],
+        ]);
+        $request->setUserResolver(static fn ($guard = null): object => (object) ['id' => 1]);
 
         $response = $broadcaster->auth($request);
-        $expected = [
-            'channels' => [
-                [
-                    'channel' => '$private-channel',
-                    'token'   => 'private-test-token',
-                    'info'    => [],
-                ],
-            ],
-        ];
-        $this->assertEquals($expected, json_decode($response->getContent(), true));
+        $payload = json_decode($response->getContent(), true);
+        $publicPayload = $this->decodeJwtPayload($payload[$publicChannel]['sign']);
+        $privatePayload = $payload['channels'][0];
+        $privateTokenPayload = $this->decodeJwtPayload($privatePayload['token']);
+
+        $this->assertSame('1', $publicPayload['sub']);
+        $this->assertSame('1', $privateTokenPayload['sub']);
+        $this->assertSame($requestPrivateChannel, $privatePayload['channel']);
+        $this->assertSame([], $privatePayload['info']);
     }
 
-    public function testAuthAccessDenied()
+    public function testAuthThrowsUnauthorizedWhenRequestHasNoUser(): void
     {
-        $request = m::mock(Request::class);
-        $request->shouldReceive('user')->andReturn(new stdClass());
-        $request->shouldReceive('get')->with('client', '')->andReturn('test-client-id');
-        $request->shouldReceive('get')->with('channels', [])->andReturn(['test-channel']);
+        $request = Request::create('/broadcasting/auth', 'POST', [
+            'client' => 'guest-client-id',
+            'channels' => ['guest-channel'],
+        ]);
 
-        $broadcaster = m::mock(CentrifugoBroadcaster::class.'[verifyUserCanAccessChannel]', [$this->centrifugo])->shouldAllowMockingProtectedMethods();
-        $broadcaster->shouldReceive('verifyUserCanAccessChannel')->andReturn(false);
+        $this->expectException(HttpException::class);
 
-        $response = $broadcaster->auth($request);
-        $this->assertEquals(['test-channel' => ['status' => 403]], json_decode($response->getContent(), true));
+        try {
+            $this->broadcaster->auth($request);
+        } catch (HttpException $exception) {
+            $this->assertSame(401, $exception->getStatusCode());
+
+            throw $exception;
+        }
     }
-} 
+
+    public function testValidAuthenticationResponseReturnsOriginalPayload(): void
+    {
+        $request = Request::create('/broadcasting/auth', 'POST');
+        $result = ['status' => 'ok'];
+
+        $this->assertSame($result, $this->broadcaster->validAuthenticationResponse($request, $result));
+    }
+
+    private function decodeJwtPayload(string $token): array
+    {
+        [, $payload] = explode('.', $token);
+
+        return json_decode($this->decodeBase64Url($payload), true);
+    }
+
+    private function decodeBase64Url(string $value): string
+    {
+        $padding = (4 - strlen($value) % 4) % 4;
+
+        return base64_decode(strtr($value.str_repeat('=', $padding), '-_', '+/')) ?: '';
+    }
+}

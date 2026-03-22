@@ -31,9 +31,8 @@ class InstallCommand extends Command
     public function handle(): void
     {
         $this->addEnvironmentVariables();
-        $this->publishConfiguration();
+        $this->ensureBroadcastingIsInstalled();
         $this->updateBroadcastingConfiguration();
-        $this->enableBroadcasting();
         $this->updateBroadcastingDriver();
 
         $this->components->info('Centrifuge Laravel  installed successfully.');
@@ -49,14 +48,14 @@ class InstallCommand extends Command
         }
         $contents = File::get($env);
 
-        $token_hmac_secret_key=Str::uuid()->toString();
-        $api_key=Str::uuid()->toString();
+        $token_hmac_secret_key = Str::uuid()->toString();
+        $api_key = Str::uuid()->toString();
 
 
         $variables = Arr::where([
             'CENTRIFUGO_TOKEN_HMAC_SECRET_KEY' => "CENTRIFUGO_TOKEN_HMAC_SECRET_KEY={$token_hmac_secret_key}",
             'CENTRIFUGO_API_KEY' => "CENTRIFUGO_API_KEY={$api_key}",
-            'CENTRIFUGO_URL' => 'CENTRIFUGO_URL="http://localhost:8000"'
+            'CENTRIFUGO_URL' => 'CENTRIFUGO_URL="http://localhost:8000"',
         ], function ($value, $key) use ($contents) {
             return ! Str::contains($contents, PHP_EOL.$key);
         });
@@ -74,15 +73,29 @@ class InstallCommand extends Command
     }
 
     /**
-     * Publish the Centrifuge-laravel configuration file.
+     * Ensure Laravel broadcasting is installed for the current app structure.
      */
-    protected function publishConfiguration(): void
+    protected function ensureBroadcastingIsInstalled(): void
     {
-        return;
-        $this->callSilently('vendor:publish', [
-            '--provider' => 'App\Providers\BroadcastServiceProvider',
-            '--tag' => 'centrifuge-config',
-        ]);
+        $this->enableBroadcastServiceProvider();
+
+        $broadcastingConfig = app()->configPath('broadcasting.php');
+
+        if (File::exists($broadcastingConfig) && File::exists(base_path('routes/channels.php'))) {
+            return;
+        }
+
+        if (! $this->getApplication()->has('install:broadcasting')) {
+            return;
+        }
+
+        $enable = $this->confirm('Would you like to enable event broadcasting?', true);
+
+        if (! $enable) {
+            return;
+        }
+
+        $this->call('install:broadcasting', $this->broadcastingInstallOptions());
     }
 
     /**
@@ -90,51 +103,22 @@ class InstallCommand extends Command
      */
     protected function updateBroadcastingConfiguration(): void
     {
-        if ($this->laravel->config->has('broadcasting.connections.centrifugo')) {
+        $broadcastingConfig = app()->configPath('broadcasting.php');
+
+        if (File::missing($broadcastingConfig)) {
+            $this->components->warn('Skipping Centrifugo broadcasting configuration because config/broadcasting.php was not found.');
+
             return;
         }
 
+        $contents = File::get($broadcastingConfig);
+        $updated = $this->injectCentrifugoConnection($contents);
 
-        File::replaceInFile(
-            "'connections' => [\n",
-            <<<'CONFIG'
-            'connections' => [
-
-                    'centrifugo' => [
-                        'driver' => 'centrifugo',
-                        'token_hmac_secret_key' => env('CENTRIFUGO_TOKEN_HMAC_SECRET_KEY'),
-                        'api_key' => env('CENTRIFUGO_API_KEY'),
-                        'url' => env('CENTRIFUGO_URL', 'http://localhost:8000'), // centrifugo api url
-                        'verify'=>env('CENTRIFUGO_VERIFY', false), // Verify host ssl if centrifugo uses this
-                        'ssl_key'=>env('CENTRIFUGO_SSL_KEY', null)  // Self-Signed SSl Key for Host (require verify=true)
-
-                    ],
-
-            CONFIG,
-            app()->configPath('broadcasting.php')
-        );
-    }
-
-    /**
-     * Enable Laravel's broadcasting functionality.
-     */
-    protected function enableBroadcasting(): void
-    {
-        $this->enableBroadcastServiceProvider();
-
-        if (File::exists(base_path('routes/channels.php'))) {
+        if ($updated === $contents) {
             return;
         }
 
-        $enable = confirm('Would you like to enable event broadcasting?', default: true);
-
-        if (! $enable) {
-            return;
-        }
-
-        if ($this->getApplication()->has('install:broadcasting')) {
-            $this->call('install:broadcasting', ['--no-interaction' => true]);
-        }
+        File::put($broadcastingConfig, $updated);
     }
 
     /**
@@ -142,13 +126,19 @@ class InstallCommand extends Command
      */
     protected function enableBroadcastServiceProvider(): void
     {
-        $config = File::get(app()->configPath('app.php'));
+        $appConfig = app()->configPath('app.php');
+
+        if (File::missing($appConfig)) {
+            return;
+        }
+
+        $config = File::get($appConfig);
 
         if (Str::contains($config, '// App\Providers\BroadcastServiceProvider::class')) {
             File::replaceInFile(
                 '// App\Providers\BroadcastServiceProvider::class',
                 'App\Providers\BroadcastServiceProvider::class',
-                app()->configPath('app.php'),
+                $appConfig,
             );
         }
     }
@@ -158,16 +148,98 @@ class InstallCommand extends Command
      */
     protected function updateBroadcastingDriver(): void
     {
-
-        if ( File::missing($env = app()->environmentFile())) {
+        if (File::missing($env = app()->environmentFile())) {
             return;
         }
 
-        File::put(
-            $env,
-            Str::of(File::get($env))->replaceMatches('/(BROADCAST_(?:DRIVER|CONNECTION))=\w*/', function (array $matches) {
-                return $matches[1].'=centrifugo';
-            })
+        $contents = File::get($env);
+        $contents = $this->upsertEnvironmentVariable($contents, 'BROADCAST_DRIVER', 'centrifugo');
+        $contents = $this->upsertEnvironmentVariable($contents, 'BROADCAST_CONNECTION', 'centrifugo');
+
+        File::put($env, $contents);
+    }
+
+    /**
+     * Inject the Centrifugo connection into the broadcasting config contents.
+     */
+    protected function injectCentrifugoConnection(string $contents): string
+    {
+        if (Str::contains($contents, "'centrifugo' => [")) {
+            return $contents;
+        }
+
+        $connection = <<<'CONFIG'
+
+        'centrifugo' => [
+            'driver' => 'centrifugo',
+            'token_hmac_secret_key' => env('CENTRIFUGO_TOKEN_HMAC_SECRET_KEY'),
+            'api_key' => env('CENTRIFUGO_API_KEY'),
+            'url' => env('CENTRIFUGO_URL', 'http://localhost:8000'), // centrifugo api url
+            'verify' => env('CENTRIFUGO_VERIFY', false), // Verify host ssl if centrifugo uses this
+            'ssl_key' => env('CENTRIFUGO_SSL_KEY', null), // Self-Signed SSL Key for Host (require verify=true)
+        ],
+CONFIG;
+
+        $updated = preg_replace(
+            "/('connections'\s*=>\s*\[\s*\R)/",
+            "$1{$connection}\n\n",
+            $contents,
+            1,
+            $count
         );
+
+        return $count === 1 && is_string($updated) ? $updated : $contents;
+    }
+
+    /**
+     * Replace an existing env var or append it if missing.
+     */
+    protected function upsertEnvironmentVariable(string $contents, string $key, string $value): string
+    {
+        $pattern = "/^{$key}=.*$/m";
+        $replacement = "{$key}={$value}";
+
+        if (preg_match($pattern, $contents) === 1) {
+            return (string) preg_replace($pattern, $replacement, $contents);
+        }
+
+        return Str::endsWith($contents, PHP_EOL)
+            ? $contents.$replacement.PHP_EOL
+            : $contents.PHP_EOL.$replacement.PHP_EOL;
+    }
+
+    /**
+     * Determine the options used when installing Laravel broadcasting scaffolding.
+     */
+    protected function broadcastingInstallOptions(): array
+    {
+        $options = [
+            '--no-interaction' => true,
+        ];
+
+        if ($this->hasBroadcastingInstallOption('without-node')) {
+            $options['--without-node'] = true;
+        }
+
+        if ($this->hasBroadcastingInstallOption('without-reverb')) {
+            $options['--without-reverb'] = true;
+        }
+
+        if ($this->hasBroadcastingInstallOption('reverb')) {
+            $options['--reverb'] = true;
+        }
+
+        return $options;
+    }
+
+    /**
+     * Determine if the framework's install:broadcasting command supports an option.
+     */
+    protected function hasBroadcastingInstallOption(string $option): bool
+    {
+        return $this->getApplication()
+            ->find('install:broadcasting')
+            ->getDefinition()
+            ->hasOption($option);
     }
 }

@@ -6,7 +6,6 @@ namespace denis660\Centrifugo;
 
 use denis660\Centrifugo\Contracts\CentrifugoInterface;
 use GuzzleHttp\Client as HttpClient;
-use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 
 class Centrifugo implements CentrifugoInterface
@@ -323,10 +322,9 @@ class Centrifugo implements CentrifugoInterface
      * Send message to centrifugo server.
      *
      * @param string $method
-     * @param array  $params
+     * @param array|\stdClass $params
      *
      * @return mixed
-     * @throws GuzzleException
      */
     protected function send(string $method, array|\stdClass $params = []) : array
     {
@@ -348,7 +346,7 @@ class Centrifugo implements CentrifugoInterface
             $response = $this->httpClient->post($method, $config);
 
             $result = json_decode((string) $response->getBody(), true);
-        } catch (ClientException $e) {
+        } catch (GuzzleException $e) {
             $result = [
                 'method' => $method,
                 'error'  => $e->getMessage(),

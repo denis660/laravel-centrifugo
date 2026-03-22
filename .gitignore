@@ -6,3 +6,7 @@
 /vendor/
 .php-cs-fixer.cache
 /build
+/build/coverage
+/build/coverage.txt
+/build/logs
+/build/report.junit.xml
