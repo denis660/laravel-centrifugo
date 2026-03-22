@@ -186,7 +186,7 @@ jobs:
           $history = null;
 
           for ($attempt = 0; $attempt < 10; $attempt++) {
-              $history = $centrifugo->history($channel);
+              $history = $centrifugo->history($channel, 1);
 
               if (
                   isset($history['result']['publications'][0]['data']['event']) &&
