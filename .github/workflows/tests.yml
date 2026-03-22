@@ -80,6 +80,8 @@ jobs:
     timeout-minutes: 15
 
     runs-on: ubuntu-22.04
+    env:
+      COMPOSER_NO_SECURITY_BLOCKING: 1
 
     strategy:
       fail-fast: true
