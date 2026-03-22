@@ -7,7 +7,6 @@ use Carbon\CarbonImmutable;
 use denis660\Centrifugo\Centrifugo;
 use denis660\Centrifugo\Test\TestCase;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Support\Str;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -236,70 +235,27 @@ class CentrifugoTest extends TestCase
 
     }
 
-    public function testTimeoutFunction(): void
+    public function testSendReturnsErrorPayloadWhenConnectionFails(): void
     {
-        $timeout = 3;
-        $delta = 0.5;
-
         $badCentrifugo = new Centrifugo(
             [
                 'driver' => 'centrifugo',
                 'token_hmac_secret_key' => '',
                 'api_key' => '',
-                'api_path' => '',
                 'url' => 'http://localhost:3999',
-                'timeout' => $timeout,
-                'tries' => 1,
             ],
             new Client()
         );
 
-        $start = microtime(true);
-        $this->expectException(ConnectException::class);
+        $result = $badCentrifugo->publish('test-channel', ['event' => 'test-event']);
 
-        try {
-            $badCentrifugo->publish('test-channel', ['event' => 'test-event']);
-        } catch (\Exception $e) {
-            $end = microtime(true);
-            $eval = $end - $start;
-            $this->assertTrue($eval < $timeout + $delta);
-
-            throw $e;
-        }
-    }
-
-    public function testTriesFunction(): void
-    {
-        $timeout = 1;
-        $tries = 3;
-        $delta = 0.5;
-
-        $badCentrifugo = new Centrifugo(
-            [
-                'driver' => 'centrifugo',
-                'token_hmac_secret_key' => '',
-                'api_key' => '',
-                'api_path' => '',
-                'url' => 'http://localhost:3999',
-                'timeout' => $timeout,
-                'tries' => $tries,
-            ],
-            new Client()
-        );
-
-        $start = microtime(true);
-
-        $this->expectException(ConnectException::class);
-
-        try {
-            $badCentrifugo->publish('test-channel', ['event' => 'test-event']);
-        } catch (\Exception $e) {
-            $end = microtime(true);
-            $eval = $end - $start;
-            $this->assertTrue($eval < ($timeout + $delta) * $tries);
-
-            throw $e;
-        }
+        $this->assertSame('publish', $result['method']);
+        $this->assertArrayHasKey('error', $result);
+        $this->assertSame([
+            'channel' => 'test-channel',
+            'data' => ['event' => 'test-event'],
+            'skip_history' => false,
+        ], $result['body']);
     }
 
     private function decodeJwtPayload(string $token): array

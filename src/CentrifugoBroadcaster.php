@@ -4,26 +4,27 @@ declare(strict_types=1);
 
 namespace denis660\Centrifugo;
 
-use Exception;
+use denis660\Centrifugo\Contracts\CentrifugoInterface;
 use Illuminate\Broadcasting\Broadcasters\Broadcaster;
 use Illuminate\Broadcasting\BroadcastException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Throwable;
 
 class CentrifugoBroadcaster extends Broadcaster
 {
     /**
      * The Centrifugo SDK instance.
      *
-     * @var Contracts\CentrifugoInterface
+     * @var \denis660\Centrifugo\Contracts\CentrifugoInterface
      */
-    protected $centrifugo;
+    protected CentrifugoInterface $centrifugo;
 
     /**
      * Create a new broadcaster instance.
      *
-     * @param Centrifugo $centrifugo
+     * @param \denis660\Centrifugo\Contracts\CentrifugoInterface $centrifugo
      */
-    public function __construct(Centrifugo $centrifugo)
+    public function __construct(CentrifugoInterface $centrifugo)
     {
         $this->centrifugo = $centrifugo;
     }
@@ -42,8 +43,6 @@ class CentrifugoBroadcaster extends Broadcaster
             $channels = $this->getChannelsFromRequest($request);
 
             $response = [];
-            $privateResponse = [];
-            $private = null;
             foreach ($channels as $channel) {
                 $channelName = $this->getChannelName($channel);
 
@@ -53,14 +52,14 @@ class CentrifugoBroadcaster extends Broadcaster
                     $is_access_granted = false;
                 }
 
-                if ($private = $this->isPrivateChannel($channel)) {
-                    $privateResponse['channels'][] = $this->makeResponseForPrivateClient($is_access_granted, $channel, $client);
+                if ($this->isPrivateChannel($channel)) {
+                    $response['channels'][] = $this->makeResponseForPrivateClient($is_access_granted, $channel, $client);
                 } else {
                     $response[$channel] = $this->makeResponseForClient($is_access_granted, $client);
                 }
             }
 
-            return response($private ? $privateResponse : $response);
+            return response($response);
         } else {
             throw new HttpException(401);
         }
@@ -95,14 +94,20 @@ class CentrifugoBroadcaster extends Broadcaster
             return str_replace('private-', '$', (string) $channel);
         }, array_values($channels));
 
-        $response = $this->centrifugo->broadcast($this->formatChannels($channels), $payload);
+        try {
+            $response = $this->centrifugo->broadcast($this->formatChannels($channels), $payload);
+        } catch (Throwable $exception) {
+            throw new BroadcastException($exception->getMessage(), 0, $exception);
+        }
 
         if (is_array($response) && !isset($response['error'])) {
             return;
         }
 
+        $error = $response['error'] ?? 'Unknown Centrifugo broadcast error.';
+
         throw new BroadcastException(
-            $response['error'] instanceof Exception ? $response['error']->getMessage() : $response['error']
+            $error instanceof Throwable ? $error->getMessage() : (string) $error
         );
     }
 
@@ -190,12 +195,11 @@ class CentrifugoBroadcaster extends Broadcaster
         $info = [];
 
         return $access_granted ? [
-
             'channel' => $channel,
             'token'   => $this->centrifugo->generatePrivateChannelToken($client, $channel, 0, $info),
-            'info'    => $this->centrifugo->info(),
-
+            'info'    => $info,
         ] : [
+            'channel' => $channel,
             'status' => 403,
         ];
     }
