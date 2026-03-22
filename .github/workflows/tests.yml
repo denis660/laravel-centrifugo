@@ -162,6 +162,81 @@ jobs:
           php artisan list >/dev/null
           php artisan route:list >/dev/null
 
+      - name: Generate application key for HTTP e2e
+        working-directory: e2e-app
+        run: php artisan key:generate --force --no-interaction
+
+      - name: Prepare real private subscribe e2e app routes
+        working-directory: e2e-app
+        run: |
+          cat <<'PHP' > routes/channels.php
+          <?php
+
+          use Illuminate\Support\Facades\Broadcast;
+
+          Broadcast::channel('orders.{orderId}', function ($user, int $orderId) {
+              return (int) $user->id === (int) $orderId;
+          });
+          PHP
+
+          cat <<'PHP' > routes/web.php
+          <?php
+
+          use Illuminate\Broadcasting\BroadcastManager;
+          use Illuminate\Http\Request;
+          use Illuminate\Support\Facades\Route;
+          use denis660\Centrifugo\Centrifugo;
+
+          Route::get('/centrifugo/connection-token', function (Centrifugo $centrifugo) {
+              return response()->json([
+                  'token' => $centrifugo->generateConnectionToken('1', 300),
+              ]);
+          });
+
+          Route::get('/centrifugo/subscription-token', function (Request $request, BroadcastManager $broadcastManager) {
+              $user = new class {
+                  public int $id = 1;
+
+                  public function getAuthIdentifier(): int
+                  {
+                      return $this->id;
+                  }
+              };
+
+              $request->setUserResolver(static fn () => $user);
+
+              $response = $broadcastManager->connection('centrifugo')->auth($request);
+              $payload = json_decode($response->getContent(), true);
+              $channels = $request->query('channels', []);
+              $channel = is_array($channels) ? ($channels[0] ?? null) : $channels;
+
+              foreach ($payload['channels'] ?? [] as $item) {
+                  if (($item['channel'] ?? null) !== $channel) {
+                      continue;
+                  }
+
+                  if (($item['status'] ?? null) === 403) {
+                      return response()->json(['message' => 'Forbidden'], 403);
+                  }
+
+                  return response()->json(['token' => $item['token']]);
+              }
+
+              return response()->json(['message' => 'Subscription token was not issued.'], 403);
+          });
+
+          Route::get('/centrifugo/test-publish', function (Request $request, Centrifugo $centrifugo) {
+              return response()->json(
+                  $centrifugo->publish('$orders.1', [
+                      'event' => 'private.e2e',
+                      'message' => (string) $request->query('message', 'ok'),
+                  ])
+              );
+          });
+          PHP
+
+          php artisan route:list >/dev/null
+
       - name: Smoke test installed package against real Centrifugo
         working-directory: e2e-app
         run: |
@@ -210,3 +285,171 @@ jobs:
           PHP
           php smoke-centrifugo.php
           rm smoke-centrifugo.php
+
+      - name: Install websocket test client
+        working-directory: e2e-app
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install --silent --no-fund --no-audit centrifuge@5.5.3 ws@8.20.0
+
+      - name: Start Laravel app server
+        working-directory: e2e-app
+        run: |
+          php artisan serve --host=127.0.0.1 --port=8080 > storage/logs/e2e-http.log 2>&1 &
+          echo $! > storage/logs/e2e-http.pid
+
+      - name: Wait for Laravel app server
+        working-directory: e2e-app
+        run: |
+          while ! curl -fsS http://127.0.0.1:8080/centrifugo/connection-token > /dev/null; do
+            echo "Waiting for Laravel app server..."
+            sleep 1
+          done
+
+      - name: Real websocket private subscribe e2e
+        working-directory: e2e-app
+        run: |
+          cat <<'JS' > private-subscribe-e2e.mjs
+          import { Centrifuge } from 'centrifuge';
+          import WebSocket from 'ws';
+          import { randomBytes } from 'node:crypto';
+
+          const appUrl = 'http://127.0.0.1:8080';
+          const wsUrl = 'ws://127.0.0.1:8000/connection/websocket';
+          const message = randomBytes(8).toString('hex');
+
+          const connectionTokenResponse = await fetch(`${appUrl}/centrifugo/connection-token`, {
+            headers: { Accept: 'application/json' },
+          });
+
+          if (!connectionTokenResponse.ok) {
+            throw new Error(`Connection token request failed with status ${connectionTokenResponse.status}`);
+          }
+
+          const connectionTokenPayload = await connectionTokenResponse.json();
+
+          if (!connectionTokenPayload.token) {
+            throw new Error('Connection token is missing from response.');
+          }
+
+          const centrifuge = new Centrifuge(wsUrl, {
+            token: connectionTokenPayload.token,
+            websocket: WebSocket,
+          });
+
+          let clientId = '';
+
+          const connected = new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => {
+              reject(new Error('Timed out waiting for websocket connection.'));
+            }, 10000);
+
+            centrifuge.on('connected', (ctx) => {
+              clearTimeout(timeout);
+              clientId = ctx.client;
+              resolve();
+            });
+
+            centrifuge.on('error', (ctx) => {
+              clearTimeout(timeout);
+              reject(new Error(`Websocket connection error: ${ctx.type}`));
+            });
+          });
+
+          centrifuge.connect();
+          await connected;
+
+          const subscription = centrifuge.newSubscription('$orders.1', {
+            getToken: async (ctx) => {
+              const url = new URL(`${appUrl}/centrifugo/subscription-token`);
+              url.searchParams.append('client', clientId);
+              url.searchParams.append('channels[]', ctx.channel);
+
+              const response = await fetch(url, {
+                headers: { Accept: 'application/json' },
+              });
+
+              if (!response.ok) {
+                throw new Error(`Subscription token request failed with status ${response.status}`);
+              }
+
+              const payload = await response.json();
+
+              if (!payload.token) {
+                throw new Error('Subscription token is missing from response.');
+              }
+
+              return payload.token;
+            },
+          });
+
+          const publication = new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => {
+              reject(new Error('Timed out waiting for private channel publication.'));
+            }, 10000);
+
+            subscription.on('publication', (ctx) => {
+              clearTimeout(timeout);
+              resolve(ctx);
+            });
+
+            subscription.on('error', (ctx) => {
+              clearTimeout(timeout);
+              reject(new Error(`Subscription error: ${ctx.type}`));
+            });
+          });
+
+          const subscribed = new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => {
+              reject(new Error('Timed out waiting for private subscription.'));
+            }, 10000);
+
+            subscription.on('subscribed', () => {
+              clearTimeout(timeout);
+              resolve();
+            });
+
+            subscription.on('error', (ctx) => {
+              clearTimeout(timeout);
+              reject(new Error(`Subscription setup error: ${ctx.type}`));
+            });
+          });
+
+          subscription.subscribe();
+          await subscribed;
+
+          const publishUrl = new URL(`${appUrl}/centrifugo/test-publish`);
+          publishUrl.searchParams.set('message', message);
+
+          const publishResponse = await fetch(publishUrl, {
+            headers: { Accept: 'application/json' },
+          });
+
+          if (!publishResponse.ok) {
+            throw new Error(`Publish request failed with status ${publishResponse.status}`);
+          }
+
+          const publishPayload = await publishResponse.json();
+
+          if (!publishPayload.result || typeof publishPayload.result !== 'object') {
+            throw new Error(`Unexpected publish response: ${JSON.stringify(publishPayload)}`);
+          }
+
+          const publicationPayload = await publication;
+
+          if (publicationPayload.data?.event !== 'private.e2e') {
+            throw new Error(`Unexpected publication event: ${JSON.stringify(publicationPayload.data)}`);
+          }
+
+          if (publicationPayload.data?.message !== message) {
+            throw new Error(`Unexpected publication message: ${JSON.stringify(publicationPayload.data)}`);
+          }
+
+          subscription.unsubscribe();
+          centrifuge.disconnect();
+
+          console.log('Private websocket subscribe e2e passed');
+          JS
+
+          node private-subscribe-e2e.mjs
+          rm private-subscribe-e2e.mjs

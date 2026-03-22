@@ -39,7 +39,7 @@ class CentrifugoBroadcaster extends Broadcaster
     public function auth($request)
     {
         if ($request->user()) {
-            $client = $this->getClientFromRequest($request);
+            $userId = $this->getUserIdFromRequest($request);
             $channels = $this->getChannelsFromRequest($request);
 
             $response = [];
@@ -53,9 +53,9 @@ class CentrifugoBroadcaster extends Broadcaster
                 }
 
                 if ($this->isPrivateChannel($channel)) {
-                    $response['channels'][] = $this->makeResponseForPrivateClient($is_access_granted, $channel, $client);
+                    $response['channels'][] = $this->makeResponseForPrivateClient($is_access_granted, $channel, $userId);
                 } else {
-                    $response[$channel] = $this->makeResponseForClient($is_access_granted, $client);
+                    $response[$channel] = $this->makeResponseForClient($is_access_granted, $userId);
                 }
             }
 
@@ -112,15 +112,29 @@ class CentrifugoBroadcaster extends Broadcaster
     }
 
     /**
-     * Get client from request.
+     * Resolve the authenticated application user id from request.
      *
      * @param \Illuminate\Http\Request $request
      *
      * @return string
      */
-    private function getClientFromRequest($request)
+    private function getUserIdFromRequest($request): string
     {
-        return $request->get('client', '');
+        $user = $request->user();
+
+        if (is_object($user) && method_exists($user, 'getAuthIdentifier')) {
+            return (string) $user->getAuthIdentifier();
+        }
+
+        if (is_object($user) && isset($user->id)) {
+            return (string) $user->id;
+        }
+
+        if (is_array($user) && array_key_exists('id', $user)) {
+            return (string) $user['id'];
+        }
+
+        return '';
     }
 
     /**
@@ -165,16 +179,16 @@ class CentrifugoBroadcaster extends Broadcaster
      * Make response for client, based on access rights.
      *
      * @param bool   $access_granted
-     * @param string $client
+     * @param string $userId
      *
      * @return array
      */
-    private function makeResponseForClient(bool $access_granted, string $client)
+    private function makeResponseForClient(bool $access_granted, string $userId)
     {
         $info = [];
 
         return $access_granted ? [
-            'sign' => $this->centrifugo->generateConnectionToken($client, 0, $info),
+            'sign' => $this->centrifugo->generateConnectionToken($userId, 0, $info),
             'info' => $info,
         ] : [
             'status' => 403,
@@ -186,17 +200,17 @@ class CentrifugoBroadcaster extends Broadcaster
      *
      * @param bool   $access_granted
      * @param string $channel
-     * @param string $client
+     * @param string $userId
      *
      * @return array
      */
-    private function makeResponseForPrivateClient(bool $access_granted, string $channel, string $client)
+    private function makeResponseForPrivateClient(bool $access_granted, string $channel, string $userId)
     {
         $info = [];
 
         return $access_granted ? [
             'channel' => $channel,
-            'token'   => $this->centrifugo->generatePrivateChannelToken($client, $channel, 0, $info),
+            'token'   => $this->centrifugo->generatePrivateChannelToken($userId, $channel, 0, $info),
             'info'    => $info,
         ] : [
             'channel' => $channel,

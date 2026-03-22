@@ -83,7 +83,8 @@ class CentrifugoBroadcasterTest extends TestCase
         $payload = json_decode($response->getContent(), true);
         $tokenPayload = $this->decodeJwtPayload($payload[$channel]['sign']);
 
-        $this->assertSame('public-client-id', $tokenPayload['sub']);
+        $this->assertSame('1', $tokenPayload['sub']);
+        $this->assertNotSame('public-client-id', $tokenPayload['sub']);
         $this->assertSame([], $payload[$channel]['info']);
     }
 
@@ -111,7 +112,8 @@ class CentrifugoBroadcasterTest extends TestCase
 
         $this->assertSame($requestChannel, $channelPayload['channel']);
         $this->assertSame($requestChannel, $tokenPayload['channel']);
-        $this->assertSame('private-client-id', $tokenPayload['sub']);
+        $this->assertSame('1', $tokenPayload['sub']);
+        $this->assertNotSame('private-client-id', $tokenPayload['sub']);
         $this->assertSame([], $channelPayload['info']);
     }
 
@@ -156,8 +158,10 @@ class CentrifugoBroadcasterTest extends TestCase
         $payload = json_decode($response->getContent(), true);
         $publicPayload = $this->decodeJwtPayload($payload[$publicChannel]['sign']);
         $privatePayload = $payload['channels'][0];
+        $privateTokenPayload = $this->decodeJwtPayload($privatePayload['token']);
 
-        $this->assertSame('mixed-client-id', $publicPayload['sub']);
+        $this->assertSame('1', $publicPayload['sub']);
+        $this->assertSame('1', $privateTokenPayload['sub']);
         $this->assertSame($requestPrivateChannel, $privatePayload['channel']);
         $this->assertSame([], $privatePayload['info']);
     }
