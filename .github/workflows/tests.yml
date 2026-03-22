@@ -115,6 +115,17 @@ jobs:
           tools: composer:v2
           coverage: none
 
+      - name: Start Centrifugo
+        run: docker run -d --name centrifugo -p 8000:8000 -e CENTRIFUGO_LOG_LEVEL=debug -e CENTRIFUGO_CLIENT_TOKEN_HMAC_SECRET_KEY="secret" -e CENTRIFUGO_CHANNEL_WITHOUT_NAMESPACE_PRESENCE="1" -e CENTRIFUGO_CHANNEL_WITHOUT_NAMESPACE_JOIN_LEAVE="true" -e CENTRIFUGO_CHANNEL_WITHOUT_NAMESPACE_FORCE_PUSH_JOIN_LEAVE="true" -e CENTRIFUGO_CHANNEL_WITHOUT_NAMESPACE_HISTORY_SIZE="100" -e CENTRIFUGO_CHANNEL_WITHOUT_NAMESPACE_HISTORY_TTL="300s" -e CENTRIFUGO_CHANNEL_WITHOUT_NAMESPACE_FORCE_RECOVERY="true" -e CENTRIFUGO_CHANNEL_WITHOUT_NAMESPACE_ALLOW_PUBLISH_FOR_SUBSCRIBER="true" -e CENTRIFUGO_CHANNEL_WITHOUT_NAMESPACE_ALLOW_PRESENCE_FOR_SUBSCRIBER="true" -e CENTRIFUGO_CHANNEL_WITHOUT_NAMESPACE_ALLOW_HISTORY_FOR_SUBSCRIBER="true" -e CENTRIFUGO_CLIENT_SUBSCRIBE_TO_USER_PERSONAL_CHANNEL_ENABLED="true" -e CENTRIFUGO_HTTP_API_KEY="api-key" centrifugo/centrifugo:v6 centrifugo
+
+      - name: Wait for server to be ready
+        run: |
+          while ! curl -s http://localhost:8000 > /dev/null; do
+            echo "Waiting for server..."
+            sleep 1
+          done
+        shell: bash
+
       - name: Create fresh Laravel app
         run: composer create-project "laravel/laravel:^${{ matrix.laravel }}.0" e2e-app --prefer-dist --no-interaction --no-progress
 
@@ -128,6 +139,13 @@ jobs:
       - name: Run package installer
         working-directory: e2e-app
         run: php artisan centrifuge:install --no-interaction
+
+      - name: Align installed environment with test Centrifugo
+        working-directory: e2e-app
+        run: |
+          sed -i 's/^CENTRIFUGO_TOKEN_HMAC_SECRET_KEY=.*/CENTRIFUGO_TOKEN_HMAC_SECRET_KEY=secret/' .env
+          sed -i 's/^CENTRIFUGO_API_KEY=.*/CENTRIFUGO_API_KEY=api-key/' .env
+          sed -i 's#^CENTRIFUGO_URL=.*#CENTRIFUGO_URL=http://localhost:8000#' .env
 
       - name: Validate installed scaffolding
         working-directory: e2e-app
@@ -143,3 +161,37 @@ jobs:
           grep -Eq "^BROADCAST_CONNECTION=centrifugo$" .env
           php artisan list >/dev/null
           php artisan route:list >/dev/null
+
+      - name: Smoke test installed package against real Centrifugo
+        working-directory: e2e-app
+        run: |
+          php <<'PHP'
+          <?php
+          require __DIR__.'/vendor/autoload.php';
+
+          $app = require __DIR__.'/bootstrap/app.php';
+          $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+          $kernel->bootstrap();
+
+          $channel = 'smoke-'.bin2hex(random_bytes(4));
+          $centrifugo = $app->make('centrifugo');
+
+          $publish = $centrifugo->publish($channel, ['event' => 'smoke']);
+
+          if (!isset($publish['result']) || !is_array($publish['result'])) {
+              fwrite(STDERR, 'Publish failed: '.json_encode($publish).PHP_EOL);
+              exit(1);
+          }
+
+          $history = $centrifugo->history($channel);
+
+          if (
+              !isset($history['result']['publications'][0]['data']['event']) ||
+              $history['result']['publications'][0]['data']['event'] !== 'smoke'
+          ) {
+              fwrite(STDERR, 'History failed: '.json_encode($history).PHP_EOL);
+              exit(1);
+          }
+
+          echo "Centrifugo smoke test passed\n";
+          PHP
