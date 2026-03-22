@@ -16,6 +16,8 @@ class InstallCommandTest extends TestCase
 
         $this->command = new class extends InstallCommand
         {
+            public array $supportedOptions = [];
+
             public function injectConnection(string $contents): string
             {
                 return $this->injectCentrifugoConnection($contents);
@@ -29,6 +31,11 @@ class InstallCommandTest extends TestCase
             public function installOptions(): array
             {
                 return $this->broadcastingInstallOptions();
+            }
+
+            protected function hasBroadcastingInstallOption(string $option): bool
+            {
+                return in_array($option, $this->supportedOptions, true);
             }
         };
     }
@@ -91,11 +98,24 @@ PHP;
 
     public function testBroadcastingInstallOptionsAreNonInteractive(): void
     {
+        $this->command->supportedOptions = ['without-node', 'without-reverb', 'reverb'];
+
         $this->assertSame([
-            '--reverb' => true,
-            '--without-reverb' => true,
-            '--without-node' => true,
             '--no-interaction' => true,
+            '--without-node' => true,
+            '--without-reverb' => true,
+            '--reverb' => true,
+        ], $this->command->installOptions());
+    }
+
+    public function testBroadcastingInstallOptionsAreCompatibleWithLaravelElevenSignature(): void
+    {
+        $this->command->supportedOptions = ['without-node', 'without-reverb'];
+
+        $this->assertSame([
+            '--no-interaction' => true,
+            '--without-node' => true,
+            '--without-reverb' => true,
         ], $this->command->installOptions());
     }
 }

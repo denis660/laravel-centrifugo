@@ -213,11 +213,33 @@ CONFIG;
      */
     protected function broadcastingInstallOptions(): array
     {
-        return [
-            '--reverb' => true,
-            '--without-reverb' => true,
-            '--without-node' => true,
+        $options = [
             '--no-interaction' => true,
         ];
+
+        if ($this->hasBroadcastingInstallOption('without-node')) {
+            $options['--without-node'] = true;
+        }
+
+        if ($this->hasBroadcastingInstallOption('without-reverb')) {
+            $options['--without-reverb'] = true;
+        }
+
+        if ($this->hasBroadcastingInstallOption('reverb')) {
+            $options['--reverb'] = true;
+        }
+
+        return $options;
+    }
+
+    /**
+     * Determine if the framework's install:broadcasting command supports an option.
+     */
+    protected function hasBroadcastingInstallOption(string $option): bool
+    {
+        return $this->getApplication()
+            ->find('install:broadcasting')
+            ->getDefinition()
+            ->hasOption($option);
     }
 }
