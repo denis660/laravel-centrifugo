@@ -231,7 +231,7 @@ class Centrifugo implements CentrifugoInterface
      */
     public function info() : array
     {
-        return $this->send('info');
+        return $this->send('info', new \stdClass());
     }
 
     /**
@@ -323,12 +323,12 @@ class Centrifugo implements CentrifugoInterface
      * Send message to centrifugo server.
      *
      * @param string $method
-     * @param array  $params
+     * @param array|\stdClass $params
      *
      * @return mixed
      * @throws GuzzleException
      */
-    protected function send(string $method, array $params = []) : array
+    protected function send(string $method, array|\stdClass $params = []) : array
     {
         $url = $this->prepareUrl();
 

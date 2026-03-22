@@ -3,10 +3,16 @@ declare(strict_types = 1);
 
 namespace denis660\Centrifugo\Test\Unit;
 
+use Carbon\CarbonImmutable;
 use denis660\Centrifugo\Centrifugo;
 use denis660\Centrifugo\Test\TestCase;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
+use Illuminate\Support\Str;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Response;
 
 /**
  * @internal
@@ -46,6 +52,50 @@ class CentrifugoTest extends TestCase
         );
     }
 
+    public function testGenerateTokenWithOptionalPayloadFields(): void
+    {
+        $frozenTime = CarbonImmutable::parse('2026-03-22 12:00:00', 'UTC');
+
+        $this->travelTo($frozenTime);
+
+        $token = $this->centrifuge->generateConnectionToken(
+            userId: 'client-id',
+            exp: 60,
+            info: ['role' => 'admin'],
+            channels: ['alpha', 'beta']
+        );
+
+        $payload = $this->decodeJwtPayload($token);
+
+        $this->assertSame('client-id', $payload['sub']);
+        $this->assertSame(['role' => 'admin'], $payload['info']);
+        $this->assertSame(['alpha', 'beta'], $payload['channels']);
+        $this->assertSame($frozenTime->addSeconds(60)->timestamp, $payload['exp']);
+        $this->assertSame($frozenTime->timestamp, $payload['iat']);
+    }
+
+    public function testGeneratePrivateChannelTokenWithExpiration(): void
+    {
+        $frozenTime = CarbonImmutable::parse('2026-03-22 12:30:00', 'UTC');
+
+        $this->travelTo($frozenTime);
+
+        $token = $this->centrifuge->generatePrivateChannelToken(
+            userId: 'private-client-id',
+            channel: '$private-channel',
+            exp: 120,
+            info: ['scope' => 'private']
+        );
+
+        $payload = $this->decodeJwtPayload($token);
+
+        $this->assertSame('$private-channel', $payload['channel']);
+        $this->assertSame('private-client-id', $payload['sub']);
+        $this->assertSame(['scope' => 'private'], $payload['info']);
+        $this->assertSame($frozenTime->addSeconds(120)->timestamp, $payload['exp']);
+        $this->assertSame($frozenTime->timestamp, $payload['iat']);
+    }
+
     public function testCentrifugoApiPublish(): void
     {
         $publish = $this->centrifuge->publish('test-test', ['event' => 'test-event']);
@@ -76,6 +126,31 @@ class CentrifugoTest extends TestCase
         $this->assertEmpty($history['result']['publications']);
     }
 
+    public function testCentrifugoApiHistorySupportsSinceParameter(): void
+    {
+        $channel = 'history-since-'.Str::uuid()->toString();
+
+        $this->centrifuge->historyRemove($channel);
+        $this->centrifuge->publish($channel, ['event' => 'history-event']);
+
+        $history = $this->centrifuge->history($channel);
+
+        $this->assertArrayHasKey('offset', $history['result']);
+        $this->assertArrayHasKey('epoch', $history['result']);
+
+        $withSince = $this->centrifuge->history(
+            $channel,
+            1,
+            [
+                'offset' => $history['result']['offset'],
+                'epoch' => $history['result']['epoch'],
+            ],
+            true
+        );
+
+        $this->assertArrayHasKey('publications', $withSince['result']);
+    }
+
     public function testCentrifugoApiChannels(): void
     {
         $channels = $this->centrifuge->channels();
@@ -97,11 +172,41 @@ class CentrifugoTest extends TestCase
     public function testCentrifugoApiInfo(): void
     {
         $info = $this->centrifuge->info();
-        if (isset($info['error'])) {
-            $this->assertIsString($info['error']);
-        } else {
-            $this->assertArrayHasKey('nodes', $info['result']);
-        }
+
+        $this->assertArrayNotHasKey('error', $info);
+        $this->assertArrayHasKey('result', $info);
+        $this->assertArrayHasKey('nodes', $info['result']);
+    }
+
+    public function testInfoSendsEmptyJsonObject(): void
+    {
+        $history = [];
+        $mock = new MockHandler([
+            new Response(
+                200,
+                ['Content-Type' => 'application/json'],
+                json_encode(['result' => ['nodes' => []]], JSON_THROW_ON_ERROR)
+            ),
+        ]);
+        $handlerStack = HandlerStack::create($mock);
+        $handlerStack->push(Middleware::history($history));
+
+        $centrifugo = new Centrifugo(
+            [
+                'driver' => 'centrifugo',
+                'token_hmac_secret_key' => 'secret',
+                'api_key' => 'api-key',
+                'url' => 'http://localhost:8000',
+            ],
+            new Client(['handler' => $handlerStack])
+        );
+
+        $info = $centrifugo->info();
+
+        $this->assertSame(['result' => ['nodes' => []]], $info);
+        $this->assertCount(1, $history);
+        $this->assertSame('{}', (string) $history[0]['request']->getBody());
+        $this->assertSame('/api/info', $history[0]['request']->getUri()->getPath());
     }
 
     public function testCentrifugoApiUnsubscribe(): void
@@ -195,5 +300,19 @@ class CentrifugoTest extends TestCase
 
             throw $e;
         }
+    }
+
+    private function decodeJwtPayload(string $token): array
+    {
+        [, $payload] = explode('.', $token);
+
+        return json_decode($this->decodeBase64Url($payload), true);
+    }
+
+    private function decodeBase64Url(string $value): string
+    {
+        $padding = (4 - strlen($value) % 4) % 4;
+
+        return base64_decode(strtr($value.str_repeat('=', $padding), '-_', '+/')) ?: '';
     }
 }

@@ -10,6 +10,7 @@
 <a href="https://packagist.org/packages/denis660/laravel-centrifugo"><img src="https://img.shields.io/packagist/dt/denis660/laravel-centrifugo.svg?style=flat-square" alt="Total Downloads"></a>
 <a href="https://packagist.org/packages/denis660/laravel-centrifugo"><img src="https://img.shields.io/packagist/php-v/denis660/laravel-centrifugo" alt="PHP Version"></a>
 <a href="https://packagist.org/packages/denis660/laravel-centrifugo"><img src="https://img.shields.io/packagist/v/denis660/laravel-centrifugo" alt="Laravel Version"></a>
+<a href="https://github.com/denis660/laravel-centrifugo/blob/master/build/logs/clover.xml"><img src="https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat-square" alt="Coverage"></a>
 <a href="https://github.com/denis660/laravel-centrifugo/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Software License"></a>
 </p>
 
