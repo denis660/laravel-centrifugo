@@ -75,3 +75,69 @@ jobs:
 
       - name: PHPUnit Tests
         run: vendor/bin/phpunit
+
+  e2e-install:
+    timeout-minutes: 15
+
+    runs-on: ubuntu-22.04
+
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - php: '8.2'
+            laravel: 9
+          - php: '8.2'
+            laravel: 10
+          - php: '8.2'
+            laravel: 11
+          - php: '8.2'
+            laravel: 12
+          - php: '8.3'
+            laravel: 13
+          - php: '8.4'
+            laravel: 13
+
+    name: E2E Install - PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: curl, mbstring, xml, ctype, iconv, intl, pdo_sqlite
+          ini-values: error_reporting=E_ALL
+          tools: composer:v2
+          coverage: none
+
+      - name: Create fresh Laravel app
+        run: composer create-project "laravel/laravel:^${{ matrix.laravel }}.0" e2e-app --prefer-dist --no-interaction --no-progress
+
+      - name: Require package from current checkout
+        working-directory: e2e-app
+        run: |
+          composer config repositories.local path "${GITHUB_WORKSPACE}"
+          composer require denis660/laravel-centrifugo:"*@dev" --no-interaction --no-progress
+          php artisan list | grep -q "centrifuge:install"
+
+      - name: Run package installer
+        working-directory: e2e-app
+        run: php artisan centrifuge:install --no-interaction
+
+      - name: Validate installed scaffolding
+        working-directory: e2e-app
+        run: |
+          test -f config/broadcasting.php
+          test -f routes/channels.php
+          grep -q "'centrifugo' => \\[" config/broadcasting.php
+          grep -q "'driver' => 'centrifugo'" config/broadcasting.php
+          grep -Eq "^CENTRIFUGO_TOKEN_HMAC_SECRET_KEY=" .env
+          grep -Eq "^CENTRIFUGO_API_KEY=" .env
+          grep -Eq "^CENTRIFUGO_URL=" .env
+          grep -Eq "^BROADCAST_DRIVER=centrifugo$" .env
+          grep -Eq "^BROADCAST_CONNECTION=centrifugo$" .env
+          php artisan list >/dev/null
+          php artisan route:list >/dev/null

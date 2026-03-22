@@ -1,7 +1,7 @@
 <p align="center">Документация <a href="https://github.com/denis660/laravel-centrifugo/blob/master/README.md">EN</a> | <b>RU</b></p>
 
 <h1 align="center">Laravel + Centrifugo</h1>
-<h2 align="center">Centrifugo broadcast драйвер для Laravel 9 - 12 </h2>
+<h2 align="center">Centrifugo broadcast драйвер для Laravel 9 - 13 </h2>
 
 
 <p align="center">
@@ -24,7 +24,7 @@ Centrifugo broadcaster для laravel , основан на :
 
 ## Требования
 - PHP 8.0 - 8.4
-- Laravel 9 - 12
+- Laravel 9 - 13
 - Guzzlehttp/Guzzle 6 - 7
 - Centrifugo Сервер v6 или новее (см. [здесь](https://github.com/centrifugal/centrifugo))
 
@@ -34,7 +34,7 @@ Centrifugo broadcaster для laravel , основан на :
 ```bash
 composer require denis660/laravel-centrifugo
 ```
-Для Laravel 11-12 есть особенности, читаем ниже
+Для Laravel 11-13 есть особенности, читаем ниже
 
 
 
@@ -42,11 +42,11 @@ composer require denis660/laravel-centrifugo
 
 | Версия  |   PHP    |     Laravel     | Centrifugo | Примечания        |
 |:-------:|:--------:|:---------------:|:----------:|:-------------------|
-| `5.*` | `>= 8.0` |   `9` - `12`    |     `5-6`      | **Текущая версия** |
+| `5.*` | `>= 8.0` |   `9` - `13`    |     `5-6`      | **Текущая версия** |
 | `3.0.*` | `>= 7.4` | `8.75.*` - `10` |   `4`-`5`   | Предыдущая версия  |
 
 
-По умолчанию вещание не включено в новых приложениях Laravel 11. Вы можете включить вещание с помощью команды install:broadcasting Artisan:
+По умолчанию вещание не включено в новых приложениях Laravel 11-13. Вы можете включить вещание с помощью команды install:broadcasting Artisan:
 ```bash
 php artisan install:broadcasting
 ```
@@ -99,7 +99,7 @@ BROADCAST_DRIVER=centrifugo
 ## Базовое использование
 
 Настройте ваш сервер Centrifugo , детальнее в [официальной документации](https://centrifugal.dev)
-Для отправки событий, почитайте [официальную документацию для Laravel](https://laravel.com/docs/11.x/broadcasting)
+Для отправки событий, почитайте [официальную документацию для Laravel](https://laravel.com/docs/13.x/broadcasting)
 
 Простой пример использования клиента:
 
@@ -174,4 +174,3 @@ class ExampleController
 Сеть: ```TRC20```
 
 ## Contributing 🤝
-

@@ -1,7 +1,7 @@
 <p align="center">Documentation <b>EN</b> | <a href="https://github.com/denis660/laravel-centrifugo/blob/master/README_RU.md">RU</a></p>
 
 <h1 align="center">Laravel + Centrifugo</h1>
-<h2 align="center">Centrifugo broadcast driver for Laravel 9 - 12</h2>
+<h2 align="center">Centrifugo broadcast driver for Laravel 9 - 13</h2>
 
 <p align="center">
 <a href="https://github.com/denis660/laravel-centrifugo/actions/workflows/tests.yml"><img src="https://github.com/denis660/laravel-centrifugo/actions/workflows/tests.yml/badge.svg" alt="Build Status"></a>
@@ -23,7 +23,7 @@ Centrifugo broadcaster for Laravel is based on:
 
 ## Requirements
 - PHP 8.0 - 8.4
-- Laravel 9 - 12
+- Laravel 9 - 13
 - Guzzlehttp/Guzzle 6 - 7
 - Centrifugo Server v6 or newer (see [here](https://github.com/centrifugal/centrifugo))
 
@@ -34,7 +34,7 @@ For Laravel 9-10:
 composer require denis660/laravel-centrifugo
 ```
 
-For Laravel 11-12, there are specific instructions below.
+For Laravel 11-13, there are specific instructions below.
 
 
 
@@ -43,11 +43,11 @@ For Laravel 11-12, there are specific instructions below.
 
 | Version  |   PHP    |     Laravel     | Centrifugo |       Notes       |
 |:-------:|:--------:|:---------------:|:----------:|:--------------------|
-| `5.*` | `>= 8.0` |   `9` - `12`    |     `5-6`      | **Current version** |
+| `5.*` | `>= 8.0` |   `9` - `13`    |     `5-6`      | **Current version** |
 | `3.0.*` | `>= 7.4` | `8.75.*` - `10` |    `4`-`5`	| Previous version    |
 
 
-By default, broadcasting is disabled in new Laravel 11 applications. You can enable broadcasting using the install
+By default, broadcasting is disabled in new Laravel 11-13 applications. You can enable broadcasting using the install
 Artisan command:
 ```bash
 php artisan install:broadcasting
@@ -101,7 +101,7 @@ Here is a list of SDKs supported by Centrifugal Labs:
 ## Basic Usage
 
 Set up your Centrifugo server as detailed in the [official documentation](https://centrifugal.dev)
-For sending events, refer to the [official Laravel documentation](https://laravel.com/docs/11.x/broadcasting)
+For sending events, refer to the [official Laravel documentation](https://laravel.com/docs/13.x/broadcasting)
 
 
 
@@ -178,4 +178,3 @@ USDT wallet: ```TUYJrA9VRtXhDFooESHyT8dQSyg5zmtUg7```
 Network: ```TRC20```
 
 ## Contributing 🤝
-
